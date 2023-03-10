@@ -3,7 +3,11 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+
+use App\Auth\RemoteUserProvider;
+use App\Services\Auth\RemoteUserGuard;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,6 +25,14 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $remoteUserProvider = new RemoteUserProvider();
+
+        Auth::provider('remote-user', function () use ($remoteUserProvider) {
+            return $remoteUserProvider;
+        });
+
+        Auth::extend('remote-user', function () use ($remoteUserProvider) {
+            return new RemoteUserGuard($remoteUserProvider);
+        });
     }
 }
