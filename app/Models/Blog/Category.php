@@ -9,7 +9,7 @@ class Category extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'post_categories';
+    protected $table = 'blog_post_categories';
 
     protected $fillable = [
         'name',

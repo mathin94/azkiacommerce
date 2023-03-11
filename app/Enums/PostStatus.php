@@ -12,6 +12,6 @@ use BenSampo\Enum\Enum;
  */
 final class PostStatus extends Enum
 {
-    const Draft   = 0;
-    const Publish = 1;
+    const Draft   = 1;
+    const Publish = 2;
 }

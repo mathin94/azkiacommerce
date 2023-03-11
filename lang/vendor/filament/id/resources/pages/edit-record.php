@@ -4,7 +4,7 @@ return [
 
     'title' => 'Ubah :label',
 
-    'breadcrumb' => 'Ubah',
+    'breadcrumb' => 'Ubah Data',
 
     'form' => [
 
@@ -15,7 +15,7 @@ return [
             ],
 
             'save' => [
-                'label' => 'Simpan',
+                'label' => 'Perbarui',
             ],
 
         ],

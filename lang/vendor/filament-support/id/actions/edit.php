@@ -13,7 +13,7 @@ return [
             'actions' => [
 
                 'save' => [
-                    'label' => 'Simpan',
+                    'label' => 'Perbarui',
                 ],
 
             ],
@@ -21,7 +21,7 @@ return [
         ],
 
         'messages' => [
-            'saved' => 'Data berhasil disimpan',
+            'saved' => 'Data berhasil diperbarui',
         ],
 
     ],
