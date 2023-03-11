@@ -25,14 +25,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $remoteUserProvider = new RemoteUserProvider();
-
-        Auth::provider('remote-user', function () use ($remoteUserProvider) {
-            return $remoteUserProvider;
-        });
-
-        Auth::extend('remote-user', function () use ($remoteUserProvider) {
-            return new RemoteUserGuard($remoteUserProvider);
-        });
+        //
     }
 }
