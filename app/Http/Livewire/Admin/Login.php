@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Models\User;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Facades\Filament;
@@ -12,22 +13,32 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 /**
  * @property ComponentContainer $form
  */
-class Login extends Component
+class Login extends Component implements HasForms
 {
     use InteractsWithForms;
     use WithRateLimiting;
+
+    protected $baseUrl, $user_id;
 
     public $email = '';
 
     public $password = '';
 
     public $remember = false;
+
+    public function __construct($id = null)
+    {
+        parent::__construct($id);
+
+        $this->baseUrl = env('BACKOFFICE_API_BASE_URL');
+    }
 
     public function mount(): void
     {
@@ -53,14 +64,18 @@ class Login extends Component
 
         $data = $this->form->getState();
 
-        if (!Filament::auth()->attempt([
-            'email' => $data['email'],
-            'password' => $data['password'],
-        ], $data['remember'])) {
+        $credentials = [
+            'email'    => $data['email'],
+            'password' => $data['password']
+        ];
+
+        if (!$this->remoteLogin($credentials)) {
             throw ValidationException::withMessages([
                 'email' => __('filament::login.messages.failed'),
             ]);
         }
+
+        Filament::auth()->loginUsingId($this->user_id);
 
         session()->regenerate();
 
@@ -84,8 +99,36 @@ class Login extends Component
         ];
     }
 
-    protected function attempt($credentials = [], $remember = false)
+    private function remoteLogin(array $credentials = [])
     {
+        $request = Http::withOptions([
+            'verify' => false,
+        ])->withHeaders([
+            'accept' => 'application/json',
+        ])->post("{$this->baseUrl}/auth/user/login", $credentials);
+
+        if ($request->failed()) {
+            return false;
+        }
+
+        $data = $request->json();
+
+        $remote_user = $data['user'];
+
+        $user = User::updateOrCreate(
+            ['email' => $remote_user['email']],
+            [
+                'external_id' => $remote_user['id'],
+                'name'        => $remote_user['name'],
+                'password'    => bcrypt($credentials['password']),
+                'data'        => json_encode($remote_user),
+                'auth_token'  => $data['token']
+            ]
+        );
+
+        $this->user_id = $user->id;
+
+        return true;
     }
 
     public function render(): View

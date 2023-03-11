@@ -19,6 +19,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Carbon\Carbon::setLocale('id');
+        setLocale(LC_TIME, 'id_ID.utf8');
+
+        if (config('app.env') === 'local') {
+            \DB::listen(function ($query) {
+                \Log::channel('query')->info(
+                    $query->sql,
+                    [
+                        'bindings' => $query->bindings,
+                        'time' => $query->time,
+                        'path' => $this->app->request->path()
+                    ]
+                );
+            });
+        }
     }
 }

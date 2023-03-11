@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Log;
 
 class RemoteUserProvider implements UserProvider
 {
@@ -31,6 +32,7 @@ class RemoteUserProvider implements UserProvider
         ])->get("{$this->apiUrl}/users/{$identifier}");
 
         if ($response->failed()) {
+            Log::debug('Login Failed', ['path' => 'retrieveById']);
             return null;
         }
 
@@ -76,6 +78,7 @@ class RemoteUserProvider implements UserProvider
         ])->post("{$this->apiUrl}/auth/user/login", $credentials);
 
         if ($response->failed()) {
+            Log::debug('Login Failed', ['path' => 'retrieveByCredentials']);
             return null;
         }
 

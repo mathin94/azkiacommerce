@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'remote-user',
+        'guard' => 'web',
         'passwords' => 'users',
     ],
 
@@ -39,10 +39,6 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
-        ],
-
-        'remote-user' => [
-            'driver' => 'remote-user'
         ],
     ],
 
