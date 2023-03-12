@@ -4,49 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d9f9523466908cef385063ac3923de03",
+    "content-hash": "f0874286ed8e965fc5b0e4b8c524bceb",
     "packages": [
-        {
-            "name": "3x1io/filament-commands",
-            "version": "v1.1.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/3x1io/filament-commands.git",
-                "reference": "18c67f00466889a2f9ec771150dc08ac75577473"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/3x1io/filament-commands/zipball/18c67f00466889a2f9ec771150dc08ac75577473",
-                "reference": "18c67f00466889a2f9ec771150dc08ac75577473",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.3|^8.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "io3x1\\FilamentCommands\\FilamentCommandsProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "io3x1\\FilamentCommands\\": "./src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Beautiful package for [laravel:artisan] gui for cool kids.",
-            "support": {
-                "issues": "https://github.com/3x1io/filament-commands/issues",
-                "source": "https://github.com/3x1io/filament-commands/tree/v1.1.2"
-            },
-            "time": "2022-11-03T10:20:34+00:00"
-        },
         {
             "name": "akaunting/laravel-money",
             "version": "4.0.0",
