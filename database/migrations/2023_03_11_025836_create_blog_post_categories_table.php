@@ -18,6 +18,8 @@ return new class extends Migration
             $table->text('description');
             $table->boolean('visibility')
                 ->default(true);
+            $table->string('seo_title', 60)->nullable();
+            $table->string('seo_description', 160)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

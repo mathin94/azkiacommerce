@@ -17,9 +17,11 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id');
             $table->string('slug');
             $table->string('title');
-            $table->text('content');
+            $table->longText('content');
             $table->string('image')->nullable();
             $table->timestamp('published_at');
+            $table->string('seo_title', 60)->nullable();
+            $table->string('seo_description', 160)->nullable();
             $table->softDeletes();
             $table->timestamps();
 
