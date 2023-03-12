@@ -39,6 +39,6 @@ return [
     |
     */
 
-    'queue' => null,
+    'queue' => 'backup',
 
 ];
