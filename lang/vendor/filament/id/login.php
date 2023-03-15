@@ -2,14 +2,14 @@
 
 return [
 
-    'title' => 'Masuk',
+    'title' => 'Login Admin',
 
     'heading' => 'Masuk ke akun Anda',
 
     'buttons' => [
 
         'submit' => [
-            'label' => 'Masuk',
+            'label' => 'Login',
         ],
 
     ],

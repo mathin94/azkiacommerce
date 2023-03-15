@@ -47,7 +47,7 @@ class SyncCustomer extends Command
 
             if (!$shop_customer) {
                 $created_customer = Customer::create([
-                    'external_id'         => $customer->id,
+                    'resource_id'         => $customer->id,
                     'code'                => $customer->code,
                     'name'                => $customer->name,
                     'store_name'          => $customer->store_name,

@@ -118,11 +118,11 @@ class Login extends Component implements HasForms
         $user = User::updateOrCreate(
             ['email' => $remote_user['email']],
             [
-                'external_id' => $remote_user['id'],
-                'name'        => $remote_user['name'],
-                'password'    => bcrypt($credentials['password']),
-                'data'        => json_encode($remote_user),
-                'auth_token'  => $data['token']
+                'resource_id'         => $remote_user['id'],
+                'name'                => $remote_user['name'],
+                'password'            => bcrypt($credentials['password']),
+                'data'                => json_encode($remote_user),
+                'authorization_token' => $data['token']
             ]
         );
 

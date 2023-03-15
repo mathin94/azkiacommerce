@@ -15,7 +15,7 @@ class Post extends Model
     protected $table = 'blog_posts';
 
     protected $fillable = [
-        'category_id',
+        'blog_post_category_id',
         'author_id',
         'title',
         'slug',
@@ -30,7 +30,7 @@ class Post extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(Category::class, 'blog_post_category_id');
     }
 
     public function author()

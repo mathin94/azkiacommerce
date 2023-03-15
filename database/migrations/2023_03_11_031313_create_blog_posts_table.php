@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('blog_posts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('author_id');
-            $table->unsignedBigInteger('category_id');
+            $table->unsignedBigInteger('blog_post_category_id');
             $table->string('slug');
             $table->string('title');
             $table->longText('content');
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('category_id')
+            $table->foreign('blog_post_category_id')
                 ->references('id')
                 ->on('blog_post_categories')
                 ->onDelete('cascade');

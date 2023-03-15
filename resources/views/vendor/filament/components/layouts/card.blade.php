@@ -10,7 +10,7 @@
     ])>
         <div @class([
             'w-screen px-6 -mt-16 space-y-8 md:mt-0 md:px-2',
-            match($width) {
+            match ($width) {
                 'xs' => 'max-w-xs',
                 'sm' => 'max-w-sm',
                 'md' => 'max-w-md',
@@ -45,6 +45,6 @@
             </div>
         </div>
     </div>
-    
+
     @livewire('notifications')
 </x-filament::layouts.base>

@@ -13,7 +13,7 @@ class Customer extends Model
     protected $table = 'shop_customers';
 
     protected $fillable = [
-        'external_id',
+        'resource_id',
         'code',
         'name',
         'store_name',
@@ -24,7 +24,7 @@ class Customer extends Model
         'password',
         'email_verified_at',
         'remember_token',
-        'auth_token',
+        'authorization_token',
         'gender',
         'avatar',
         'is_active',

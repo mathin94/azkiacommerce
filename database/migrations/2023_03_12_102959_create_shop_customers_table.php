@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('shop_customers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('external_id')->nullable();
+            $table->unsignedBigInteger('resource_id')->nullable();
             $table->string('code')->index();
             $table->string('name');
             $table->string('store_name')->nullable();
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('remember_token')->nullable();
-            $table->string('auth_token')->nullable();
+            $table->string('authorization_token')->nullable();
             $table->string('gender')->nullable();
             $table->boolean('is_active')->default(0);
             $table->boolean('is_branch')->default(0);
