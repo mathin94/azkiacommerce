@@ -1,0 +1,135 @@
+// Plugins
+@import './../assets/css/bootstrap.min.css';
+@import './../assets/css/plugins/owl-carousel/owl.carousel.css';
+@import './../assets/css/plugins/magnific-popup/magnific-popup.css';
+@import './../assets/css/plugins/jquery.countdown.css';
+
+// Main Styles
+@import './../assets/css/style.css';
+@import './../assets/css/skins/skin-demo-5.css';
+@import './../assets/css/demos/demo-8.css';
+
+.feed-col {
+  display: flex;
+  align-items: stretch;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+
+.feed-col-title {
+  display: none;
+}
+
+.instagram-feed-title {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  background-color: #fff;
+  border: .1rem solid #ebebeb;
+  margin-bottom: 2rem;
+  color: #333333;
+}
+
+  .instagram-feed-title i {
+    display: inline-block;
+    font-size: 2.4rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+  .instagram-feed-title p {
+    margin-bottom: .5rem;
+}
+  .instagram-feed-title a {
+    text-transform: uppercase;
+    font-weight: 400;
+    letter-spacing: -.01em;
+}
+
+.instagram-feed-container {
+  margin-bottom: 2.5rem;
+}
+
+@media screen and (min-width: 576px) {
+  .intro-subtitle,
+  .intro-text {
+    font-size: 1.8rem; }
+
+  .intro-subtitle {
+    margin-bottom: 1rem; }
+
+  .intro-title {
+    font-size: 9.4rem; }
+
+  .intro-text {
+    margin-bottom: 2rem; }
+
+  .feed-col {
+    flex: 0 0 33.33%;
+    max-width: 33.33%; } }
+@media screen and (min-width: 768px) {
+  .intro-content .btn {
+    min-width: 140px; }
+
+  .intro-subtitle,
+  .intro-text {
+    font-size: 2rem; }
+
+  .intro-subtitle {
+    margin-bottom: 0; }
+
+  .intro-title {
+    font-size: 11rem;
+    margin-bottom: 3rem; }
+
+  .intro-text {
+    margin-bottom: 2.6rem; }
+
+  .cta-title {
+    font-size: 3rem; } }
+@media screen and (min-width: 992px) {
+  .intro-content .btn {
+    min-width: 170px; }
+
+  .intro-subtitle,
+  .intro-text {
+    font-size: 2.4rem; }
+
+  .intro-subtitle {
+    margin-bottom: 0; }
+
+  .intro-title {
+    font-size: 14rem;
+    line-height: .55;
+    margin-bottom: 4.3rem; }
+
+  .intro-text {
+    margin-bottom: 3.6rem; }
+
+  .feed-col {
+    flex: 0 0 20%;
+    max-width: 20%; }
+
+  .feed-col-title {
+    display: flex; } }
+@media screen and (min-width: 1200px) {
+  .owl-theme .owl-nav [class*='owl-'] {
+    width: 4rem;
+    height: 4rem;
+    font-size: 2.2rem;
+    margin-top: -2rem; } }
+@media screen and (max-width: 575px) {
+  .cta .cta-wrapper .input-group {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap; }
+    .cta .cta-wrapper .input-group .form-control {
+      width: 1%;
+      margin-bottom: 0; }
+    .cta .cta-wrapper .input-group .btn {
+      margin-top: 0; } }
