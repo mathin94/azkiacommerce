@@ -13,4 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', \App\Http\Livewire\Pages\Home::class);
+Route::get('/', App\Http\Livewire\Pages\Home::class)->name('home');
+
+Route::get('/page/{slug}', App\Http\Livewire\Pages\StaticPage::class)->name('page');
+
+# Route Blog
+Route::get('/blogs', App\Http\Livewire\Blogs\Index::class)->name('blogs.index');
+Route::get('/blog/{slug}', App\Http\Livewire\Blogs\Show::class)->name('blogs.show');
+
+# Route Product
+Route::get('/products', App\Http\Livewire\Pages\ProductList::class)->name('products.index');
+Route::get('/product/{slug}', App\Http\Livewire\Pages\ProductShow::class)->name('products.show');

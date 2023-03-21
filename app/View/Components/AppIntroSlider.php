@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class app-modals extends Component
+class AppIntroSlider extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class app-modals extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.app-modals');
+        return view('components.app-intro-slider');
     }
 }

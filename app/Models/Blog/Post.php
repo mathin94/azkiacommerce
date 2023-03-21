@@ -2,15 +2,24 @@
 
 namespace App\Models\Blog;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RalphJSmit\Laravel\SEO\Support\HasSEO;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Tags\HasTags;
 
-class Post extends Model
+class Post extends Model implements HasMedia
 {
-    use SoftDeletes, HasTags, HasSEO, HasFactory;
+    use SoftDeletes, HasTags, HasSEO, HasFactory, InteractsWithMedia;
+
+    public const TOP_CACHE_PREFIX  = 'blog-post::_top_five';
+    public const TOP_POPULAR_CACHE = 'blog-post::_top_five::popular';
+    public const CACHE_PREFIX      = 'blog-post::';
+    public const DEFAULT_CACHE_TTL = 24 * 60 * 60; // 24 hours
+    public const MEDIA_COLLECTION  = 'post-image';
 
     protected $table = 'blog_posts';
 
@@ -21,11 +30,10 @@ class Post extends Model
         'slug',
         'content',
         'published_at',
-        'image',
     ];
 
     protected $casts = [
-        'published_at' => 'date'
+        'published_at' => 'datetime'
     ];
 
     public function category()
@@ -43,12 +51,77 @@ class Post extends Model
         return $this->morphMany(\App\Models\Comment::class, 'commentable');
     }
 
+    protected function publicUrl(): Attribute
+    {
+        return Attribute::make(get: fn () => route('blogs.show', $this->slug));
+    }
+
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $url = $this->getFirstMediaUrl(self::MEDIA_COLLECTION);
+
+            if (empty($url))
+                $url = secure_url('/build/assets/images/no-image.png');
+
+            return $url;
+        });
+    }
+
+    public function nextPost()
+    {
+        return Post::where('id', '!=', $this->id)
+            ->published()
+            ->where('published_at', '>', $this->published_at)
+            ->orderBy('published_at')
+            ->first();
+    }
+
+    public function prevPost()
+    {
+        return Post::where('published_at', '<', $this->published_at)
+            ->orderBy('published_at', 'desc')
+            ->published()
+            ->where('id', '!=', $this->id)
+            ->first();
+    }
+
+    public function getRelated()
+    {
+        $tag_ids = $this->tags->pluck('id');
+
+        return Post::with(['media', 'comments', 'category'])
+            ->where('id', '!=', $this->id)
+            ->where('blog_post_category_id', $this->blog_post_category_id)
+            ->orWhereHas('tags', function ($query) use ($tag_ids) {
+                $query->whereIn('id', $tag_ids);
+            })
+            ->published()
+            ->orderBy('published_at', 'desc')
+            ->get();
+    }
+
+    public function scopeGetPopular($query)
+    {
+        return $query
+            ->with(['media'])
+            ->published()
+            ->orderBy('view_count', 'desc');
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->where('published_at', '<=', now());
+    }
+
     public static function boot()
     {
         parent::boot();
 
         static::creating(function ($model) {
-            $model->author_id = auth()->id();
+            if (auth()->check()) {
+                $model->author_id = auth()->id();
+            }
         });
     }
 }

@@ -53,8 +53,9 @@ class CategoryResource extends Resource
                     ->label('Deskripsi')
                     ->columnSpan('full'),
 
-                Forms\Components\Toggle::make('visibility')
-                    ->label('Tampilkan di blog ?')
+                Forms\Components\Toggle::make('active')
+                    ->label('Status Aktif')
+                    ->helperText('Kategori akan di munculkan di blog jika aktif')
                     ->default(true),
             ]);
     }
@@ -73,9 +74,9 @@ class CategoryResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\IconColumn::make('visibility')
+                Tables\Columns\IconColumn::make('active')
                     ->boolean()
-                    ->label('Visibilitas'),
+                    ->label('Status Aktif'),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Terakhir Diubah')

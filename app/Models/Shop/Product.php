@@ -14,13 +14,15 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Backoffice\Category as ResourceModel;
 use App\Models\Backoffice\Product as ResourceVariant;
+use App\Traits\ProductTrait;
 
 class Product extends Model implements HasMedia
 {
     use HasFactory,
         SoftDeletes,
         HasSEO,
-        InteractsWithMedia;
+        InteractsWithMedia,
+        ProductTrait;
 
     protected $table = 'shop_products';
 
@@ -30,12 +32,12 @@ class Product extends Model implements HasMedia
         'name',
         'slug',
         'description',
-        'seo_title',
-        'seo_description',
         'published_at',
         'featured',
         'visible',
         'allow_preorder',
+        'order_count',
+        'view_count',
     ];
 
     public function category(): BelongsTo

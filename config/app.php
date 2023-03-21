@@ -17,6 +17,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'brand' => env('APP_BRAND', "Azkia Hijab - Syar'i and Fashionable"),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -108,7 +110,7 @@ return [
     |
     */
 
-    'faker_locale' => 'id',
+    'faker_locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -193,6 +195,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
     ],

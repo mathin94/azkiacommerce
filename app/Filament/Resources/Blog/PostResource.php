@@ -9,12 +9,14 @@ use App\Models\Blog\Post;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
+use RalphJSmit\Filament\SEO\SEO;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\Blog\PostResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\Blog\PostResource\RelationManagers;
-use RalphJSmit\Filament\SEO\SEO;
+use App\Models\Blog\Category;
 
 class PostResource extends Resource
 {
@@ -57,11 +59,14 @@ class PostResource extends Resource
                                     ->columnSpan('full'),
 
                                 Forms\Components\Select::make('blog_post_category_id')
-                                    ->relationship('category', 'name')
+                                    ->relationship('category', 'name', function ($query) {
+                                        $query->where('active', true);
+                                    })
                                     ->searchable()
+                                    ->preload()
                                     ->required(),
 
-                                Forms\Components\DatePicker::make('published_at')
+                                Forms\Components\DateTimePicker::make('published_at')
                                     ->label('Tanggal diterbitkan'),
 
                                 Forms\Components\SpatieTagsInput::make('tags'),
@@ -71,12 +76,14 @@ class PostResource extends Resource
 
                         Forms\Components\Section::make('Image')
                             ->schema([
-                                Forms\Components\FileUpload::make('image')
-                                    ->label('Gambar')
-                                    ->image()
+                                SpatieMediaLibraryFileUpload::make('media')
+                                    ->collection(Post::MEDIA_COLLECTION)
+                                    ->maxSize(2048)
+                                    ->imagePreviewHeight('300')
+                                    ->enableDownload()
+                                    ->enableOpen()
                                     ->disableLabel(),
-                            ])
-                            ->collapsible(),
+                            ]),
 
                         Forms\Components\Section::make('SEO')
                             ->schema([
@@ -108,22 +115,29 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image')
-                    ->label('Image'),
+                Tables\Columns\SpatieMediaLibraryImageColumn::make('blog-image')
+                    ->label('Gambar')
+                    ->square()
+                    ->size(80)
+                    ->collection(Post::MEDIA_COLLECTION),
 
                 Tables\Columns\TextColumn::make('title')
+                    ->label('Judul Artikel')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('slug')
-                    ->searchable()
-                    ->sortable()
+                    ->getStateUsing(fn (Post $record) => $record->public_url)
+                    ->url(fn (Post $record) => $record->public_url)
+                    ->icon('heroicon-o-link')
+                    ->limit(50)
+                    ->openUrlInNewTab()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('author.name')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\BadgeColumn::make('status')
                     ->getStateUsing(fn (Post $record): string => $record->published_at?->isPast() ? 'Diterbitkan' : 'Draft')
@@ -134,10 +148,11 @@ class PostResource extends Resource
                 Tables\Columns\TextColumn::make('category.name')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('published_at')
                     ->label('Published Date')
+                    ->sortable()
                     ->date(),
             ])
             ->filters([
