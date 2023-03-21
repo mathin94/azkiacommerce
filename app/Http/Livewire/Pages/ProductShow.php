@@ -8,6 +8,7 @@ class ProductShow extends Component
 {
     public function render()
     {
-        return view('livewire.pages.product-show');
+        return view('livewire.pages.product-show')
+            ->layout('layouts.frontpage');
     }
 }

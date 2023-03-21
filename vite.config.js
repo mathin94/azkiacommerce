@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import laravel from "laravel-vite-plugin";
+import laravel, { refreshPaths } from "laravel-vite-plugin";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
 export default defineConfig({
@@ -17,8 +17,12 @@ export default defineConfig({
             ],
         }),
         laravel({
-            input: ["resources/sass/app.scss", "resources/js/app.js"],
-            refresh: true,
+            input: [
+                "resources/sass/app.scss",
+                "resources/css/app.css",
+                "resources/js/app.js",
+            ],
+            refresh: [...refreshPaths, "app/Http/Livewire/**"],
         }),
     ],
 });

@@ -31,6 +31,7 @@ class StaticPage extends Component
     public function render()
     {
         return view('livewire.pages.static-page')
-            ->layoutData(['title' => $this->page->title]);
+            ->layoutData(['title' => $this->page->title])
+            ->layout('layouts.frontpage');
     }
 }

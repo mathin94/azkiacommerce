@@ -70,6 +70,7 @@ class Show extends Component
         return view('livewire.blogs.show')
             ->layoutData([
                 'title' => $this->post->title
-            ]);
+            ])
+            ->layout('layouts.frontpage');
     }
 }
