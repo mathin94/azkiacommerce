@@ -11,6 +11,8 @@ class Color extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const ALL_CACHE_KEY = 'colors::all';
+
     protected $fillable = [
         'code', 'name', 'hexcode'
     ];

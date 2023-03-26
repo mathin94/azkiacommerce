@@ -22,5 +22,8 @@ Route::get('/blogs', App\Http\Livewire\Blogs\Index::class)->name('blogs.index');
 Route::get('/blog/{slug}', App\Http\Livewire\Blogs\Show::class)->name('blogs.show');
 
 # Route Product
-Route::get('/products', App\Http\Livewire\Pages\ProductList::class)->name('products.index');
+Route::get('/products', App\Http\Livewire\Products\Index::class)->name('products.index');
 Route::get('/product/{slug}', App\Http\Livewire\Pages\ProductShow::class)->name('products.show');
+
+# Route Category
+Route::get('/category/{slug}', App\Http\Livewire\Category\Show::class)->name('category.show');

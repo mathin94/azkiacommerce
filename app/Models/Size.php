@@ -11,8 +11,10 @@ class Size extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const ALL_CACHE_KEY = 'sizes::all';
+
     protected $fillable = [
-        'code', 'name', 'hexcode'
+        'code', 'name'
     ];
 
     public function productVariants()

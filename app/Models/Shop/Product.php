@@ -14,15 +14,18 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Backoffice\Category as ResourceModel;
 use App\Models\Backoffice\Product as ResourceVariant;
-use App\Traits\ProductTrait;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Cache;
 
 class Product extends Model implements HasMedia
 {
     use HasFactory,
         SoftDeletes,
         HasSEO,
-        InteractsWithMedia,
-        ProductTrait;
+        InteractsWithMedia;
+
+    public const CACHE_PREFIX = 'products::';
+    public const PRICE_LABEL_CACHE_PREFIX = self::CACHE_PREFIX . 'price_label::';
 
     protected $table = 'shop_products';
 
@@ -64,5 +67,67 @@ class Product extends Model implements HasMedia
     {
         return ResourceVariant::with('detail')
             ->where('category_id', $this->resource_id);
+    }
+
+    public function publicUrl(): Attribute
+    {
+        return Attribute::make(get: fn () => route('products.show', $this->slug));
+    }
+
+    protected function getImageUrl(int $number)
+    {
+        return $this->media
+            ->where('order_column', $number)
+            ->first()
+            ?->getUrl();
+    }
+
+    protected function firstImageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->getImageUrl(1)
+        );
+    }
+
+    protected function secondImageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->getImageUrl(2)
+        );
+    }
+
+    protected function categoryName(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $cache_key = Category::CACHE_PREFIX . $this->category->slug;
+            $ttl = 10 * 60 * 60;
+
+            return Cache::remember($cache_key, $ttl, function () {
+                return $this->category->name;
+            });
+        });
+    }
+
+    protected function priceLabel(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $cache_key = self::PRICE_LABEL_CACHE_PREFIX . $this->slug;
+            $ttl = 24 * 60 * 60;
+
+            return Cache::remember($cache_key, $ttl, function () {
+                $min_price = $this->variants?->min('price');
+                $max_price = $this->variants?->max('price');
+
+                if ($min_price && $max_price) {
+                    $min_price = number_format($min_price, 0, ',', '.');
+                    $max_price = number_format($max_price, 0, ',', '.');
+
+                    return collect([
+                        "Rp. {$min_price}",
+                        "Rp. {$max_price}",
+                    ])->unique()->implode(' - ');
+                }
+            });
+        });
     }
 }

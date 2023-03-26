@@ -2,27 +2,30 @@
 
 namespace App\Exports;
 
-use App\Models\Shop\Product;
-use App\Models\Shop\ProductVariant;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use App\Exports\Sheets\ColorList;
+use App\Exports\Sheets\SizeList;
+use App\Exports\Sheets\ProductVariantTemplate;
 
-class ProductVariantTemplateExport implements FromCollection
+class ProductVariantTemplateExport implements WithMultipleSheets
 {
+    use Exportable;
+
     public function __construct(
-        protected Product $product
+        protected $records // variants data
     ) {
     }
+
     /**
-     * @return \Illuminate\Support\Collection
+     * @return array
      */
-    public function collection()
+    public function sheets(): array
     {
-        $related_product_ids = Product::where('category_id', $this->product->category_id)->pluck('id');
-
-        $existing_variant_ids = ProductVariant::whereIn('shop_product_id', $related_product_ids)->pluck('resource_id');
-
-        $variants = $this->product->resourceVariants()->whereNot(fn ($q) => $q->whereIn('id', $existing_variant_ids));
-
-        return $variants;
+        return [
+            new ProductVariantTemplate($this->records),
+            new ColorList(),
+            new SizeList(),
+        ];
     }
 }
