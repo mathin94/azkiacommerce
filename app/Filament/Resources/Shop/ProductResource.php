@@ -124,7 +124,6 @@ class ProductResource extends Resource
                                 SpatieMediaLibraryFileUpload::make('media')
                                     ->collection('product-images')
                                     ->multiple()
-                                    ->maxFiles(5)
                                     ->maxSize(2048)
                                     ->imagePreviewHeight('300')
                                     ->enableReordering()

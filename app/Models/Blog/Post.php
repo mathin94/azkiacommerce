@@ -2,6 +2,7 @@
 
 namespace App\Models\Blog;
 
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,7 @@ use Spatie\Tags\HasTags;
 
 class Post extends Model implements HasMedia
 {
-    use SoftDeletes, HasTags, HasSEO, HasFactory, InteractsWithMedia;
+    use SoftDeletes, HasTags, HasSEO, HasFactory, InteractsWithMedia, Cachable;
 
     public const TOP_CACHE_PREFIX  = 'blog-post::_top_five';
     public const TOP_POPULAR_CACHE = 'blog-post::_top_five::popular';

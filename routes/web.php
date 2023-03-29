@@ -23,7 +23,13 @@ Route::get('/blog/{slug}', App\Http\Livewire\Blogs\Show::class)->name('blogs.sho
 
 # Route Product
 Route::get('/products', App\Http\Livewire\Products\Index::class)->name('products.index');
-Route::get('/product/{slug}', App\Http\Livewire\Pages\ProductShow::class)->name('products.show');
+Route::get('/product/{slug}', App\Http\Livewire\Products\Show::class)->name('products.show');
 
 # Route Category
 Route::get('/category/{slug}', App\Http\Livewire\Category\Show::class)->name('category.show');
+
+Route::middleware(['guest:shop'])->group(function () {
+    # Route Shop Login
+    Route::get('/auth/login', App\Http\Livewire\ShopLogin::class)
+        ->name('auth.login');
+});

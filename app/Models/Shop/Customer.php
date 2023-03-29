@@ -2,13 +2,14 @@
 
 namespace App\Models\Shop;
 
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Customer extends Model
+class Customer extends Authenticatable
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Cachable;
 
     protected $table = 'shop_customers';
 
@@ -38,4 +39,16 @@ class Customer extends Model
         'is_branch'           => 'boolean',
         'is_default_password' => 'boolean',
     ];
+
+    public function products()
+    {
+        return $this->hasManyThrough(
+            Product::class,
+            Wishlist::class,
+            'shop_customer_id',
+            'id',
+            'id',
+            'shop_product_id'
+        );
+    }
 }

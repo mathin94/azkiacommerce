@@ -3,13 +3,18 @@
 namespace App\Models;
 
 use App\Models\Shop\ProductVariant;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Size extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Cachable;
+
+    protected $cachePrefix = 'sizes-';
+
+    protected $cacheCooldownSeconds = 24 * 60 * 60;
 
     public const ALL_CACHE_KEY = 'sizes::all';
 

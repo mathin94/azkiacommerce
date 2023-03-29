@@ -2,6 +2,7 @@
 
 namespace App\Models\Shop;
 
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Category extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia;
+    use HasFactory, SoftDeletes, InteractsWithMedia, Cachable;
 
     public const CACHE_PREFIX       = 'product_category::';
     public const ALL_CATEGORY_CACHE = self::CACHE_PREFIX . 'all';

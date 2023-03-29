@@ -2,6 +2,7 @@
 
 namespace App\Models\Blog;
 
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 
 class Category extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, Cachable;
 
     public const CACHE_PREFIX     = 'blog_categories::';
     public const ACTIVE_CACHE_KEY = self::CACHE_PREFIX . '_active';

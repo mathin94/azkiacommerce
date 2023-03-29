@@ -19,6 +19,8 @@ return [
 
     'brand' => env('APP_BRAND', "Azkia Hijab - Syar'i and Fashionable"),
 
+    'backoffice_api_url' => env('BACKOFFICE_API_BASE_URL', 'http://azkiapos.test/api/v2'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

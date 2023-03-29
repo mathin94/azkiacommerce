@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Backoffice\Category as ResourceModel;
 use App\Models\Backoffice\Product as ResourceVariant;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Cache;
 
@@ -22,7 +23,8 @@ class Product extends Model implements HasMedia
     use HasFactory,
         SoftDeletes,
         HasSEO,
-        InteractsWithMedia;
+        InteractsWithMedia,
+        Cachable;
 
     public const CACHE_PREFIX = 'products::';
     public const PRICE_LABEL_CACHE_PREFIX = self::CACHE_PREFIX . 'price_label::';

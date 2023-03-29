@@ -9,7 +9,13 @@
                             <ul>
                                 <li><a href="contact.html">Contact Us</a></li>
                                 <li><a href="wishlist.html"><i class="icon-heart-o"></i>Wishlist <span>(3)</span></a></li>
-                                <li><a href="#signin-modal" data-toggle="modal"><i class="icon-user"></i>Login</a></li>
+                                <li>
+                                    @if (auth()->guard('shop')->guest())
+                                        <a href="{{ route('auth.login') }}" data-toggle="modal">
+                                            <i class="icon-user"></i>Login
+                                        </a>
+                                    @endif
+                                </li>
                             </ul>
                         </li>
                     </ul><!-- End .top-menu -->

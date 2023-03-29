@@ -36,8 +36,13 @@ class Menu
         return SpatieMenu::new()
             ->submenu('<a href="#">Menu</a>', function (SpatieMenu $menu) {
                 $menu->add(Link::to('/contact-us', 'Kontak Kami'))
-                    ->add(Link::to('/wishlists', '<i class="icon-heart-o"></i> Wishlist <span class="wishlist-count"></span>'))
-                    ->add(Link::to('#signin-modal', '<i class="icon-user"></i> Masuk Akun')->setAttribute('data-toggle', 'modal'));
+                    ->add(Link::to('/wishlists', '<i class="icon-heart-o"></i> Wishlist <span class="wishlist-count"></span>'));
+
+                if (auth()->guard('shop')->guest()) {
+                    $menu->add(Link::to(route('auth.login'), '<i class="icon-user"></i> Login'));
+                } else {
+                    $menu->add(Link::to('#', '<i class="icon-user"></i> ' . auth()->guard('shop')->user()->name));
+                }
             })
             ->addClass('top-menu pt-1 pb-0')
             ->wrap('div', ['class' => 'header-right']);

@@ -39,7 +39,7 @@
                             <div class="product">
                                 <figure class="product-media">
                                     <span class="product-label label-new">New</span>
-                                    <a href="product.html">
+                                    <a href="{{ $item->public_url }}">
                                         <img src="{{ $item->first_image_url }}" alt="{{ $item->name }} image"
                                             class="product-image">
                                     </a>
