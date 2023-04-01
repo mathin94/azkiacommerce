@@ -2,12 +2,13 @@
 
 namespace App\Models\Shop;
 
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Wishlist extends Model
 {
-    use HasFactory;
+    use HasFactory, Cachable;
 
     protected $table = 'shop_wishlists';
 

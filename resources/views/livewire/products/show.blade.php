@@ -17,8 +17,8 @@
                         <div class="product-gallery product-gallery-horizontal mr-5">
                             <div class="row">
                                 <figure class="product-main-image">
-                                    <img id="product-zoom" src="{{ $product->first_image_url }}"
-                                        data-zoom-image="{{ $product->first_image_url }}" alt="product image">
+                                    <img id="product-zoom" src="{{ $product->main_image_url }}"
+                                        data-zoom-image="{{ $product->main_image_url }}" alt="product image">
 
                                     <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                                         <i class="icon-arrows"></i>

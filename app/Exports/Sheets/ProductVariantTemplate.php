@@ -35,6 +35,7 @@ class ProductVariantTemplate implements FromCollection, WithHeadings, ShouldAuto
             'Warna',
             'Ukuran',
             'Harga Jual',
+            'Foto Produk',
         ];
     }
 
@@ -46,7 +47,8 @@ class ProductVariantTemplate implements FromCollection, WithHeadings, ShouldAuto
             $data->name,
             $data->color?->name,
             $data->size?->name,
-            $data->price
+            $data->price,
+            $data->media?->file_name,
         ];
     }
 
@@ -103,6 +105,33 @@ class ProductVariantTemplate implements FromCollection, WithHeadings, ShouldAuto
                 $validation->setPromptTitle('Pilih Ukuran');
                 $validation->setPrompt('Silahkan Pilih Ukuran yang tersedia.');
                 $validation->setFormula1('\'List Ukuran\'!$B$2:$B$10000');
+
+                // clone validation to remaining rows
+                for ($i = 3; $i <= $row_count; $i++) {
+                    $event->sheet->getCell("{$dropdown_size}{$i}")->setDataValidation(clone $validation);
+                }
+
+                // set columns to autosize
+                for ($i = 1; $i <= $column_count; $i++) {
+                    $column = Coordinate::stringFromColumnIndex($i);
+                    $event->sheet->getColumnDimension($column)->setAutoSize(true);
+                }
+
+                $dropdown_size  = 'G';
+
+                // set dropdown list for first data row
+                $validation = $event->sheet->getCell("{$dropdown_size}2")->getDataValidation();
+                $validation->setType(DataValidation::TYPE_LIST);
+                $validation->setErrorStyle(DataValidation::STYLE_INFORMATION);
+                $validation->setAllowBlank(false);
+                $validation->setShowInputMessage(true);
+                $validation->setShowErrorMessage(true);
+                $validation->setShowDropDown(true);
+                $validation->setErrorTitle('Foto Produk Tidak Valid');
+                $validation->setError('Foto Produk Harus ada di sheet list Foto.');
+                $validation->setPromptTitle('Pilih Foto Produk');
+                $validation->setPrompt('Silahkan Pilih Foto Produk yang tersedia.');
+                $validation->setFormula1('\'List Foto Produk\'!$B$2:$B$10000');
 
                 // clone validation to remaining rows
                 for ($i = 3; $i <= $row_count; $i++) {

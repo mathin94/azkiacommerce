@@ -2,26 +2,28 @@
 
 namespace App\Filament\Resources\Shop;
 
-use App\Filament\Resources\Shop\ProductResource\Pages;
-use App\Filament\Resources\Shop\ProductResource\RelationManagers;
-use App\Filament\Resources\Shop\ProductResource\RelationManagers\VariantsRelationManager;
-use App\Models\Shop\Product;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\Shop\Product;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
 use RalphJSmit\Filament\SEO\SEO;
-use App\Services\Backoffice\CategoryService;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use CoringaWc\FilamentInputLoading\TextInput;
 use Filament\Forms\Components\Card;
+use Livewire\TemporaryUploadedFile;
 use Filament\Forms\Components\Repeater;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
-use App\Models\Backoffice\Product as PosProduct;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Validator;
+use App\Services\Backoffice\CategoryService;
+use CoringaWc\FilamentInputLoading\TextInput;
+use App\Models\Backoffice\Product as PosProduct;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\Shop\ProductResource\Pages;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Filament\Resources\Shop\ProductResource\RelationManagers;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use App\Filament\Resources\Shop\ProductResource\RelationManagers\VariantsRelationManager;
+use Filament\Tables\Filters\Filter;
 
 class ProductResource extends Resource
 {
@@ -121,16 +123,33 @@ class ProductResource extends Resource
 
                         Forms\Components\Section::make('Foto Produk')
                             ->schema([
-                                SpatieMediaLibraryFileUpload::make('media')
-                                    ->collection('product-images')
-                                    ->multiple()
+                                SpatieMediaLibraryFileUpload::make(Product::MAIN_IMAGE_COLLECTION_NAME)
+                                    ->collection(Product::MAIN_IMAGE_COLLECTION_NAME)
+                                    ->image()
                                     ->maxSize(2048)
-                                    ->imagePreviewHeight('300')
-                                    ->enableReordering()
                                     ->enableDownload()
                                     ->enableOpen()
-                                    ->disableLabel(),
-                            ]),
+                                    ->imagePreviewHeight(300)
+                                    ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
+                                        return (string) str($file->getClientOriginalName());
+                                    })
+                                    ->label('Foto Utama'),
+
+                                SpatieMediaLibraryFileUpload::make(Product::GALLERY_IMAGE_COLLECTION_NAME)
+                                    ->collection(Product::GALLERY_IMAGE_COLLECTION_NAME)
+                                    ->multiple()
+                                    ->maxSize(2048)
+                                    ->enableReordering()
+                                    ->imagePreviewHeight(300)
+                                    ->panelLayout('compact')
+                                    ->enableDownload()
+                                    ->enableOpen()
+                                    ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
+                                        return (string) str($file->getClientOriginalName());
+                                    })
+                                    ->label('Galeri'),
+                            ])
+                            ->collapsible(),
 
                         Forms\Components\Section::make('SEO')
                             ->schema([
@@ -151,11 +170,11 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
+                Tables\Columns\SpatieMediaLibraryImageColumn::make(Product::MAIN_IMAGE_COLLECTION_NAME)
                     ->label('Foto Produk')
                     ->square()
                     ->size(80)
-                    ->collection('product-images'),
+                    ->collection(Product::MAIN_IMAGE_COLLECTION_NAME),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Name')

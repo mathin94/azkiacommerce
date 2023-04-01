@@ -15,6 +15,9 @@ return [
     ],
 
     'fields' => [
+        'identity' => [
+            'label' => 'Username atau Email'
+        ],
 
         'email' => [
             'label' => 'Alamat Email',

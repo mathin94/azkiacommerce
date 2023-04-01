@@ -40,7 +40,7 @@
                                 <figure class="product-media">
                                     <span class="product-label label-new">New</span>
                                     <a href="{{ $item->public_url }}">
-                                        <img src="{{ $item->first_image_url }}" alt="{{ $item->name }} image"
+                                        <img src="{{ $item->main_image_url }}" alt="{{ $item->name }} image"
                                             class="product-image">
                                     </a>
 
@@ -51,9 +51,7 @@
 
                                     <div class="product-action action-icon-top">
                                         <a href="#" class="btn-product btn-cart">
-                                            <span>Beli</span></a>
-                                        <a href="popup/quickView.html" class="btn-product btn-quickview"
-                                            title="Quick view"><span>quick view</span></a>
+                                            <span>Tambahkan Ke Keranjang</span></a>
                                     </div><!-- End .product-action -->
                                 </figure><!-- End .product-media -->
 

@@ -7,6 +7,7 @@ use Filament\Tables;
 use Ramsey\Uuid\Uuid;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,7 @@ use App\Imports\UpdateMassalProductVariant;
 use App\Services\Product\SyncVariantService;
 use Illuminate\Database\Eloquent\Collection;
 use App\Exports\ProductVariantTemplateExport;
+use App\Jobs\NotifyUploadVariantCompleted;
 use App\Models\Backoffice\Product as PosProduct;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -33,9 +35,8 @@ class VariantsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('barcode')
-                    ->sortable()
-                    ->searchable(),
+                Tables\Columns\ImageColumn::make('media.original_url')
+                    ->height(100),
 
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
@@ -56,7 +57,14 @@ class VariantsRelationManager extends RelationManager
                     ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
             ])
             ->filters([
-                //
+                Filter::make('unconfigured')
+                    ->query(function (Builder $query) {
+                        $query->where(function ($q) {
+                            $q->whereNull('color_id')
+                                ->orWhereNull('size_id');
+                        });
+                    })
+                    ->label('Tidak Memiliki Warna / Ukuran')
             ])
             ->headerActions([
                 Tables\Actions\Action::make('sync-variants')
@@ -79,16 +87,27 @@ class VariantsRelationManager extends RelationManager
                     ->color('success')
                     ->modalHeading('Ubah Masal Varian Produk')
                     ->form([
-                        TextInput::make('test'),
                         FileUpload::make('excel')
                             ->label('Upload File')
                     ])
                     ->button()
                     ->modalButton('Proses File')
-                    ->action(function ($data) {
+                    ->action(function ($data, RelationManager $livewire) {
+                        $product = $livewire->ownerRecord;
                         $file_path = storage_path('app/public/' . $data['excel']);
-                        $import = new UpdateMassalProductVariant();
-                        Excel::import($import, $file_path);
+                        // $import = new UpdateMassalProductVariant($product);
+                        // Excel::import($import, $file_path)
+                        $recipient = auth()->user();
+
+                        (new UpdateMassalProductVariant($product))->queue($file_path)->chain([
+                            new NotifyUploadVariantCompleted($recipient)
+                        ]);
+
+                        Notification::make()
+                            ->title('Upload Produk Selesai')
+                            ->body('Proses dilakukan di belakang layar, akan ada notifikasi pada icon lonceng jika selesai')
+                            ->success()
+                            ->send();
 
                         // return $this->sendResponse('Data Produk Berhasil Diupload. Proses dilakukan di belakang layar, silahkan menunggu dan cek email notifikasi untuk melihat hasil upload', []);
                     })

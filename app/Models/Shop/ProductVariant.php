@@ -27,6 +27,7 @@ class ProductVariant extends Model
         'name',
         'weight',
         'price',
+        'media_id',
     ];
 
     public function product(): BelongsTo
@@ -42,6 +43,11 @@ class ProductVariant extends Model
     public function size(): BelongsTo
     {
         return $this->belongsTo(Size::class);
+    }
+
+    public function media()
+    {
+        return $this->belongsTo(\App\Models\Media::class);
     }
 
     public function resource(): ResourceModel

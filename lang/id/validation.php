@@ -221,5 +221,6 @@ return [
         'updated_at'                     => 'diperbarui pada',
         'username'                       => 'nama pengguna',
         'year'                           => 'tahun',
+        'identity'                       => 'username atau email'
     ],
 ];

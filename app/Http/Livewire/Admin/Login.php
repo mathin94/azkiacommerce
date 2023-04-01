@@ -27,7 +27,7 @@ class Login extends Component implements HasForms
 
     protected $baseUrl, $user_id;
 
-    public $email = '';
+    public $identity = '';
 
     public $password = '';
 
@@ -55,7 +55,7 @@ class Login extends Component implements HasForms
             $this->rateLimit(5);
         } catch (TooManyRequestsException $exception) {
             throw ValidationException::withMessages([
-                'email' => __('filament::login.messages.throttled', [
+                'identity' => __('filament::login.messages.throttled', [
                     'seconds' => $exception->secondsUntilAvailable,
                     'minutes' => ceil($exception->secondsUntilAvailable / 60),
                 ]),
@@ -65,13 +65,13 @@ class Login extends Component implements HasForms
         $data = $this->form->getState();
 
         $credentials = [
-            'email'    => $data['email'],
+            'identity'    => $data['identity'],
             'password' => $data['password']
         ];
 
         if (!$this->remoteLogin($credentials)) {
             throw ValidationException::withMessages([
-                'email' => __('filament::login.messages.failed'),
+                'identity' => __('filament::login.messages.failed'),
             ]);
         }
 
@@ -85,9 +85,8 @@ class Login extends Component implements HasForms
     protected function getFormSchema(): array
     {
         return [
-            TextInput::make('email')
-                ->label(__('filament::login.fields.email.label'))
-                ->email()
+            TextInput::make('identity')
+                ->label(__('filament::login.fields.identity.label'))
                 ->required()
                 ->autocomplete(),
             TextInput::make('password')

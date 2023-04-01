@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Color;
+use App\Models\Shop\Product;
 use App\Models\Shop\ProductVariant;
 use App\Models\Size;
 use App\Models\UploadExcelLog;
@@ -24,8 +25,9 @@ class UpdateMassalProductVariant implements ToCollection, WithStartRow, WithChun
     protected $log;
     protected $colors;
     protected $sizes;
+    protected $product;
 
-    public function __construct()
+    public function __construct($product)
     {
         $uuid = Uuid::uuid4();
         $cache_ttl = now()->addHours(24)->diffInSeconds();
@@ -38,6 +40,8 @@ class UpdateMassalProductVariant implements ToCollection, WithStartRow, WithChun
         $this->sizes = Cache::remember(Size::ALL_CACHE_KEY, $cache_ttl, function () {
             return Size::orderBy('name')->get();
         });
+
+        $this->product = $product;
     }
     /**
      * @param Collection $collection
@@ -55,6 +59,7 @@ class UpdateMassalProductVariant implements ToCollection, WithStartRow, WithChun
                     'color'   => $row[3],
                     'size'    => $row[4],
                     'price'   => $row[5],
+                    'image'   => $row[6],
                 ];
 
                 $color = $this->colors->where('name', $params['color'])->first();
@@ -87,11 +92,21 @@ class UpdateMassalProductVariant implements ToCollection, WithStartRow, WithChun
                     continue;
                 }
 
-                $variant->update([
+                $variant_data = [
                     'color_id' => $color->id,
                     'size_id'  => $size->id,
                     'price'    => $params['price']
-                ]);
+                ];
+
+                $media = $this->product->getMedia(Product::GALLERY_IMAGE_COLLECTION_NAME)
+                    ->where('file_name', $params['image'])
+                    ->first();
+
+                if ($media) {
+                    $variant_data['media_id'] = $media->id;
+                }
+
+                $variant->update($variant_data);
             }
         }
     }
@@ -111,7 +126,7 @@ class UpdateMassalProductVariant implements ToCollection, WithStartRow, WithChun
 
     public function endColumn(): String
     {
-        return 'F';
+        return 'G';
     }
 
     public function isEmptyWhen(array $row): bool
