@@ -34,6 +34,14 @@ class Show extends Component
             ->where('size_id', $this->sizeId)
             ->first();
 
+        if ($variant) {
+            $this->emit('variantChanged', [
+                'variant' => $variant,
+                'price' => 'Rp. ' . number_format($variant->price, 0, ',', '.'),
+                'image' => $variant->media?->original_url
+            ]);
+        }
+
         $this->variant = $variant;
     }
 

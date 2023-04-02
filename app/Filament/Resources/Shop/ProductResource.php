@@ -102,7 +102,7 @@ class ProductResource extends Resource
                                     ->label('Tanggal diterbitkan'),
 
                                 Forms\Components\Toggle::make('visible')
-                                    ->label('Visible')
+                                    ->label('Status Aktif')
                                     ->columnSpan('full')
                                     ->helperText('Produk akan di tampilkan ke customer.')
                                     ->default(true),
@@ -199,7 +199,7 @@ class ProductResource extends Resource
 
                 Tables\Columns\IconColumn::make('visible')
                     ->boolean()
-                    ->label('Tampilkan'),
+                    ->label('Status Aktif'),
 
                 Tables\Columns\TextColumn::make('published_at')
                     ->label('Publish Date')
