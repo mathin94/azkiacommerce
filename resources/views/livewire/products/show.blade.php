@@ -60,7 +60,7 @@
                             </div><!-- End .product-price -->
 
                             <div class="product-content">
-                                {!! \Str::of($product->description)->limit(150) !!}
+                                {!! \Str::of($product->seo->description) !!}
                             </div><!-- End .product-content -->
 
                             <div class="details-filter-row details-row-color">
