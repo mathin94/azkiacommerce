@@ -17,7 +17,11 @@ class VoucherResource extends Resource
 {
     protected static ?string $model = Voucher::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-ticket';
+
+    protected static ?string $navigationGroup = 'Diskon & Voucher';
+
+    protected static ?string $slug = 'promotions/vouchers';
 
     public static function form(Form $form): Form
     {

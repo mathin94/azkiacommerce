@@ -36,23 +36,5 @@ class AppServiceProvider extends ServiceProvider
                 );
             });
         }
-
-        Filament::serving(function () {
-            Filament::registerNavigationGroups([
-                NavigationGroup::make()
-                    ->label('Shop')
-                    ->icon('heroicon-s-shopping-cart'),
-                NavigationGroup::make()
-                    ->label('Blog')
-                    ->icon('heroicon-s-pencil'),
-                NavigationGroup::make()
-                    ->label('Pengaturan Website')
-                    ->icon('heroicon-s-cog')
-                    ->collapsed(),
-                NavigationGroup::make()
-                    ->label('System')
-                    ->icon('heroicon-o-server')
-            ]);
-        });
     }
 }
