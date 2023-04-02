@@ -14,7 +14,7 @@
             <div class="product-details-top">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="product-gallery product-gallery-horizontal mr-5">
+                        <div class="product-gallery product-gallery-horizontal p-3">
                             <div class="row">
                                 <figure class="product-main-image">
                                     <img id="product-zoom" src="{{ $product->main_image_url }}"
@@ -26,7 +26,7 @@
                                 </figure><!-- End .product-main-image -->
 
                                 <div id="product-zoom-gallery" wire:ignore
-                                    class="product-image-gallery owl-carousel owl-simple carousel-equal-height carousel-with-shadow">
+                                    class="product-image-gallery owl-carousel owl-simple carousel-equal-height carousel-with-shadow p-2">
                                     @foreach ($product->media as $item)
                                         <figure class="product-media">
                                             <a href="#" data-image="{{ $item->getUrl() }}"
@@ -235,9 +235,9 @@
 
     <script>
         $(".product-image-gallery").owlCarousel({
-            nav: true,
+            nav: false,
             dots: false,
-            margin: 10,
+            margin: 7,
             loop: false,
             items: 4
         })

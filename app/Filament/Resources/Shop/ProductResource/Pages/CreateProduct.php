@@ -9,4 +9,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateProduct extends CreateRecord
 {
     protected static string $resource = ProductResource::class;
+
+    protected static string $view = 'filament::resources.pages.create-record-custom';
 }
