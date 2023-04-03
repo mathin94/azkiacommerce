@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources\Shop;
 
+use App\Enums\ValueType;
+use App\Enums\VoucherType;
 use App\Filament\Resources\Shop\VoucherResource\Pages;
 use App\Filament\Resources\Shop\VoucherResource\RelationManagers;
 use App\Models\Shop\Voucher;
+use Closure;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -28,28 +31,54 @@ class VoucherResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')
-                    ->required()
-                    ->maxLength(255),
+                    ->rules('required')
+                    ->label('Nama Voucher'),
+
                 Forms\Components\Textarea::make('description')
-                    ->required()
-                    ->maxLength(65535),
-                Forms\Components\TextInput::make('value_type')
-                    ->required(),
-                Forms\Components\TextInput::make('voucher_type')
-                    ->required(),
+                    ->rules('required|min:10')
+                    ->label('Deskripsi'),
+
                 Forms\Components\TextInput::make('code')
-                    ->required()
-                    ->maxLength(255),
+                    ->rules('required|min:4')
+                    ->label('Kode Voucher'),
+
+                Forms\Components\Select::make('voucher_type')
+                    ->label('Jenis Voucher')
+                    ->options(VoucherType::asSelectArray()),
+
                 Forms\Components\TextInput::make('minimum_order')
-                    ->required(),
-                Forms\Components\TextInput::make('maximum_discount'),
-                Forms\Components\TextInput::make('quota')
-                    ->required(),
+                    ->label('Minimal Pemesanan')
+                    ->numeric(),
+
+                Forms\Components\TextInput::make('maximum_discount')
+                    ->label('Maksimal Diskon (Dalam Rupiah)')
+                    ->numeric()
+                    ->helperText('Kosongkan Untuk Diskon Tanpa Maksimal'),
+
+                Forms\Components\Select::make('value_type')
+                    ->label('Jenis Diskon')
+                    ->options(ValueType::asSelectArray()),
+
                 Forms\Components\TextInput::make('value')
-                    ->required(),
+                    ->label('Nilai Diskon')
+                    ->numeric()
+                    ->rules([
+                        'required',
+                        'min:1'
+                    ])
+                    ->helperText('Isi Sesuai Jenis Diskon (Rp atau %)'),
+
+                Forms\Components\TextInput::make('quota')
+                    ->label('Kuota Pemakaian')
+                    ->numeric()
+                    ->columnSpanFull(),
+
                 Forms\Components\DateTimePicker::make('active_at')
+                    ->label('Tanggal Aktif')
                     ->required(),
+
                 Forms\Components\DateTimePicker::make('inactive_at')
+                    ->label('Tanggal Selesai')
                     ->required(),
             ]);
     }
@@ -58,25 +87,35 @@ class VoucherResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title'),
-                Tables\Columns\TextColumn::make('description'),
-                Tables\Columns\TextColumn::make('value_type'),
-                Tables\Columns\TextColumn::make('voucher_type'),
-                Tables\Columns\TextColumn::make('code'),
-                Tables\Columns\TextColumn::make('minimum_order'),
-                Tables\Columns\TextColumn::make('maximum_discount'),
-                Tables\Columns\TextColumn::make('quota'),
-                Tables\Columns\TextColumn::make('value'),
-                Tables\Columns\TextColumn::make('active_at')
-                    ->dateTime(),
-                Tables\Columns\TextColumn::make('inactive_at')
-                    ->dateTime(),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime(),
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable()
+                    ->label('Nama Diskon'),
+
+                Tables\Columns\TextColumn::make('code')
+                    ->label('Kode Voucher'),
+
+                Tables\Columns\TextColumn::make('value')
+                    ->getStateUsing(function (Voucher $record) {
+                        if ($record->is_percentage) {
+                            return (int) $record->value . '%';
+                        }
+
+                        return 'Rp. ' . number_format($record->value, 0, ',', '.');
+                    })
+                    ->label('Nilai Diskon'),
+
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Masa Berlaku')
+                    ->getStateUsing(function (Voucher $record) {
+                        $status = $record->active_at?->isPast() ? 'Aktif' : 'Tidak Aktif';
+
+                        return "
+                            <span class=\"font-bold\">Status : </span> {$status}<br>
+                            <span class=\"font-bold\">Tgl Mulai : </span> {$record->active_at->format('d M, Y H:i')}<br>
+                            <span class=\"font-bold\">Tgl Selesai : </span> {$record->inactive_at->format('d M, Y H:i')}
+                        ";
+                    })
+                    ->html()
             ])
             ->filters([
                 //

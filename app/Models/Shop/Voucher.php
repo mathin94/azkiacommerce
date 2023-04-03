@@ -4,6 +4,8 @@ namespace App\Models\Shop;
 
 use App\Enums\ValueType;
 use App\Enums\VoucherType;
+use Dotenv\Parser\Value;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -32,4 +34,9 @@ class Voucher extends Model
         'active_at'    => 'datetime',
         'inactive_at'  => 'datetime'
     ];
+
+    protected function isPercentage(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->value_type == ValueType::Percentage());
+    }
 }

@@ -18,10 +18,10 @@ return new class extends Migration
             $table->integer('value_type');
             $table->integer('voucher_type');
             $table->string('code');
-            $table->decimal('minimum_order')->default(0);
-            $table->decimal('maximum_discount')->nullable();
+            $table->integer('minimum_order')->default(0);
+            $table->integer('maximum_discount')->nullable();
             $table->integer('quota');
-            $table->decimal('value');
+            $table->integer('value');
             $table->timestamp('active_at');
             $table->timestamp('inactive_at');
             $table->softDeletes();
