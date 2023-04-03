@@ -22,8 +22,8 @@ return new class extends Migration
             $table->integer('maximum_discount')->nullable();
             $table->integer('quota');
             $table->integer('value');
-            $table->timestamp('active_at');
-            $table->timestamp('inactive_at');
+            $table->timestamp('active_at')->nullable();
+            $table->timestamp('inactive_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
