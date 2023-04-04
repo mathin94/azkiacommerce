@@ -57,7 +57,6 @@ class Login extends Component implements HasForms
         try {
             $this->rateLimit(1000);
         } catch (TooManyRequestsException $exception) {
-            dd($exception);
             throw ValidationException::withMessages([
                 'identity' => __('filament::login.messages.throttled', [
                     'seconds' => $exception->secondsUntilAvailable,
@@ -67,8 +66,6 @@ class Login extends Component implements HasForms
         }
 
         $data = $this->form->getState();
-
-        dd($data);
 
         $credentials = [
             'identity'    => $data['identity'],
