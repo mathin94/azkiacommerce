@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'recaptcha'            => 'Anda tidak terverifikasi recaptcha',
     'accepted'             => ':Attribute harus diterima.',
     'accepted_if'          => ':Attribute harus diterima ketika :other berisi :value.',
     'active_url'           => ':Attribute bukan URL yang valid.',

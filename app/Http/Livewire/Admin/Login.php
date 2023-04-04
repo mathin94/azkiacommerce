@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Admin;
 
 use App\Models\User;
+use App\Rules\ReCaptchaV3;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Facades\Filament;
@@ -33,6 +34,8 @@ class Login extends Component implements HasForms
 
     public $remember = false;
 
+    public $recaptcha_response = '';
+
     public function __construct($id = null)
     {
         parent::__construct($id);
@@ -52,8 +55,9 @@ class Login extends Component implements HasForms
     public function authenticate(): ?LoginResponse
     {
         try {
-            $this->rateLimit(5);
+            $this->rateLimit(1000);
         } catch (TooManyRequestsException $exception) {
+            dd($exception);
             throw ValidationException::withMessages([
                 'identity' => __('filament::login.messages.throttled', [
                     'seconds' => $exception->secondsUntilAvailable,
@@ -63,6 +67,8 @@ class Login extends Component implements HasForms
         }
 
         $data = $this->form->getState();
+
+        dd($data);
 
         $credentials = [
             'identity'    => $data['identity'],
