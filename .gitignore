@@ -20,3 +20,4 @@ yarn-error.log
 /resources/template
 composer.lock
 yarn.lock
+worker.log
