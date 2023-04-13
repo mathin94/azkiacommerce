@@ -24,7 +24,7 @@
                             </h2><!-- End .entry-title -->
 
                             <div class="entry-cats">
-                                <a href="#">{{ $item->category->name }}</a>
+                                <a href="#">{{ $item->category?->name }}</a>
                             </div><!-- End .entry-cats -->
                         </div><!-- End .entry-body -->
                     </article>

@@ -47,7 +47,7 @@
 
                                  <div class="entry-cats">
                                      <a
-                                         href="{{ route('blogs.index', ['category' => $item->category->slug]) }}">{{ $item->category->name }}</a>,
+                                         href="{{ route('blogs.index', ['category' => $item->category?->slug]) }}">{{ $item->category?->name }}</a>,
                                  </div><!-- End .entry-cats -->
                              </div><!-- End .entry-body -->
                          </article><!-- End .entry -->
