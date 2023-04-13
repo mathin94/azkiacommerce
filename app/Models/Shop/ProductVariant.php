@@ -2,20 +2,52 @@
 
 namespace App\Models\Shop;
 
-use App\Models\Backoffice\Product as ResourceModel;
 use App\Models\Color;
 use App\Models\Size;
-use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class ProductVariant extends Model
 {
-    use HasFactory, SoftDeletes, Cachable;
+    use HasFactory, SoftDeletes, QueryCacheable;
 
-    protected $table = 'shop_product_variants';
+    /**
+     * Specify the amount of time to cache queries.
+     * Do not specify or set it to null to disable caching.
+     *
+     * @var int|\DateTime
+     */
+    public $cacheFor = 60 * 60 * 24 * 7; // 7 days
+
+    /**
+     * The tags for the query cache. Can be useful
+     * if flushing cache for specific tags only.
+     *
+     * @var null|array
+     */
+    public $cacheTags = ['shop_product_variants'];
+
+    /**
+     * A cache prefix string that will be prefixed
+     * on each cache key generation.
+     *
+     * @var string
+     */
+    public $cachePrefix = 'shop_product_variants_';
+
+    /**
+     * The cache driver to be used.
+     *
+     * @var string
+     */
+    public $cacheDriver = 'redis';
+
+    public const TABLE_NAME = 'shop_product_variants';
+
+    protected $table = self::TABLE_NAME;
 
     protected $fillable = [
         'resource_id',
@@ -50,10 +82,8 @@ class ProductVariant extends Model
         return $this->belongsTo(\App\Models\Media::class);
     }
 
-    public function resource(): ResourceModel
+    public function resource()
     {
-        return ResourceModel::with('detail')
-            ->has('detail')
-            ->find($this->resource_id);
+        return $this->belongsTo(\App\Models\Backoffice\Product::class, 'resource_id');
     }
 }

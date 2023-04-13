@@ -9817,6 +9817,11 @@ a:focus {
 .btn:active:focus {
     box-shadow: none !important;
 }
+.btn.selectable {
+    min-width: auto !important;
+    margin-bottom: 5px !important;
+    padding: 0.5rem 1.5rem;
+}
 .btn.btn-minwidth-sm {
     min-width: 112px;
 }

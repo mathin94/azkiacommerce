@@ -32,4 +32,8 @@ Route::middleware(['guest:shop'])->group(function () {
     # Route Shop Login
     Route::get('/auth/login', App\Http\Livewire\ShopLogin::class)
         ->name('auth.login');
+
+    # Route Shop Logout
+    Route::get('/auth/logout', App\Http\Livewire\ShopLogout::class)
+        ->name('auth.logout');
 });

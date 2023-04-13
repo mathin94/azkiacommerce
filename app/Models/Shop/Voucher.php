@@ -14,6 +14,8 @@ class Voucher extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'shop_vouchers';
+
     protected $fillable = [
         'title',
         'description',
@@ -32,7 +34,7 @@ class Voucher extends Model
         'value_type'   => ValueType::class,
         'voucher_type' => VoucherType::class,
         'active_at'    => 'datetime',
-        'inactive_at'  => 'datetime'
+        'inactive_at'  => 'datetime',
     ];
 
     protected function isPercentage(): Attribute

@@ -10,20 +10,48 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use RalphJSmit\Laravel\SEO\Support\HasSEO;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\Backoffice\Category as ResourceModel;
-use App\Models\Backoffice\Product as ResourceVariant;
-use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Product extends Model implements HasMedia
 {
     use HasFactory,
         SoftDeletes,
         HasSEO,
-        InteractsWithMedia,
-        Cachable;
+        QueryCacheable,
+        InteractsWithMedia;
+
+    /**
+     * Specify the amount of time to cache queries.
+     * Do not specify or set it to null to disable caching.
+     *
+     * @var int|\DateTime
+     */
+    public $cacheFor = 60 * 60 * 24; // 1 day
+
+    /**
+     * The tags for the query cache. Can be useful
+     * if flushing cache for specific tags only.
+     *
+     * @var null|array
+     */
+    public $cacheTags = ['shop_products'];
+
+    /**
+     * A cache prefix string that will be prefixed
+     * on each cache key generation.
+     *
+     * @var string
+     */
+    public $cachePrefix = 'shop_products_';
+
+    /**
+     * The cache driver to be used.
+     *
+     * @var string
+     */
+    public $cacheDriver = 'redis';
 
     public const CACHE_PREFIX = 'products::';
     public const MAIN_IMAGE_COLLECTION_NAME = 'main-image';
@@ -60,15 +88,9 @@ class Product extends Model implements HasMedia
         return $this->hasMany(ProductVariant::class, 'shop_product_id');
     }
 
-    public function resource(): ResourceModel
+    public function resource()
     {
-        return ResourceModel::find($this->resource_id);
-    }
-
-    public function resourceVariants(): Builder
-    {
-        return ResourceVariant::with('detail')
-            ->where('category_id', $this->resource_id);
+        return $this->belongsTo(\App\Models\Backoffice\Category::class, 'resource_id');
     }
 
     public function publicUrl(): Attribute
@@ -102,6 +124,21 @@ class Product extends Model implements HasMedia
                     "Rp. {$min_price}",
                     "Rp. {$max_price}",
                 ])->unique()->implode(' - ');
+            }
+        });
+    }
+
+    protected function weightLabel(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $min_weight = $this->variants?->min('weight');
+            $max_weight = $this->variants?->max('weight');
+
+            if ($min_weight && $max_weight) {
+                return collect([
+                    "{$min_weight}",
+                    "{$max_weight}",
+                ])->unique()->implode(' - ') . ' gram';
             }
         });
     }

@@ -2,19 +2,50 @@
 
 namespace App\Models\Blog;
 
-use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RalphJSmit\Laravel\SEO\Support\HasSEO;
+use Rennokki\QueryCache\Traits\QueryCacheable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Tags\HasTags;
 
 class Post extends Model implements HasMedia
 {
-    use SoftDeletes, HasTags, HasSEO, HasFactory, InteractsWithMedia, Cachable;
+    use SoftDeletes, HasTags, HasSEO, HasFactory, InteractsWithMedia, QueryCacheable;
+
+    /**
+     * Specify the amount of time to cache queries.
+     * Do not specify or set it to null to disable caching.
+     *
+     * @var int|\DateTime
+     */
+    public $cacheFor = 60 * 60 * 24; // 1 day
+
+    /**
+     * The tags for the query cache. Can be useful
+     * if flushing cache for specific tags only.
+     *
+     * @var null|array
+     */
+    public $cacheTags = ['blog_posts'];
+
+    /**
+     * A cache prefix string that will be prefixed
+     * on each cache key generation.
+     *
+     * @var string
+     */
+    public $cachePrefix = 'blog_posts_';
+
+    /**
+     * The cache driver to be used.
+     *
+     * @var string
+     */
+    public $cacheDriver = 'redis';
 
     public const TOP_CACHE_PREFIX  = 'blog-post::_top_five';
     public const TOP_POPULAR_CACHE = 'blog-post::_top_five::popular';

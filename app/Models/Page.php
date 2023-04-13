@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\PageTrait;
-use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
@@ -11,10 +9,42 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Page extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia, Cachable;
+    use HasFactory, SoftDeletes, InteractsWithMedia, QueryCacheable;
+
+    /**
+     * Specify the amount of time to cache queries.
+     * Do not specify or set it to null to disable caching.
+     *
+     * @var int|\DateTime
+     */
+    public $cacheFor = 60 * 60 * 24; // 1 day
+
+    /**
+     * The tags for the query cache. Can be useful
+     * if flushing cache for specific tags only.
+     *
+     * @var null|array
+     */
+    public $cacheTags = ['pages'];
+
+    /**
+     * A cache prefix string that will be prefixed
+     * on each cache key generation.
+     *
+     * @var string
+     */
+    public $cachePrefix = 'pages_';
+
+    /**
+     * The cache driver to be used.
+     *
+     * @var string
+     */
+    public $cacheDriver = 'redis';
 
     public const ACTIVE_CACHE_KEY = 'pages::active';
     public const CACHE_KEY_PREFIX = 'page::';

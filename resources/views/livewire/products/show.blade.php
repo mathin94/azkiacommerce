@@ -56,56 +56,80 @@
                             </div><!-- End .rating-container -->
 
                             <div class="product-price">
-                                {{ $product->price_label }}
+                                <span wire:loading.class="d-none"
+                                    wire:target="setSize,setColor">{{ $price }}</span>
+                                <x-css-spinner-alt wire:loading class="ml-1 fa-spin" wire:target="setSize,setColor" />
                             </div><!-- End .product-price -->
 
                             <div class="product-content">
                                 {!! \Str::of($product->seo->description)->limit(150) !!}
+
+                                <br />
+                                <label for="">Berat per produk: <span wire:loading.class="d-none"
+                                        wire:target="setSize,setColor">{{ $weight }}</span>
+                                    <x-css-spinner-alt wire:loading class="ml-1 fa-spin"
+                                        wire:target="setSize,setColor" />
+                                </label>
                             </div><!-- End .product-content -->
 
-                            <div class="details-filter-row details-row-color">
+                            <div class="details-filter-row details-row-size">
                                 <label for="color">Warna:</label>
-                                <div class="select-custom">
-                                    <select name="color" id="color" wire:model="colorId" class="form-control">
-                                        <option value="#" selected="selected">Pilih Warna</option>
-                                        @foreach ($colors as $key => $value)
-                                            <option value="{{ $key }}">{{ $value }}</option>
-                                        @endforeach
-                                    </select>
-                                </div><!-- End .select-custom -->
+
+                                <div class="btn-group-toggle" data-toggle="buttons">
+                                    @foreach ($colors as $key => $value)
+                                        <button wire:click="setColor({{ $key }})"
+                                            class="btn btn-outline-dark selectable {{ $colorId === $key ? 'active' : '' }}">
+                                            <input type="radio" name="colorId" wire:model="colorId"
+                                                value="{{ $key }}">
+                                            {{ \Str::of($value)->lower()->title() }}
+                                        </button>
+                                    @endforeach
+                                </div>
                             </div>
 
                             <div class="details-filter-row details-row-size">
-                                <label for="size">Ukuran:</label>
-                                <div class="select-custom">
-                                    <select name="size" id="size" wire:model="sizeId" class="form-control">
-                                        <option value="#" selected="selected">Pilih Ukuran</option>
-                                        @foreach ($sizes as $key => $value)
-                                            <option value="{{ $key }}">{{ $value }}</option>
-                                        @endforeach
-                                    </select>
-                                </div><!-- End .select-custom -->
+                                <label for="size">Ukuran:</label> <br />
+
+                                <div class="btn-group-toggle" data-toggle="buttons">
+                                    @foreach ($sizes as $key => $value)
+                                        <button wire:click="setSize({{ $key }})"
+                                            class="btn btn-outline-dark selectable position-relative {{ $sizeId === $key ? 'active' : '' }}">
+                                            <input type="radio">
+                                            {{ $value }}
+                                        </button>
+                                    @endforeach
+                                </div>
                             </div><!-- End .details-filter-row -->
 
                             <div class="details-filter-row details-row-size">
                                 <label for="qty">Qty:</label>
                                 <div class="product-details-quantity" wire:ignore>
                                     <input type="number" id="qty" class="form-control" min="1"
-                                        value="1" wire:model="quantity">
+                                        wire:model="quantity">
                                 </div><!-- End .product-details-quantity -->
+                                <span class="ml-5" wire:loading.class="d-none" for="qty"
+                                    wire:target="setSize,setColor">{{ $stockLabel }}</span>
+                                <x-css-spinner-alt wire:loading class="ml-5 fa-spin" wire:target="setSize,setColor" />
                             </div><!-- End .details-filter-row -->
 
                             <div class="product-details-action">
                                 <button href="#" class="btn-product btn-cart"
-                                    @if (empty($variant)) disabled="disabled" @endif>
+                                    @if ($stock < 1) disabled @endif>
                                     <span>Tambahkan ke keranjang</span>
                                 </button>
 
                                 <div class="details-action-wrapper">
-                                    <a href="#" class="btn-product btn-wishlist" title="Wishlist">
-                                        <span>Tambahkan ke wishlist</span>
+                                    <a href="javascript:void(0);" wire:click="addToWishlist" class="btn-product"
+                                        title="Tambahkan ke Wishlist">
+                                        <span>
+                                            @if ($liked)
+                                                <i class="icon-heart"></i> Hapus Wishlist
+                                            @else
+                                                <i class="icon-heart-o"></i> Wishlist
+                                            @endif
+                                        </span>
                                     </a>
-                                    <a href="#" class="btn-product btn-message" title="Whatsapp">
+                                    <a href="#" class="btn-product btn-message" title="Order via Whatsapp">
                                         <span>
                                             <i class="icon-whatsapp"></i> Order via Whatsapp
                                         </span>
@@ -115,20 +139,28 @@
 
                             <div class="product-details-footer">
                                 <div class="product-cat">
-                                    <span>Category:</span>
+                                    <span>Kategori Produk:</span>
                                     <a href="#">{{ $product->category->name }}</a>
                                 </div><!-- End .product-cat -->
 
                                 <div class="social-icons social-icons-sm">
                                     <span class="social-label">Bagikan:</span>
-                                    <a href="#" class="social-icon" title="Facebook" target="_blank"><i
-                                            class="icon-facebook-f"></i></a>
-                                    <a href="#" class="social-icon" title="Twitter" target="_blank"><i
+                                    <a href="#" data-sharer="facebook"
+                                        data-title="Beli {{ $product->name }} di {{ config('app.name') }}"
+                                        data-url="{{ $product->public_url }}" class="social-icon"
+                                        title="Facebook"><i class="icon-facebook-f"></i></a>
+                                    <a href="#" data-sharer="twitter"
+                                        data-title="Beli {{ $product->name }} di {{ config('app.name') }}"
+                                        data-url="{{ $product->public_url }}" class="social-icon" title="Twitter"><i
                                             class="icon-twitter"></i></a>
-                                    <a href="#" class="social-icon" title="Instagram" target="_blank"><i
-                                            class="icon-instagram"></i></a>
-                                    <a href="#" class="social-icon" title="Pinterest" target="_blank"><i
-                                            class="icon-pinterest"></i></a>
+                                    <a href="#" data-sharer="instagram"
+                                        data-title="Beli {{ $product->name }} di {{ config('app.name') }}"
+                                        data-url="{{ $product->public_url }}" class="social-icon"
+                                        title="Instagram"><i class="icon-instagram"></i></a>
+                                    <a href="#" data-sharer="pinterest"
+                                        data-title="Beli {{ $product->name }} di {{ config('app.name') }}"
+                                        data-url="{{ $product->public_url }}" class="social-icon"
+                                        title="Pinterest"><i class="icon-pinterest"></i></a>
                                 </div>
                             </div><!-- End .product-details-footer -->
                         </div><!-- End .product-details -->
@@ -461,6 +493,14 @@
     </div><!-- End .page-content -->
 </main>
 
+@push('styles')
+    <style>
+        .radio-color:focus {
+            cursor: pointer;
+        }
+    </style>
+@endpush
+
 @push('scripts')
     <script src="{{ asset('build/assets/js/jquery.elevateZoom.min.js') }}"></script>
     <script src="{{ asset('build/assets/js/bootstrap-input-spinner.js') }}"></script>
@@ -501,8 +541,6 @@
         })
 
         Livewire.on('variantChanged', data => {
-            $(".product-price").html(data.price)
-
             if (data.image !== null) {
                 $("#product-zoom-gallery").find(`a[data-image='${data.image}']`).click();
             }

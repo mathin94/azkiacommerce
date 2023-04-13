@@ -2,7 +2,36 @@
     <header class="header">
         <div class="header-top">
             <div class="container">
-                {!! $topbar_menu !!}
+                <div class="header-right">
+                    <ul class="top-menu pt-1 pb-0">
+                        <li><a href="#">Menu</a>
+                            <ul>
+                                <li><a href="/contact-us">Kontak Kami</a></li>
+                                <li>
+                                    <a href="/wishlists">
+                                        <i class="icon-heart-o"></i> Wishlist
+                                        <span class="wishlist-count">
+                                            {{ $wishlist_count }}
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    @if (!auth()->guard('shop')->check())
+                                        <a href="{{ route('auth.login') }}">
+                                            <i class="icon-user"></i>
+                                            Masuk / Daftar
+                                        </a>
+                                    @else
+                                        <a wire:click="openModal" style="cursor: pointer">
+                                            <i class="fa fa-sign-out"></i>
+                                            Keluar
+                                        </a>
+                                    @endif
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </div><!-- End .container -->
         </div><!-- End .header-top -->
 
@@ -59,7 +88,7 @@
 
                                     <figure class="product-image-container">
                                         <a href="product.html" class="product-image">
-                                            <img src="assets/images/products/cart/product-1.jpg" alt="product">
+                                            <img src="/build/assets/images/products/cart/product-1.jpg" alt="product">
                                         </a>
                                     </figure>
                                     <a href="#" class="btn-remove" title="Remove Product"><i
@@ -80,7 +109,7 @@
 
                                     <figure class="product-image-container">
                                         <a href="product.html" class="product-image">
-                                            <img src="assets/images/products/cart/product-2.jpg" alt="product">
+                                            <img src="/build/assets/images/products/cart/product-2.jpg" alt="product">
                                         </a>
                                     </figure>
                                     <a href="#" class="btn-remove" title="Remove Product"><i
@@ -105,4 +134,35 @@
             </div><!-- End .container -->
         </div><!-- End .header-middle -->
     </header><!-- End .header -->
+
+    <div id="logout-confirm-dialog" class="white-popup mfp-hide">
+        <div class="text-center">
+            <h5>Yakin untuk keluar ?</h5>
+            <button type="button" class="btn btn-danger" id="logout-confirm-button">
+                Ya, Keluar
+            </button>
+            <button type="button" class="btn btn-outline-dark" id="cancel-logout"
+                onclick="$.magnificPopup.close()">
+                Batalkan
+            </button>
+        </div>
+    </div>
 </div>
+
+@push('scripts')
+    <script>
+        $('#logout-confirmation-button').click(function(e) {
+            Livewire.emit('logout');
+            $.magnificPopup.close();
+        });
+
+        Livewire.on('open-logout-dialog', function() {
+            $.magnificPopup.open({
+                items: {
+                    src: '#logout-confirm-dialog',
+                    type: 'inline'
+                }
+            });
+        })
+    </script>
+@endpush

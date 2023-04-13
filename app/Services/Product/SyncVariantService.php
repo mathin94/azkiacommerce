@@ -32,7 +32,7 @@ class SyncVariantService
                     'code_name'   => $variant->code_name,
                     'name'        => $variant->name,
                     'weight'      => $variant->weight,
-                    'price'       => $variant->price(),
+                    'price'       => $variant->price,
                 ]
             );
         }

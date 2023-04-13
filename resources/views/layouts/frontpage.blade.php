@@ -13,7 +13,6 @@
 
     @livewireStyles
     @vite('resources/sass/app.scss')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 
     @stack('styles')
 </head>
@@ -39,8 +38,23 @@
     <!-- Main JS File -->
     <script src="{{ asset('build/assets/js/main.js') }}"></script>
     <script src="{{ asset('build/assets/js/demos/demo-5.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js"></script>
 
     @stack('scripts')
+
+    <script type="text/javascript">
+        Livewire.on('showAlert', data => {
+            $.magnificPopup.open({
+                items: {
+                    src: data.alert,
+                    type: 'inline'
+                },
+                closeOnContentClick: true,
+                closeOnBgClick: true,
+                showCloseBtn: true
+            });
+        })
+    </script>
 </body>
 
 </html>

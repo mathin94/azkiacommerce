@@ -2,17 +2,48 @@
 
 namespace App\Models\Shop;
 
-use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Rennokki\QueryCache\Traits\QueryCacheable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Category extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia, Cachable;
+    use HasFactory, SoftDeletes, InteractsWithMedia, QueryCacheable;
+
+    /**
+     * Specify the amount of time to cache queries.
+     * Do not specify or set it to null to disable caching.
+     *
+     * @var int|\DateTime
+     */
+    public $cacheFor = 60 * 60 * 24; // 1 day
+
+    /**
+     * The tags for the query cache. Can be useful
+     * if flushing cache for specific tags only.
+     *
+     * @var null|array
+     */
+    public $cacheTags = ['shop_product_categories'];
+
+    /**
+     * A cache prefix string that will be prefixed
+     * on each cache key generation.
+     *
+     * @var string
+     */
+    public $cachePrefix = 'shop_product_categories_';
+
+    /**
+     * The cache driver to be used.
+     *
+     * @var string
+     */
+    public $cacheDriver = 'redis';
 
     public const CACHE_PREFIX       = 'product_category::';
     public const ALL_CATEGORY_CACHE = self::CACHE_PREFIX . 'all';

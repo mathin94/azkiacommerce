@@ -2,15 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Shop\ProductVariant;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use RalphJSmit\Laravel\SEO\Models\SEO as BaseModel;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 
-class Size extends Model
+class SEO extends BaseModel
 {
-    use HasFactory, SoftDeletes, QueryCacheable;
+    use QueryCacheable;
 
     /**
      * Specify the amount of time to cache queries.
@@ -18,7 +15,7 @@ class Size extends Model
      *
      * @var int|\DateTime
      */
-    public $cacheFor = 60 * 60 * 24 * 7; // 7 days
+    public $cacheFor = 60 * 60 * 24; // 1 day
 
     /**
      * The tags for the query cache. Can be useful
@@ -26,7 +23,7 @@ class Size extends Model
      *
      * @var null|array
      */
-    public $cacheTags = ['sizes'];
+    public $cacheTags = ['seo'];
 
     /**
      * A cache prefix string that will be prefixed
@@ -34,7 +31,7 @@ class Size extends Model
      *
      * @var string
      */
-    public $cachePrefix = 'sizes_';
+    public $cachePrefix = 'seo_';
 
     /**
      * The cache driver to be used.
@@ -42,15 +39,4 @@ class Size extends Model
      * @var string
      */
     public $cacheDriver = 'redis';
-
-    public const ALL_CACHE_KEY = 'sizes::all';
-
-    protected $fillable = [
-        'code', 'name'
-    ];
-
-    public function productVariants()
-    {
-        return $this->hasMany(ProductVariant::class);
-    }
 }

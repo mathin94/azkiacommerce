@@ -107,7 +107,7 @@ class VoucherResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label('Masa Berlaku')
                     ->getStateUsing(function (Voucher $record) {
-                        $status = $record->active_at?->isPast() ? 'Aktif' : 'Tidak Aktif';
+                        $status = $record->active_at?->isPast() && $record->inactive_at?->isFuture() ? 'Aktif' : 'Tidak Aktif';
 
                         return "
                             <span class=\"font-bold\">Status : </span> {$status}<br>
