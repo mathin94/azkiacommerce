@@ -47,7 +47,7 @@ trait SliderTrait
 
     protected function getImageUrl()
     {
-        return $this->media->first()->getUrl();
+        return $this->media?->first()->getUrl();
     }
 
     protected function imageUrl(): Attribute
