@@ -43,4 +43,45 @@ class Cart extends Model
     {
         return $this->belongsTo(Customer::class, 'shop_customer_id');
     }
+
+    public function getTotalPriceAttribute(): Float
+    {
+        // Calculate the total price based on the cart items
+        $totalPrice = $this->cartItems->sum(function ($cartItem) {
+            return $cartItem->total * $cartItem->quantity;
+        });
+
+        return $totalPrice;
+    }
+
+    public function getTotalWeightAttribute(): Int
+    {
+        // Calculate the total price based on the cart items
+        $totalWeight = $this->cartItems->sum(function ($cartItem) {
+            return $cartItem->weight * $cartItem->quantity;
+        });
+
+        return $totalWeight;
+    }
+
+    public function recalculate()
+    {
+        $this->subtotal     = $this->getTotalPriceAttribute();
+        $this->total_weight = $this->getTotalWeightAttribute();
+        $this->total_price  = $this->subtotal + ($this->shipping_cost ?? 0);
+        $this->save();
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->recalculate();
+        });
+
+        static::updated(function ($model) {
+            $model->recalculate();
+        });
+    }
 }

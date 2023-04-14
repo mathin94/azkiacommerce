@@ -113,7 +113,7 @@
                             </div><!-- End .details-filter-row -->
 
                             <div class="product-details-action">
-                                <button href="#" class="btn-product btn-cart"
+                                <button wire:click="addToCart" class="btn-product btn-cart"
                                     @if ($stock < 1) disabled @endif>
                                     <span>Tambahkan ke keranjang</span>
                                 </button>

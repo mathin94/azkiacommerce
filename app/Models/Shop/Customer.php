@@ -2,6 +2,7 @@
 
 namespace App\Models\Shop;
 
+use App\Enums\CartStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -80,5 +81,16 @@ class Customer extends Authenticatable
     {
         return $this->belongsToMany(Product::class, 'shop_wishlists', 'shop_customer_id', 'shop_product_id')
             ->withTimestamps();
+    }
+
+    public function carts()
+    {
+        return $this->hasMany(Cart::class, 'shop_customer_id');
+    }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class, 'shop_customer_id')
+            ->where('status', CartStatus::Draft);
     }
 }

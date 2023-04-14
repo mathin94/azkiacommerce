@@ -26,6 +26,20 @@ class CartItem extends Model
 
     public function productVariant()
     {
-        return $this->belongsTo(ProductVariant::class, 'shop_product_variant_id')->withDeleted();
+        return $this->belongsTo(ProductVariant::class, 'shop_product_variant_id')
+            ->withDeleted();
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->total = $model->unit_price * $model->quantity;
+        });
+
+        static::updating(function ($model) {
+            $model->total = $model->unit_price * $model->quantity;
+        });
     }
 }

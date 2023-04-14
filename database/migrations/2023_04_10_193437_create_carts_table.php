@@ -19,10 +19,10 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->string('number')->unique();
             $table->integer('status');
-            $table->decimal('total_weight');
-            $table->decimal('subtotal');
-            $table->decimal('shipping_cost');
-            $table->decimal('total_price');
+            $table->decimal('total_weight')->default(0);
+            $table->decimal('subtotal')->default(0);
+            $table->decimal('shipping_cost')->default(0);
+            $table->decimal('total_price')->default(0);
             $table->timestamp('checked_out_at')->nullable();
             $table->softDeletes();
             $table->timestamps();

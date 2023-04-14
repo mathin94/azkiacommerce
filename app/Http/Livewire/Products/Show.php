@@ -2,6 +2,9 @@
 
 namespace App\Http\Livewire\Products;
 
+use App\Enums\CartStatus;
+use App\Helpers\AutoNumber;
+use App\Models\Shop\Cart;
 use App\Models\Shop\Product;
 use App\Models\Shop\Wishlist;
 use Filament\Notifications\Notification;
@@ -99,20 +102,26 @@ class Show extends Component
 
         $this->stock = $variant?->resource->stock ?? 0;
         $this->stockLabel = $variant?->resource->stock_label;
+        $this->variant = $variant;
     }
 
     public function mount()
     {
         $slug      = request()->route('slug');
 
-        $product = Product::with(['media', 'category', 'variants.color', 'variants.size'])
+        $product = Product::with(['media', 'category', 'variants.color', 'variants.size', 'seo'])
+            ->cacheTags(["products:$slug"])
             ->where('slug', $slug)
             ->first();
 
         abort_if(!$product, 404);
 
-        $colors = $product->variants->pluck('color.name', 'color_id')->toArray();
-        $sizes  = $product->variants->pluck('size.name', 'size_id')->toArray();
+        $colors = $product->variants
+            ->pluck('color.name', 'color_id')
+            ->toArray();
+        $sizes  = $product->variants
+            ->pluck('size.name', 'size_id')
+            ->toArray();
 
         $this->product = $product;
         $this->price = $product->price_label;
@@ -123,6 +132,50 @@ class Show extends Component
         if ($this->customer) {
             $this->liked = $this->customer->wishlists()->dontCache()->whereShopProductId($this->product->id)->count() > 0;
         }
+    }
+
+    public function addToCart()
+    {
+        if (!$this->customer) {
+            $login_url = route('auth.login');
+
+            $this->emit('showAlert', [
+                "alert" => "
+                    <div class=\"white-popup\">
+                        <h5>Gagal !</h5>
+                        <p>Anda harus login untuk membeli produk ini</p>
+                        <p><a href=\"{$login_url}\">Klik disini untuk login</a></p>
+                    </div>
+                "
+            ]);
+
+            return;
+        }
+
+        $cart = $this->customer->cart()->firstOrNew(['status' => CartStatus::Draft]);
+
+        if (is_null($cart->number)) {
+            $cart->number = AutoNumber::createUniqueCartNumber();
+        }
+
+        $cart->save();
+
+        $cartItem             = $cart->cartItems()->firstOrNew(['shop_product_variant_id' => $this->variant->id]);
+        $cartItem->name       = $this->variant->name;
+        $cartItem->unit_price = $this->variant->resource->getFinalPrice();
+        $cartItem->weight     = $this->variant->weight;
+        $cartItem->quantity   = (int) $cartItem->quantity + $this->quantity;
+        $cartItem->save();
+
+        $this->emit('showAlert', [
+            "alert" => "
+                    <div class=\"white-popup\">
+                        <p>Sukses Menambahkan Produk ke keranjang</p>
+                    </div>
+                "
+        ]);
+
+        $this->emit('refreshComponent');
     }
 
     public function render()
