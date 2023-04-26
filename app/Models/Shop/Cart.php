@@ -3,6 +3,7 @@
 namespace App\Models\Shop;
 
 use App\Enums\CartStatus;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -34,7 +35,7 @@ class Cart extends Model
         'checked_out_at' => 'datetime',
     ];
 
-    public function cartItems()
+    public function items()
     {
         return $this->hasMany(CartItem::class, 'shop_cart_id');
     }
@@ -47,7 +48,7 @@ class Cart extends Model
     public function getTotalPriceAttribute(): Float
     {
         // Calculate the total price based on the cart items
-        $totalPrice = $this->cartItems->sum(function ($cartItem) {
+        $totalPrice = $this->items->sum(function ($cartItem) {
             return $cartItem->total * $cartItem->quantity;
         });
 
@@ -57,11 +58,23 @@ class Cart extends Model
     public function getTotalWeightAttribute(): Int
     {
         // Calculate the total price based on the cart items
-        $totalWeight = $this->cartItems->sum(function ($cartItem) {
+        $totalWeight = $this->items->sum(function ($cartItem) {
             return $cartItem->weight * $cartItem->quantity;
         });
 
         return $totalWeight;
+    }
+
+    protected function itemCount(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->items->sum('quantity');
+        });
+    }
+
+    protected function subtotalLabel(): Attribute
+    {
+        return Attribute::make(get: fn () => 'Rp' . number_format($this->subtotal, 0, ',', '.'));
     }
 
     public function recalculate()

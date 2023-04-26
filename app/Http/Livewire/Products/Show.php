@@ -29,7 +29,7 @@ class Show extends Component
     public function addToWishlist()
     {
         if (!$this->customer) {
-            $login_url = route('auth.login');
+            $login_url = route('login');
 
             $this->emit('showAlert', [
                 "alert" => "
@@ -137,7 +137,7 @@ class Show extends Component
     public function addToCart()
     {
         if (!$this->customer) {
-            $login_url = route('auth.login');
+            $login_url = route('login');
 
             $this->emit('showAlert', [
                 "alert" => "
@@ -160,22 +160,33 @@ class Show extends Component
 
         $cart->save();
 
-        $cartItem             = $cart->cartItems()->firstOrNew(['shop_product_variant_id' => $this->variant->id]);
+        $cartItem             = $cart->items()->firstOrNew(['shop_product_variant_id' => $this->variant->id]);
         $cartItem->name       = $this->variant->name;
         $cartItem->unit_price = $this->variant->resource->getFinalPrice();
         $cartItem->weight     = $this->variant->weight;
         $cartItem->quantity   = (int) $cartItem->quantity + $this->quantity;
-        $cartItem->save();
 
-        $this->emit('showAlert', [
-            "alert" => "
-                    <div class=\"white-popup\">
-                        <p>Sukses Menambahkan Produk ke keranjang</p>
-                    </div>
-                "
-        ]);
+        if ($cartItem->quantity <= $this->variant->resource->stock) {
+            $cartItem->save();
 
-        $this->emit('refreshComponent');
+            $this->emit('showAlert', [
+                "alert" => "
+                        <div class=\"white-popup\">
+                            <p>Sukses Menambahkan Produk ke keranjang</p>
+                        </div>
+                    "
+            ]);
+
+            $this->emit('refreshComponent');
+        } else {
+            $this->emit('showAlert', [
+                "alert" => "
+                        <div class=\"white-popup\">
+                            <p>Stok tidak mencukupi {$this->variant->resource->stock}</p>
+                        </div>
+                    "
+            ]);
+        }
     }
 
     public function render()

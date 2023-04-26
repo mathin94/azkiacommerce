@@ -2,6 +2,7 @@
 
 namespace App\Models\Shop;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class CartItem extends Model
@@ -26,8 +27,30 @@ class CartItem extends Model
 
     public function productVariant()
     {
-        return $this->belongsTo(ProductVariant::class, 'shop_product_variant_id')
-            ->withDeleted();
+        return $this->belongsTo(ProductVariant::class, 'shop_product_variant_id');
+    }
+
+    protected function productImageUrl(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->productVariant->product->main_image_url;
+        });
+    }
+
+    protected function priceLabel(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return 'Rp. ' . number_format($this->unit_price, 0, ',', '.');
+        });
+    }
+
+    protected function subtotalLabel(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $subtotal = $this->unit_price * $this->quantity;
+
+            return 'Rp. ' . number_format($subtotal, 0, ',', '.');
+        });
     }
 
     public static function boot()

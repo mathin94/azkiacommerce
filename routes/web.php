@@ -28,12 +28,17 @@ Route::get('/product/{slug}', App\Http\Livewire\Products\Show::class)->name('pro
 # Route Category
 Route::get('/category/{slug}', App\Http\Livewire\Category\Show::class)->name('category.show');
 
+Route::middleware(['auth:shop'])->group(function () {
+    # Route Cart
+    Route::get('/cart', App\Http\Livewire\CartDetail::class)->name('cart');
+});
+
 Route::middleware(['guest:shop'])->group(function () {
     # Route Shop Login
-    Route::get('/auth/login', App\Http\Livewire\ShopLogin::class)
-        ->name('auth.login');
+    Route::get('/login', App\Http\Livewire\ShopLogin::class)
+        ->name('login');
 
     # Route Shop Logout
-    Route::get('/auth/logout', App\Http\Livewire\ShopLogout::class)
-        ->name('auth.logout');
+    Route::get('/logout', App\Http\Livewire\ShopLogout::class)
+        ->name('logout');
 });

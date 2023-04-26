@@ -6,11 +6,12 @@ use App\Enums\CartStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Customer extends Authenticatable
 {
-    use HasFactory, SoftDeletes, QueryCacheable;
+    use HasFactory, SoftDeletes, Notifiable, QueryCacheable;
 
     /**
      * Specify the amount of time to cache queries.
