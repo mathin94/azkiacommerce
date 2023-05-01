@@ -52,13 +52,11 @@ class Navbar extends Component
 
     private function getCart()
     {
-        $this->cart_count = $this->user?->cart
-            ->item_count;
+        $this->cart_count = $this->user?->cart?->item_count;
 
-        $this->cartItems = $this->user?->cart
-            ->items;
+        $this->cartItems = $this->user?->cart?->items;
 
-        $cart_total = $this->user?->cart->total_price ?? 0;
+        $cart_total = $this->user?->cart?->total_price ?? 0;
 
         $this->cart_total = 'Rp. ' . number_format($cart_total, 0, ',', '.');
     }
