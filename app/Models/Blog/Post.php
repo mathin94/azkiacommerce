@@ -41,6 +41,14 @@ class Post extends Model implements HasMedia
     public $cachePrefix = 'blog_posts_';
 
     /**
+     * Invalidate the cache automatically
+     * upon update in the database.
+     *
+     * @var bool
+     */
+    protected static $flushCacheOnUpdate = true;
+
+    /**
      * The cache driver to be used.
      *
      * @var string

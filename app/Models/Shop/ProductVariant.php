@@ -20,7 +20,7 @@ class ProductVariant extends Model
      *
      * @var int|\DateTime
      */
-    public $cacheFor = 60 * 60 * 24 * 7; // 7 days
+    public $cacheFor = 0; // 7 days
 
     /**
      * The tags for the query cache. Can be useful
@@ -37,6 +37,14 @@ class ProductVariant extends Model
      * @var string
      */
     public $cachePrefix = 'shop_product_variants_';
+
+    /**
+     * Invalidate the cache automatically
+     * upon update in the database.
+     *
+     * @var bool
+     */
+    protected static $flushCacheOnUpdate = true;
 
     /**
      * The cache driver to be used.

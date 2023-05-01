@@ -38,6 +38,14 @@ class Customer extends Authenticatable
     public $cachePrefix = 'shop_customers_';
 
     /**
+     * Invalidate the cache automatically
+     * upon update in the database.
+     *
+     * @var bool
+     */
+    protected static $flushCacheOnUpdate = true;
+
+    /**
      * The cache driver to be used.
      *
      * @var string
