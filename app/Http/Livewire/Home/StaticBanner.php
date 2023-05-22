@@ -11,9 +11,7 @@ class StaticBanner extends Component
 
     public function mount()
     {
-        $this->banners = cache()->remember('home::slider::static', 60 * 60 * 24, function () {
-            return Slider::activeBanners()->get();
-        });
+        $this->banners = Slider::cacheTags(['slider_static_'])->activeBanners()->get();
     }
 
     public function render()

@@ -11,9 +11,9 @@ class AppAdsSlider extends Component
 
     public function mount()
     {
-        $this->sliders = cache()->remember('sliders::ads::home', 60 * 60 * 24, function () {
-            return Slider::activeAdsSliders()->get();
-        });
+        $this->sliders = Slider::cacheTags(['slider_ads_'])
+            ->activeAdsSliders()
+            ->get();
     }
     public function render()
     {

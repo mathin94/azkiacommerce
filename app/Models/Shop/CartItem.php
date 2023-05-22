@@ -13,11 +13,13 @@ class CartItem extends Model
         'shop_cart_id',
         'shop_product_variant_id',
         'name',
-        'unit_price',
+        'alternate_name',
+        'normal_price',
+        'price',
         'weight',
         'quantity',
         'discount',
-        'total',
+        'total_price',
     ];
 
     public function cart()
@@ -33,24 +35,36 @@ class CartItem extends Model
     protected function productImageUrl(): Attribute
     {
         return Attribute::make(get: function () {
+            $variant = $this->productVariant;
+
+            $variant_image = $variant->media?->getUrl();
+
+            if ($variant_image) {
+                return $variant_image;
+            }
+
             return $this->productVariant->product->main_image_url;
         });
     }
 
-    protected function priceLabel(): Attribute
+    protected function normalPriceLabel(): Attribute
     {
-        return Attribute::make(get: function () {
-            return 'Rp. ' . number_format($this->unit_price, 0, ',', '.');
-        });
+        return Attribute::make(get: fn () => 'Rp. ' . number_format($this->normal_price, 0, ',', '.'));
     }
 
-    protected function subtotalLabel(): Attribute
+    protected function priceLabel(): Attribute
     {
-        return Attribute::make(get: function () {
-            $subtotal = $this->unit_price * $this->quantity;
+        return Attribute::make(get: fn () => 'Rp. ' . number_format($this->price, 0, ',', '.'));
+    }
 
-            return 'Rp. ' . number_format($subtotal, 0, ',', '.');
-        });
+    protected function finalPriceLabel(): Attribute
+    {
+        return Attribute::make(get: fn () => 'Rp. ' . number_format($this->price - $this->discount, 0, ',', '.'));
+    }
+
+    protected function totalPriceLabel(): Attribute
+    {
+        return Attribute::make(get: fn () =>  'Rp. ' . number_format($this->total_price, 0, ',', '.'));
     }
 
     public static function boot()
@@ -58,11 +72,15 @@ class CartItem extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->total = $model->unit_price * $model->quantity;
+            $model->total_price = ($model->price - $model->discount) * $model->quantity;
+        });
+
+        static::created(function ($model) {
+            // $model->cart->recalculate();
         });
 
         static::updating(function ($model) {
-            $model->total = $model->unit_price * $model->quantity;
+            $model->total_price = ($model->price - $model->discount) * $model->quantity;
         });
     }
 }

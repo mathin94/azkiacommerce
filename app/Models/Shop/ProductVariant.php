@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Rennokki\QueryCache\Traits\QueryCacheable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class ProductVariant extends Model
 {
@@ -93,5 +94,21 @@ class ProductVariant extends Model
     public function resource()
     {
         return $this->belongsTo(\App\Models\Backoffice\Product::class, 'resource_id');
+    }
+
+    protected function alternateName(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if (!$this->color || !$this->size) {
+                return $this->name;
+            }
+
+            return "{$this->product->name} - {$this->color->name} - {$this->size->name}";
+        });
+    }
+
+    protected function productOutletId(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->resource->product_outlet_id);
     }
 }

@@ -19,64 +19,56 @@
                                 <tr>
                                     <th>Produk</th>
                                     <th>Harga Satuan</th>
-                                    <th>Jumlah</th>
+                                    <th class="text-center">Jumlah</th>
                                     <th>Total</th>
                                     <th></th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                @foreach ($cartItems as $item)
-                                    <tr>
-                                        <td class="product-col">
-                                            <div class="product">
-                                                <figure class="product-media">
-                                                    <a href="#">
-                                                        <img src="{{ $item->product_image_url }}"
-                                                            alt="{{ $item->name }}">
-                                                    </a>
-                                                </figure>
+                                @if ($cartItems)
+                                    @foreach ($cartItems as $item)
+                                        <tr>
+                                            <td class="product-col">
+                                                <div class="product">
+                                                    <figure class="product-media">
+                                                        <a href="#">
+                                                            <img src="{{ $item->product_image_url }}"
+                                                                alt="{{ $item->name }}">
+                                                        </a>
+                                                    </figure>
 
-                                                <h3 class="product-title">
-                                                    <a href="#">{{ $item->name }}</a>
-                                                </h3><!-- End .product-title -->
-                                            </div><!-- End .product -->
-                                        </td>
-                                        <td class="price-col text-nowrap">{{ $item->price_label }}</td>
-                                        <td class="quantity-col">
-                                            <div class="cart-product-quantity">
-                                                <input type="number" class="form-control" wire:ignore
-                                                    value="{{ $item->quantity }}" min="1" step="1"
-                                                    data-decimals="0" required>
-                                            </div><!-- End .cart-product-quantity -->
-                                        </td>
-                                        <td class="total-col text-nowrap">{{ $item->subtotal_label }}</td>
-                                        <td class="remove-col">
-                                            <button class="btn-remove">
-                                                <i class="icon-close"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
+                                                    <h3 class="product-title">
+                                                        <a href="#">
+                                                            {{ $item->alternate_name }} <br>
+                                                            <small>{{ $item->name }}
+                                                                ({{ "$item->weight gram" }})
+                                                            </small>
+                                                        </a>
+                                                    </h3><!-- End .product-title -->
+                                                </div><!-- End .product -->
+                                            </td>
+                                            <td class="price-col text-nowrap">{{ $item->price_label }}</td>
+                                            <td class="quantity-col" wire:ignore>
+                                                <div class="cart-product-quantity" wire:ignore>
+                                                    <input type="number" class="form-control" wire:ignore
+                                                        value="{{ $itemQuantities[$item->id] }}" min="1"
+                                                        step="1" data-decimals="0"
+                                                        wire:model="itemQuantities.{{ $item->id }}">
+                                                </div><!-- End .cart-product-quantity -->
+                                            </td>
+                                            <td class="total-col text-nowrap">
+                                                {{ $item->total_price_label }}</td>
+                                            <td class="remove-col">
+                                                <button class="btn-remove" wire:click="deleteItem({{ $item->id }})">
+                                                    <i class="icon-close"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             </tbody>
-                        </table><!-- End .table table-wishlist -->
-
-                        <div class="cart-bottom">
-                            <div class="cart-discount">
-                                <form action="#">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" required placeholder="coupon code">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-primary-2" type="submit"><i
-                                                    class="icon-long-arrow-right"></i></button>
-                                        </div><!-- .End .input-group-append -->
-                                    </div><!-- End .input-group -->
-                                </form>
-                            </div><!-- End .cart-discount -->
-
-                            <a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i
-                                    class="icon-refresh"></i></a>
-                        </div><!-- End .cart-bottom -->
+                        </table>
                     </div><!-- End .col-lg-9 -->
                     <aside class="col-lg-3">
                         <div class="summary summary-cart">
@@ -85,73 +77,23 @@
                             <table class="table table-summary">
                                 <tbody>
                                     <tr class="summary-subtotal">
-                                        <td>Subtotal:</td>
-                                        <td>{{ $cart->subtotal_label }}</td>
-                                    </tr><!-- End .summary-subtotal -->
-                                    <tr class="summary-shipping">
-                                        <td>Alamat Pengiriman:</td>
-                                        <td>&nbsp;</td>
+                                        <td>Total Item :</td>
+                                        <td>{{ $cartItems?->sum('quantity') ?? 0 }}</td>
                                     </tr>
-                                    <tr class="summary-shipping">
-                                        <td>Pengiriman:</td>
-                                        <td>&nbsp;</td>
+                                    <tr class="summary-subtotal">
+                                        <td>Total Berat :</td>
+                                        <td>{{ $cart->total_weight ?? 0 }} gram</td>
                                     </tr>
-
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="free-shipping" name="shipping"
-                                                    class="custom-control-input">
-                                                <label class="custom-control-label" for="free-shipping">Free
-                                                    Shipping</label>
-                                            </div><!-- End .custom-control -->
-                                        </td>
-                                        <td>$0.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
-
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="standart-shipping" name="shipping"
-                                                    class="custom-control-input">
-                                                <label class="custom-control-label"
-                                                    for="standart-shipping">Standart:</label>
-                                            </div><!-- End .custom-control -->
-                                        </td>
-                                        <td>$10.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
-
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="express-shipping" name="shipping"
-                                                    class="custom-control-input">
-                                                <label class="custom-control-label"
-                                                    for="express-shipping">Express:</label>
-                                            </div><!-- End .custom-control -->
-                                        </td>
-                                        <td>$20.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
-
-                                    <tr class="summary-shipping-estimate">
-                                        <td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a>
-                                        </td>
-                                        <td>&nbsp;</td>
-                                    </tr><!-- End .summary-shipping-estimate -->
-
                                     <tr class="summary-total">
                                         <td>Total:</td>
-                                        <td>$160.00</td>
+                                        <td>{{ $cart->subtotal_label ?? 'Rp. 0' }}</td>
                                     </tr><!-- End .summary-total -->
                                 </tbody>
                             </table><!-- End .table table-summary -->
-
-                            <a href="checkout.html" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO
-                                CHECKOUT</a>
+                            <a href="{{ route('cart.checkout') }}"
+                                class="btn btn-outline-primary-2 btn-order btn-block">LANJUT
+                                KE PEMBAYARAN</a>
                         </div><!-- End .summary -->
-
-                        <a href="category.html" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE
-                                SHOPPING</span><i class="icon-refresh"></i></a>
                     </aside><!-- End .col-lg-3 -->
                 </div><!-- End .row -->
             </div><!-- End .container -->

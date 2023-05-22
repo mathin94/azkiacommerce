@@ -109,7 +109,14 @@ class Show extends Component
     {
         $slug      = request()->route('slug');
 
-        $product = Product::with(['media', 'category', 'variants.color', 'variants.size', 'seo'])
+        $product = Product::with([
+            'media',
+            'category',
+            'variants.color',
+            'variants.size',
+            'variants.resource',
+            'seo'
+        ])
             ->cacheTags(["products:$slug"])
             ->where('slug', $slug)
             ->first();
@@ -154,19 +161,18 @@ class Show extends Component
 
         $cart = $this->customer->cart()->firstOrNew(['status' => CartStatus::Draft]);
 
-        if (is_null($cart->number)) {
-            $cart->number = AutoNumber::createUniqueCartNumber();
-        }
-
         $cart->save();
 
-        $cartItem             = $cart->items()->firstOrNew(['shop_product_variant_id' => $this->variant->id]);
-        $cartItem->name       = $this->variant->name;
-        $cartItem->unit_price = $this->variant->resource->getFinalPrice();
-        $cartItem->weight     = $this->variant->weight;
-        $cartItem->quantity   = (int) $cartItem->quantity + $this->quantity;
+        $cartItem                 = $cart->items()->firstOrNew(['shop_product_variant_id' => $this->variant->id]);
+        $cartItem->quantity       = (int) $cartItem->quantity + $this->quantity;
 
         if ($cartItem->quantity <= $this->variant->resource->stock) {
+            $cartItem->name           = $this->variant->name;
+            $cartItem->alternate_name = $this->variant->alternate_name;
+            $cartItem->normal_price   = $this->variant->resource->price;
+            $cartItem->price          = $this->variant->resource->getFinalPrice();
+            $cartItem->weight         = $this->variant->weight;
+            $cartItem->discount       = 0; # TODO: Implement Discount If Module Discount Done
             $cartItem->save();
 
             $this->emit('showAlert', [
@@ -182,7 +188,7 @@ class Show extends Component
             $this->emit('showAlert', [
                 "alert" => "
                         <div class=\"white-popup\">
-                            <p>Stok tidak mencukupi {$this->variant->resource->stock}</p>
+                            <p>Stok tidak mencukupi, stok tersedia saat ini: {$this->variant->resource->stock}</p>
                         </div>
                     "
             ]);

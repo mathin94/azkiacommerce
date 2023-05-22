@@ -11,9 +11,9 @@ class AppIntroSlider extends Component
 
     public function mount()
     {
-        $this->sliders = cache()->remember('sliders::intro::home', 60 * 60 * 24, function () {
-            return Slider::activeIntroSliders()->get();
-        });
+        $this->sliders = Slider::cacheTags(['slider_intro_'])
+            ->activeIntroSliders()
+            ->get();
     }
     public function render()
     {

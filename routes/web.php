@@ -31,6 +31,13 @@ Route::get('/category/{slug}', App\Http\Livewire\Category\Show::class)->name('ca
 Route::middleware(['auth:shop'])->group(function () {
     # Route Cart
     Route::get('/cart', App\Http\Livewire\CartDetail::class)->name('cart');
+    Route::get('/cart/checkout', App\Http\Livewire\CartCheckout::class)->name('cart.checkout');
+
+    # Route Order Payment
+    Route::get('/order/payment/{payment_uuid}', App\Http\Livewire\OrderPayment::class)->name('order.payment');
+
+    # Customer Dashboard
+    Route::get('/customer/dashboard', App\Http\Livewire\CustomerDashboard::class)->name('customer.dashboard');
 });
 
 Route::middleware(['guest:shop'])->group(function () {

@@ -2,31 +2,31 @@
 
 namespace App\Helpers;
 
-use App\Models\Shop\Cart;
+use App\Models\Shop\Order;
 use Illuminate\Support\Str;
 
 class AutoNumber
 {
-    public static function createUniqueCartNumber(): string
+    public static function createUniqueOrderNumber(): string
     {
-        $prefix = 'CART/AZK/' . date('Ymd') . '/';
+        $prefix = 'TRX/AZK/' . date('Ymd') . '/';
         // Generate a random string to use as the last part of the cart number
         $randomString = Str::of(Str::random(5))->upper->toString();
 
         // Combine the random string with the current date and a prefix to create the cart number
-        $cartNumber = $prefix . $randomString;
+        $orderNumber = $prefix . $randomString;
 
         // Check if a cart with this number already exists
-        $existingCart = Cart::where('number', $cartNumber)->first();
+        $orderExists = Order::where('number', $orderNumber)->count();
 
         // If a cart with this number already exists, generate a new random string and try again
-        while ($existingCart) {
+        while ($orderExists) {
             $randomString = Str::of(Str::random(5))->upper->toString();
-            $cartNumber = $prefix . $randomString;
-            $existingCart = Cart::where('number', $cartNumber)->first();
+            $orderNumber = $prefix . $randomString;
+            $orderExists = Cart::where('number', $orderNumber)->first();
         }
 
         // Return the unique cart number
-        return $cartNumber;
+        return $orderNumber;
     }
 }

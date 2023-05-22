@@ -3,11 +3,13 @@
 namespace App\Models\Shop;
 
 use App\Enums\CartStatus;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Rennokki\QueryCache\Traits\QueryCacheable;
+use App\Models\Backoffice\Address as ShippingAddress;
 
 class Customer extends Authenticatable
 {
@@ -101,5 +103,25 @@ class Customer extends Authenticatable
     {
         return $this->hasOne(Cart::class, 'shop_customer_id')
             ->where('status', CartStatus::Draft);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'shop_customer_id');
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany(ShippingAddress::class, 'customer_id', 'resource_id');
+    }
+
+    public function mainAddress()
+    {
+        return $this->hasOne(ShippingAddress::class, 'customer_id', 'resource_id')->whereIsMain(true);
+    }
+
+    protected function fullMainAddress(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->mainAddress->full_address);
     }
 }

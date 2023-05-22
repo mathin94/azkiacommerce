@@ -56,9 +56,7 @@ class Navbar extends Component
 
         $this->cartItems = $this->user?->cart?->items;
 
-        $cart_total = $this->user?->cart?->total_price ?? 0;
-
-        $this->cart_total = 'Rp. ' . number_format($cart_total, 0, ',', '.');
+        $this->cart_total = $this->user?->cart?->grandtotal_label ?? 'Rp. 0';
     }
 
     public function mount()

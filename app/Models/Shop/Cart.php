@@ -3,6 +3,7 @@
 namespace App\Models\Shop;
 
 use App\Enums\CartStatus;
+use App\Models\Backoffice\Address;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,14 +15,12 @@ class Cart extends Model
     protected $table = 'shop_carts';
 
     protected $fillable = [
-        'shipping_address_id',
         'shop_customer_id',
-        'number',
         'status',
         'total_weight',
         'subtotal',
         'shipping_cost',
-        'total_price',
+        'grandtotal',
         'checked_out_at',
     ];
 
@@ -45,16 +44,6 @@ class Cart extends Model
         return $this->belongsTo(Customer::class, 'shop_customer_id');
     }
 
-    public function getTotalPriceAttribute(): Float
-    {
-        // Calculate the total price based on the cart items
-        $totalPrice = $this->items->sum(function ($cartItem) {
-            return $cartItem->total * $cartItem->quantity;
-        });
-
-        return $totalPrice;
-    }
-
     public function getTotalWeightAttribute(): Int
     {
         // Calculate the total price based on the cart items
@@ -74,27 +63,28 @@ class Cart extends Model
 
     protected function subtotalLabel(): Attribute
     {
-        return Attribute::make(get: fn () => 'Rp' . number_format($this->subtotal, 0, ',', '.'));
+        return Attribute::make(get: fn () => 'Rp. ' . number_format($this->subtotal, 0, ',', '.'));
+    }
+
+    protected function grandtotalLabel(): Attribute
+    {
+        return Attribute::make(get: fn () => 'Rp. ' . number_format($this->grandtotal, 0, ',', '.'));
+    }
+
+    protected function totalItem(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->items->count('quantity'));
     }
 
     public function recalculate()
     {
-        $this->subtotal     = $this->getTotalPriceAttribute();
+        $this->subtotal     = $this->items->sum('total_price');
         $this->total_weight = $this->getTotalWeightAttribute();
-        $this->total_price  = $this->subtotal + ($this->shipping_cost ?? 0);
         $this->save();
     }
 
     public static function boot()
     {
         parent::boot();
-
-        static::created(function ($model) {
-            $model->recalculate();
-        });
-
-        static::updated(function ($model) {
-            $model->recalculate();
-        });
     }
 }
