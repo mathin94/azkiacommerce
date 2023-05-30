@@ -15,19 +15,25 @@
                                         </span>
                                     </a>
                                 </li>
-                                <li>
-                                    @if (!auth()->guard('shop')->check())
-                                        <a href="{{ route('login') }}">
-                                            <i class="icon-user"></i>
-                                            Masuk / Daftar
-                                        </a>
-                                    @else
+                                @if (auth()->guard('shop')->check())
+                                    <li>
+                                        <a href="{{ route('customer.dashboard') }}"><i class="icon-user"></i> Akun
+                                            Saya</a>
+                                    </li>
+                                    <li>
                                         <a wire:click="openModal" style="cursor: pointer">
                                             <i class="fa fa-sign-out"></i>
                                             Keluar
                                         </a>
-                                    @endif
-                                </li>
+                                    </li>
+                                @else
+                                    <li>
+                                        <a href="{{ route('login') }}">
+                                            <i class="icon-user"></i>
+                                            Masuk / Daftar
+                                        </a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     </ul>
@@ -125,7 +131,7 @@
     <div id="logout-confirm-dialog" class="white-popup mfp-hide">
         <div class="text-center">
             <h5>Yakin untuk keluar ?</h5>
-            <button type="button" class="btn btn-danger" id="logout-confirm-button">
+            <button type="button" class="btn btn-danger" id="logout-confirm-button" wire:click="logout">
                 Ya, Keluar
             </button>
             <button type="button" class="btn btn-outline-dark" id="cancel-logout" onclick="$.magnificPopup.close()">

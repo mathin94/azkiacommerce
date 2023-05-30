@@ -12,7 +12,7 @@
     <title wire:loading.remove>{{ $title ? "{$title} - " : null }} {{ config('app.brand') }}</title>
 
     @livewireStyles
-    @vite('resources/sass/app.scss')
+    @vite(['resources/sass/app.scss'])
 
     @stack('styles')
 </head>
@@ -37,35 +37,30 @@
                         <aside class="col-md-4 col-lg-3">
                             <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active" id="tab-dashboard-link" data-toggle="tab"
-                                        href="#tab-dashboard" role="tab" aria-controls="tab-dashboard"
-                                        aria-selected="true">Dashboard</a>
+                                    <a class="nav-link {{ request()->routeIs('customer.dashboard') ? 'active' : '' }}"
+                                        href="{{ route('customer.dashboard') }}">Dashboard</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="tab-orders-link" data-toggle="tab" href="#tab-orders"
-                                        role="tab" aria-controls="tab-orders" aria-selected="false">Profil</a>
+                                    <a class="nav-link {{ request()->routeIs('customer.profile') ? 'active' : '' }}"
+                                        href="{{ route('customer.profile') }}">Profil</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="tab-orders-link" data-toggle="tab" href="#tab-orders"
-                                        role="tab" aria-controls="tab-orders" aria-selected="false">Pengaturan
-                                        Alamat</a>
+                                    <a class="nav-link {{ request()->routeIs('customer.addresses') ? 'active' : '' }}"
+                                        href="{{ route('customer.addresses') }}" role="tab">Alamat</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads"
-                                        role="tab" aria-controls="tab-downloads" aria-selected="false">Wishlist</a>
+                                    <a class="nav-link" href="#">Wishlist</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address"
-                                        role="tab" aria-controls="tab-address" aria-selected="false">Pesanan
+                                    <a class="nav-link" href="#">Pesanan
                                         Saya</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account"
-                                        role="tab" aria-controls="tab-account" aria-selected="false">Pesan
+                                    <a class="nav-link" href="#">Pesan
                                         Instant</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Sign Out</a>
+                                    <a class="nav-link" href="#">Keluar</a>
                                 </li>
                             </ul>
                         </aside><!-- End .col-lg-3 -->
@@ -93,12 +88,11 @@
     <script src="{{ asset('build/assets/js/jquery.magnific-popup.min.js') }}"></script>
     <script src="{{ asset('build/assets/js/jquery.plugin.min.js') }}"></script>
     <script src="{{ asset('build/assets/js/jquery.countdown.min.js') }}"></script>
-
     <!-- Main JS File -->
     <script src="{{ asset('build/assets/js/main.js') }}"></script>
     <script src="{{ asset('build/assets/js/demos/demo-5.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js"></script>
-
+    <script src="{{ asset('build/assets/virtual-select-plugin/dist/virtual-select.min.js') }}"></script>
+    @vite('resources/js/app.js')
     @stack('scripts')
 
     <script type="text/javascript">

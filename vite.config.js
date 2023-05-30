@@ -14,6 +14,10 @@ export default defineConfig({
                     src: "resources/assets/js",
                     dest: "assets",
                 },
+                {
+                    src: "node_modules/virtual-select-plugin",
+                    dest: "assets",
+                },
             ],
         }),
         laravel({

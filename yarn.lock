@@ -138,6 +138,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@ttskch/select2-bootstrap4-theme@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@ttskch/select2-bootstrap4-theme/-/select2-bootstrap4-theme-1.5.2.tgz#3b4519b349f3e7831c28752a1e9617312a192656"
+  integrity sha512-gAj8qNy/VYwQDBkACm0USM66kxFai8flX83ayRXPNhzZckEgSqIBB9sM74SCM3ssgeX+ZVy4BifTnLis+KpIyg==
+
 "@vue/reactivity@~3.1.1":
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/@vue/reactivity/-/reactivity-3.1.5.tgz#dbec4d9557f7c8f25c2635db1e23a78a729eb991"
@@ -692,6 +697,11 @@ sass@^1.59.3:
     immutable "^4.0.0"
     source-map-js ">=0.6.2 <2.0.0"
 
+select2@^4.1.0-rc.0:
+  version "4.1.0-rc.0"
+  resolved "https://registry.yarnpkg.com/select2/-/select2-4.1.0-rc.0.tgz#ba3cd3901dda0155e1c0219ab41b74ba51ea22d8"
+  integrity sha512-Hr9TdhyHCZUtwznEH2CBf7967mEM0idtJ5nMtjvk3Up5tPukOLXbHUNmh10oRfeNIhj+3GD3niu+g6sVK+gK0A==
+
 "source-map-js@>=0.6.2 <2.0.0", source-map-js@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.0.2.tgz#adbc361d9c62df380125e7f161f71c826f1e490c"
@@ -743,6 +753,11 @@ to-regex-range@^5.0.1:
   dependencies:
     is-number "^7.0.0"
 
+tooltip-plugin@^1.0.16:
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/tooltip-plugin/-/tooltip-plugin-1.0.16.tgz#489602384dc6ff1f99004f54f833441b33d86352"
+  integrity sha512-bZTFoMw2UM9dX9R6hZIme2vrMLvctdmqGDhzalXGrlxKGzRGTTSnpN6MAGvFf2aXOYfuRwQAhhoTLaleEnI4PQ==
+
 universalify@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-2.0.0.tgz#75a4984efedc4b08975c5aeb73f530d02df25717"
@@ -760,6 +775,13 @@ util-deprecate@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
+
+virtual-select-plugin@^1.0.37:
+  version "1.0.37"
+  resolved "https://registry.yarnpkg.com/virtual-select-plugin/-/virtual-select-plugin-1.0.37.tgz#17b919686358c4f6ad36ff5fa3162534a036c055"
+  integrity sha512-wHNB0omrGRPVu7jkoVfY99i52NXgowyy4cvLRLUj7ZD6E3QOcGybNatk13c9thKGzrTPNKA/d9gTETR0ojnnlw==
+  dependencies:
+    tooltip-plugin "^1.0.16"
 
 vite-plugin-full-reload@^1.0.5:
   version "1.0.5"

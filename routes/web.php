@@ -36,8 +36,12 @@ Route::middleware(['auth:shop'])->group(function () {
     # Route Order Payment
     Route::get('/order/payment/{payment_uuid}', App\Http\Livewire\OrderPayment::class)->name('order.payment');
 
-    # Customer Dashboard
-    Route::get('/customer/dashboard', App\Http\Livewire\CustomerDashboard::class)->name('customer.dashboard');
+    # Customer Routes
+    Route::prefix('/customer')->group(function () {
+        Route::get('/dashboard', App\Http\Livewire\Account\CustomerDashboard::class)->name('customer.dashboard');
+        Route::get('/profile', App\Http\Livewire\Account\CustomerProfile::class)->name('customer.profile');
+        Route::get('/addresses', App\Http\Livewire\Account\CustomerAddresses::class)->name('customer.addresses');
+    });
 });
 
 Route::middleware(['guest:shop'])->group(function () {

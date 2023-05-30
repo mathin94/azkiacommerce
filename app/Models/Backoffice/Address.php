@@ -2,6 +2,7 @@
 
 namespace App\Models\Backoffice;
 
+use App\Models\Shop\Customer as ShopCustomer;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -26,7 +27,7 @@ class Address extends Model
 
     public function customer()
     {
-        return $this->belongsTo(\App\Models\Shop\Customer::class, 'customer_id', 'resource_id');
+        return $this->belongsTo(Customer::class);
     }
 
     public function subdistrict()
@@ -47,27 +48,25 @@ class Address extends Model
         });
     }
 
+    protected function statusBadge(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->is_main ? "<span class='badge badge-success'>Utama</span>" : '';
+        });
+    }
+
     protected static function boot()
     {
         parent::boot();
 
-        static::created(function ($model) {
-            if ($model->is_main) {
+        static::saved(function ($model) {
+            if ($model->isDirty('subdistrict_id')) {
                 $model->customer()
                     ->update(['subdistrict_id' => $model->subdistrict_id]);
-
-                $model->customer->addresses()
-                    ->where('id', '!=', $model->id)
-                    ->update(['is_main' => false]);
             }
-        });
 
-        static::updating(function ($model) {
-            if ($model->is_main) {
-                $model->customer()
-                    ->update(['subdistrict_id' => $model->subdistrict_id]);
-
-                $model->customer->addresses()
+            if ($model->is_main === true) {
+                Address::where('customer_id', $model->customer_id)
                     ->where('id', '!=', $model->id)
                     ->update(['is_main' => false]);
             }

@@ -3,6 +3,7 @@
 namespace App\Models\Shop;
 
 use App\Enums\CartStatus;
+use App\Enums\GenderEnum;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use App\Models\Backoffice\Address as ShippingAddress;
+use App\Models\Backoffice\CustomerType;
 
 class Customer extends Authenticatable
 {
@@ -75,12 +77,16 @@ class Customer extends Authenticatable
         'is_branch',
         'is_default_password',
         'created_at',
+        'customer_type_id',
+        'customer_type_json',
     ];
 
     protected $casts = [
         'is_active'           => 'boolean',
         'is_branch'           => 'boolean',
         'is_default_password' => 'boolean',
+        'customer_type'       => 'json',
+        'gender' => GenderEnum::class,
     ];
 
     public function wishlists()
@@ -123,5 +129,25 @@ class Customer extends Authenticatable
     protected function fullMainAddress(): Attribute
     {
         return Attribute::make(get: fn () => $this->mainAddress->full_address);
+    }
+
+    public function customerType()
+    {
+        return $this->belongsTo(CustomerType::class);
+    }
+
+    public function resource()
+    {
+        return $this->belongsTo(\App\Models\Backoffice\Customer::class, 'resource_id');
+    }
+
+    /**
+     * Boot the model.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();
     }
 }

@@ -13,11 +13,14 @@
     },
     "dependencies": {
         "@awcodes/alpine-floating-ui": "^3.5.0",
+        "@ttskch/select2-bootstrap4-theme": "^1.5.2",
         "alpinejs": "^3.12.0",
         "font-awesome": "^4.7.0",
         "postcss": "^8.4.21",
         "sass": "^1.59.3",
+        "select2": "^4.1.0-rc.0",
         "sweetalert2": "^11.7.3",
-        "tailwindcss": "^3.2.7"
+        "tailwindcss": "^3.2.7",
+        "virtual-select-plugin": "^1.0.37"
     }
 }
