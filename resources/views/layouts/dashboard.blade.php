@@ -49,7 +49,8 @@
                                         href="{{ route('customer.addresses') }}" role="tab">Alamat</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Wishlist</a>
+                                    <a class="nav-link {{ request()->routeIs('customer.wishlist') ? 'active' : '' }}"
+                                        href="{{ route('customer.wishlist') }}">Wishlist</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">Pesanan

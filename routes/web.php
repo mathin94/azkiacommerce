@@ -41,6 +41,7 @@ Route::middleware(['auth:shop'])->group(function () {
         Route::get('/dashboard', App\Http\Livewire\Account\CustomerDashboard::class)->name('customer.dashboard');
         Route::get('/profile', App\Http\Livewire\Account\CustomerProfile::class)->name('customer.profile');
         Route::get('/addresses', App\Http\Livewire\Account\CustomerAddresses::class)->name('customer.addresses');
+        Route::get('/wishlist', App\Http\Livewire\Account\Wishlist::class)->name('customer.wishlist');
     });
 });
 
