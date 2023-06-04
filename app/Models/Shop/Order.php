@@ -148,4 +148,62 @@ class Order extends Model
             });
         });
     }
+
+    public function cancel(): bool
+    {
+        if (empty($this->canceled_at)) {
+            $this->update([
+                'status' => OrderStatus::Canceled,
+                'canceled_at' => now()
+            ]);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function customerCancelable(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->status->value === OrderStatus::WaitingPayment;
+        });
+    }
+
+    protected function adminCancelable(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->status->value === OrderStatus::WaitingPayment || $this->status->value === OrderStatus::WaitingConfirmation;
+        });
+    }
+
+    protected function isCanceled(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->status->value === OrderStatus::Canceled;
+        });
+    }
+
+    // scope canceled
+    public function scopeCanceled($query)
+    {
+        return $query->where('status', OrderStatus::Canceled);
+    }
+
+    // scope ongoing
+    public function scopeOngoing($query)
+    {
+        return $query->whereIn('status', [
+            OrderStatus::WaitingPayment,
+            OrderStatus::WaitingConfirmation,
+            OrderStatus::Paid,
+            OrderStatus::PackageSent,
+        ]);
+    }
+
+    // scope completed
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', OrderStatus::Completed);
+    }
 }

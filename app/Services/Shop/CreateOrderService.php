@@ -8,7 +8,7 @@ use App\Helpers\AutoNumber;
 use App\Models\Backoffice\Address;
 use App\Models\Shop\Cart;
 use App\Models\Shop\Customer;
-use Illuminate\Support\Facades\Http;
+use App\Services\Backoffice\OrderService;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\DB;
 
@@ -87,24 +87,16 @@ class CreateOrderService
             $data['dropshipper_phone'] = $dropship['dropshipper_phone'];
         }
 
-        $request = Http::baseUrl(config('app.backoffice_api_url'))
-            ->withOptions([
-                'verify' => false
-            ])
-            ->withHeaders([
-                'accept' => 'application/json',
-            ])
-            ->withToken($this->customer->authorization_token)
-            ->post('/customer/orders', $data);
+        $service = new OrderService(token: $this->customer->authorization_token);
 
-        if ($request->failed()) {
-            $this->errors = $request->body();
+        $request = $service->createOrder($data);
+
+        if (!$request) {
+            $this->errors = $service->errors;
             return false;
         }
 
-        $response = $request->json();
-
-        $this->backoffice_sales = $response['data'];
+        $this->backoffice_sales = $request['data'];
 
         return true;
     }
@@ -193,18 +185,14 @@ class CreateOrderService
     private function rollbackBackofficeSales(): void
     {
         if (!empty($this->backoffice_sales)) {
-            $uuid = $this->backoffice_sales['uuid'];
-            $endpoint = "/customer/orders/{$uuid}/rollback";
+            $sales_id = $this->backoffice_sales['id'];
 
-            Http::baseUrl(config('app.backoffice_api_url'))
-                ->withOptions([
-                    'verify' => false
-                ])
-                ->withHeaders([
-                    'accept' => 'application/json',
-                ])
-                ->withToken($this->customer->authorization_token)
-                ->post($endpoint, []);
+            $service = new OrderService(
+                $sales_id,
+                $this->customer->authorization_token
+            );
+
+            $service->rollback();
         }
     }
 

@@ -62,7 +62,7 @@
                                         Instant</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Keluar</a>
+                                    <a class="nav-link" href="javascript:void(0);" onclick="logout()">Keluar</a>
                                 </li>
                             </ul>
                         </aside><!-- End .col-lg-3 -->
@@ -109,6 +109,10 @@
                 showCloseBtn: true
             });
         })
+
+        function logout() {
+            Livewire.emit('open-logout-modal');
+        }
     </script>
 </body>
 

@@ -12,15 +12,18 @@ final class OrderStatus extends Enum
     #[Description('Menunggu Pembayaran')]
     const WaitingPayment = 1;
 
+    #[Description('Menunggu Konfirmasi')]
+    const WaitingConfirmation = 2;
+
     #[Description('Dibayar')]
-    const Paid = 2;
+    const Paid = 3;
 
     #[Description('Paket Dikirim')]
-    const PackageSent = 3;
+    const PackageSent = 4;
 
     #[Description('Pesanan Selesai')]
-    const Completed = 4;
+    const Completed = 5;
 
     #[Description('Pesanan Dibatalkan')]
-    const Canceled = 4;
+    const Canceled = 6;
 }

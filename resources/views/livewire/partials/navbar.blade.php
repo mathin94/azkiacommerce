@@ -21,7 +21,7 @@
                                             Saya</a>
                                     </li>
                                     <li>
-                                        <a wire:click="openModal" style="cursor: pointer">
+                                        <a wire:click="openLogoutModal" style="cursor: pointer">
                                             <i class="fa fa-sign-out"></i>
                                             Keluar
                                         </a>

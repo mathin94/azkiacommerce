@@ -3,28 +3,150 @@
 namespace App\Http\Livewire\Account;
 
 use App\Http\Livewire\BaseComponent;
+use App\Models\BankAccount;
+use App\Models\Shop\Order;
+use App\Services\Shop\CancelOrderService;
+use App\Services\Shop\UploadPaymentProofService;
+use Livewire\WithFileUploads;
 
 class OrderList extends BaseComponent
 {
-    public $tab, $detail;
+    use WithFileUploads;
+
+    public $tab, $detail, $orderPayment, $bankAccounts, $selectedBankAccount;
+
+    public $bankAccountId, $file;
 
     protected $queryString = ['tab'];
 
+    public function mount()
+    {
+        $this->bankAccounts = cache()->remember('all_bank_account', 24 * 60 * 60, function () {
+            return BankAccount::with('bank')->get();
+        });
+    }
+
     public function show($id)
     {
-        $this->detail = $this->customer->orders()
-            ->with(['items.productVariant.media', 'shipping', 'payment'])
-            ->findOrFail($id);
+        $this->detail = $this->getOrder($id);
 
         $this->emit('open-modal');
     }
 
+    public function setTab($tab = null)
+    {
+        $this->tab = $tab;
+    }
+
+    public function showPayment($id)
+    {
+        $this->orderPayment = $this->getOrder($id);
+        $this->reset('bankAccountId');
+        $this->emit('open-payment-modal');
+
+        info($this->orderPayment);
+    }
+
+    public function updatedBankAccountId()
+    {
+        $this->selectedBankAccount = $this->bankAccounts->find($this->bankAccountId);
+    }
+
+    public function savePayment()
+    {
+        $this->validate([
+            'bankAccountId' => 'required|exists:App\Models\BankAccount,id',
+            'file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ], [
+            'bankAccountId.required' => 'Nomor rekening tujuan harus di isi',
+            'bankAccountId.exists' => 'Nomor rekening tujuan tidak ditemukan',
+        ]);
+
+        $service = new UploadPaymentProofService(
+            order: $this->orderPayment,
+            bankAccount: $this->selectedBankAccount,
+            file: $this->file
+        );
+
+        $service->perform();
+
+        $this->reset(['bankAccountId', 'file']);
+
+        $this->emit('close-payment-modal');
+
+        $this->emit('showAlert', [
+            "alert" => "
+                        <div class=\"white-popup\">
+                            <h5>Berhasil</h5>
+                            <p>Bukti pembayaran berhasil di upload</p>
+                        </div>
+                    "
+        ]);
+    }
+
+    public function openCancelDialog($id)
+    {
+        $this->detail = $this->getOrder($id);
+
+        $this->dispatchBrowserEvent('open-cancel-dialog');
+    }
+
+    public function cancelOrder()
+    {
+        if ($this->detail && $this->detail->customer_cancelable) {
+            $service = new CancelOrderService($this->detail);
+
+            if (!$service->perform()) {
+                $this->emit('showAlert', [
+                    "alert" => "
+                                <div class=\"white-popup\">
+                                    <h5>Gagal !</h5>
+                                    <p>Terjadi Kesalahan, pesanan gagal dibatalkan</p>
+                                </div>
+                            "
+                ]);
+
+                return false;
+            }
+
+            $this->emit('showAlert', [
+                "alert" => "
+                                <div class=\"white-popup\">
+                                    <h5>Dibatalkan !</h5>
+                                    <p>Pesanan Berhasil Dibatalkan</p>
+                                </div>
+                            "
+            ]);
+
+            $this->emit('close-cancel-dialog');
+        }
+    }
+
+    private function getOrder($id): Order
+    {
+        return $this->customer->orders()
+            ->with(['items.productVariant.media', 'shipping', 'payment'])
+            ->findOrFail($id);
+    }
+
     public function render()
     {
-        $orders = $this->customer->orders()->with('items.productVariant.media')->latest()->paginate(10);
+        $orders = $this->customer->orders()->with('items.productVariant.media');
+
+        if ($this->tab == 'ongoing') {
+            $orders->ongoing();
+        }
+
+        if ($this->tab == 'completed') {
+            $orders->completed();
+        }
+
+        if ($this->tab == 'canceled') {
+            $orders->canceled();
+        }
 
         return view('livewire.account.order-list', [
-            'orders' => $orders
+            'orders' => $orders->latest()->paginate(10)
         ])->layout('layouts.dashboard');
     }
 }

@@ -1,15 +1,20 @@
 <div>
     <nav class="blog-nav">
         <ul class="menu-cat entry-filter justify-content-center">
-            <li class="{{ empty($tab) ? 'active' : '' }}"><a href="#">Semua Pesanan</a></li>
-            <li class=""><a href="#">Sedang Berlangsung</a></li>
-            <li class=""><a href="#">Selesai</a></li>
-            <li class=""><a href="#">Dibatalkan</a></li>
+            <li class="{{ empty($tab) ? 'active' : '' }}"><a href="javascript:void(0);" wire:click="setTab">Semua
+                    Pesanan</a>
+            </li>
+            <li class="{{ $tab == 'ongoing' ? 'active' : '' }}"><a href="javascript:void(0);"
+                    wire:click="setTab('ongoing')">Sedang Berlangsung</a></li>
+            <li class="{{ $tab == 'completed' ? 'active' : '' }}"><a href="javascript:void(0);"
+                    wire:click="setTab('completed')">Selesai</a></li>
+            <li class="{{ $tab == 'canceled' ? 'active' : '' }}"><a href="javascript:void(0);"
+                    wire:click="setTab('canceled')">Dibatalkan</a></li>
         </ul><!-- End .blog-menu -->
     </nav>
     <div class="row">
         <div class="col-12">
-            @foreach ($orders as $order)
+            @forelse ($orders as $order)
                 @php
                     $item = $order->items->first();
                 @endphp
@@ -22,10 +27,16 @@
                                 {{ $order->date_format_id }}
                             </td>
                             <td>
-                                <a href="#" wire:click="show({{ $order->id }})">
-                                    <x-heroicon-o-hashtag style="max-width: 15px;" />
-                                    {{ $order->number }}
-                                </a>
+                                @if ($order->is_canceled)
+                                    <s>
+                                        <x-heroicon-o-hashtag style="max-width: 15px;" />{{ $order->number }}
+                                    </s>
+                                @else
+                                    <a href="#" wire:click="show({{ $order->id }})">
+                                        <x-heroicon-o-hashtag style="max-width: 15px;" />
+                                        {{ $order->number }}
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                         <tr>
@@ -59,13 +70,20 @@
                                     @endif
                                 </h3><!-- End .product-title -->
                             </td>
-                            <td class="price-col text-nowrap align-top">
+                            <td class="price-col text-nowrap align-top text-right">
                                 <h3 class="product-title">Total Pembayaran</h3>
-                                <h3 class="product-title">{{ $item->total_price_label }}</h3>
+                                <h3 class="product-title">{{ $order->final_price_label }}</h3>
                                 <p class="mt-2">
                                     <span
                                         class="badge badge-{{ $order->status_color }}">{{ $order->status->description }}</span>
                                 </p>
+
+                                @if ($order->customer_cancelable)
+                                    <button class="btn mb-1 btn-outline-danger btn-sm mt-3 p-2 pr-4 m-0"
+                                        wire:click="openCancelDialog({{ $order->id }})"><i class="icon-close"></i>
+                                        Batalkan Pesanan</button>
+                                @endif
+                                <br>
                             </td>
 
                         </tr>
@@ -75,182 +93,76 @@
                                     Segera lakukan pembayaran dalam 1 x 24 jam, atau pesanan Anda akan Otomatis
                                     Dibatalkan.
                                 </td>
-                                <td>
-                                    <button class="btn btn-primary">Upload Bukti Pembayaran</button>
+                                <td class="text-right">
+                                    <button class="btn btn-primary"
+                                        wire:click="showPayment({{ $order->id }})">Upload Bukti Pembayaran</button>
+                                </td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td class="align-top" colspan="2">
+                                    @if ($order->status->value === App\Enums\OrderStatus::WaitingConfirmation)
+                                        <i>Menunggu konfirmasi admin</i>
+                                    @endif
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-outline-dark" wire:click="show({{ $order->id }})">Lihat
+                                        Detail</button>
                                 </td>
                             </tr>
                         @endif
                     </tbody>
                 </table>
-            @endforeach
+            @empty
+                <div class="text-center">
+                    <x-lucide-package-open class="mt-5 mb-2" style="max-width: 150px;" />
+                    <p>
+                    <h5>Belum ada data</h5>
+                    </p>
+                </div>
+            @endforelse
         </div>
     </div>
 
-    @if ($detail)
-        <div class="modal fade" id="order-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 800px;">
-                <div class="modal-content" role="document">
-                    <div class="modal-header p-4">
-                        <h5 class="modal-title">
-                            Detail Transaksi
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"><i class="icon-close"></i></span>
-                        </button>
+    @if ($detail && $detail->customer_cancelable)
+        <div id="cancel-confirm-dialog" class="white-popup mfp-hide fadeIn">
+            <div class="text-center">
+                <h5>Yakin untuk membatalkan pesanan ini ?</h5>
+                <button type="button" class="btn btn-danger" id="cancel-confirm-button" wire:click="cancelOrder">
+                    <span wire:target="cancelOrder" wire:loading.class="d-none">
+                        Ya, Batalkan Pesanan
+                    </span>
+
+                    <div wire:loading wire:target="cancelOrder">
+                        <x-css-spinner class="fa-spin" />
                     </div>
-                    <div class="modal-body p-5">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        No. Invoice
-                                    </div>
-                                    <div class="col-md-8 text-right">
-                                        <a href="#">{{ $detail->number }}</a>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        Tanggal Pembelian
-                                    </div>
-                                    <div class="col-md-8 text-right">
-                                        {{ $detail->date_format_id }}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        Status Transaksi
-                                    </div>
-                                    <div class="col-md-8 text-right">
-                                        <span
-                                            class="badge badge-{{ $detail->status_color }}">{{ $detail->status->description }}</span>
-                                    </div>
-                                </div>
-                                <hr>
-                                <h3 class="product-title">Detail Produk</h3>
-                                <div class="product-container mt-2">
-                                    @foreach ($detail->items as $item)
-                                        <div class="row">
-                                            <div class="col-md-2">
-                                                <div class="product">
-                                                    <figure class="product-media" style="max-width: 100px;">
-                                                        <a href="#">
-                                                            <img src="{{ $item->product_image_url }}"
-                                                                alt="{{ $item->name }}">
-                                                        </a>
-                                                    </figure>
-                                                </div><!-- End .product -->
-                                            </div>
-                                            <div class="col-md-6">
-                                                <a href="#" style="color: black;">
-                                                    {{ $item->alternate_name }} <br>
-                                                    <small>{{ $item->name }}</small>
-                                                </a>
-                                                <p>
-                                                    {{ $item->quantity }} x {{ $item->price_label }}
-                                                </p>
-                                            </div>
-                                            <div class="col-md-4 text-right">
-                                                <span>Total Harga</span>
-                                                <p>
-                                                    {{ $item->total_price_label }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                                <hr>
-                                <h3 class="product-title">Info Pengiriman</h3>
-                                <div class="shipping mt-2">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <table class="">
-                                                <tr>
-                                                    <td width="80">Kurir</td>
-                                                    <td width="1">:</td>
-                                                    <td class="text-left">
-                                                        <span
-                                                            class="pl-3">{{ $detail->shipping->courier_label_alternative }}</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="80">No. Resi</td>
-                                                    <td width="1">:</td>
-                                                    <td class="text-left">
-                                                        <span
-                                                            class="pl-3">{{ $detail->shipping->receipt_number ?? 'Belum ada resi' }}</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="80" class="align-top">Alamat</td>
-                                                    <td width="1" class="align-top">:</td>
-                                                    <td class="text-left align-top pl-3">
-                                                        <strong>{{ $detail->shipping->recipient_name }}</strong>
-                                                        <p>{{ $detail->shipping->recipient_phone }}</p>
-                                                        <p>
-                                                            {{ $detail->shipping->full_address }}
-                                                        </p>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr>
-                                <h3 class="product-title">Rincian Pembayaran</h3>
-                                <div class="payment mt-2">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    Metode Pembayaran
-                                                </div>
-                                                <div class="col-md-8 text-right">
-                                                    Transfer Bank
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    Total Harga ({{ $detail->total_item }} Barang)
-                                                </div>
-                                                <div class="col-md-8 text-right">
-                                                    {{ $detail->subtotal_label }}
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    Total Ongkos Kirim ({{ $detail->total_weight }} gr)
-                                                </div>
-                                                <div class="col-md-8 text-right">
-                                                    {{ $detail->shipping_cost_label }}
-                                                </div>
-                                            </div>
-                                            <hr class="mt-1 mb-1">
-                                            <div class="row font-weight-bold">
-                                                <div class="col-md-4">
-                                                    Total Belanja
-                                                </div>
-                                                <div class="col-md-8 text-right">
-                                                    {{ $detail->final_price_label }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div><!-- End .modal-body -->
-                    </div><!-- End .modal-content -->
-                </div><!-- End .modal-dialog -->
-            </div><!-- End .modal -->
+                </button>
+                <button type="button" class="btn btn-outline-dark" id="cancel-cancel"
+                    onclick="$.magnificPopup.close()">
+                    <span>Tutup</span>
+                </button>
+            </div>
+        </div>
     @endif
+
+    @include('livewire.account.partials.order-modal')
+
+    @include('livewire.account.partials.order-payment')
 </div>
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Livewire.on('open-modal', function() {
-                $('#order-modal').modal('show');
-            })
+        Livewire.on('close-cancel-dialog', function() {
+            $.magnificPopup.close();
+        })
+
+        window.addEventListener('open-cancel-dialog', event => {
+            $.magnificPopup.open({
+                items: {
+                    src: '#cancel-confirm-dialog',
+                    type: 'inline'
+                }
+            });
         })
     </script>
 @endpush

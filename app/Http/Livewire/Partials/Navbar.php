@@ -22,7 +22,8 @@ class Navbar extends Component
     }
 
     protected $listeners = [
-        'refreshComponent' => 'getCounter'
+        'refreshComponent' => 'getCounter',
+        'open-logout-modal' => 'openLogoutModal',
     ];
 
     public function logout()
@@ -69,7 +70,7 @@ class Navbar extends Component
         $this->getCounter();
     }
 
-    public function openModal()
+    public function openLogoutModal()
     {
         $this->emit('open-logout-dialog');
     }

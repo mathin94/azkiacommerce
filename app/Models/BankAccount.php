@@ -31,4 +31,11 @@ class BankAccount extends Model
     {
         return Attribute::make(get: fn () => $this->bank->code);
     }
+
+    protected function accountLabel(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return "{$this->bank_name} - {$this->account_name} - {$this->account_number}";
+        });
+    }
 }
