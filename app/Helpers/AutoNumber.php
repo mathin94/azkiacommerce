@@ -9,7 +9,7 @@ class AutoNumber
 {
     public static function createUniqueOrderNumber(): string
     {
-        $prefix = 'TRX/AZK/' . date('Ymd') . '/';
+        $prefix = 'INV/AZK/' . date('Ymd') . '/';
         // Generate a random string to use as the last part of the cart number
         $randomString = Str::of(Str::random(5))->upper->toString();
 

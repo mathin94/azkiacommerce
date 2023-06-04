@@ -37,18 +37,33 @@ class OrderItem extends Model
         return $this->belongsTo(ProductVariant::class, 'shop_product_variant_id');
     }
 
-    public function weightLabel(): Attribute
+    protected function weightLabel(): Attribute
     {
         return Attribute::make(get: fn () => (int) $this->weight . ' gram');
     }
 
-    public function priceLabel(): Attribute
+    protected function priceLabel(): Attribute
     {
         return Attribute::make(get: fn () => 'Rp. ' . number_format($this->price, 0, ',', '.'));
     }
 
-    public function totalPriceLabel(): Attribute
+    protected function totalPriceLabel(): Attribute
     {
         return Attribute::make(get: fn () => 'Rp. ' . number_format($this->total_price, 0, ',', '.'));
+    }
+
+    protected function productImageUrl(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $variant = $this->productVariant;
+
+            $variant_image = $variant->media?->getUrl();
+
+            if ($variant_image) {
+                return $variant_image;
+            }
+
+            return $this->productVariant->product->main_image_url;
+        });
     }
 }

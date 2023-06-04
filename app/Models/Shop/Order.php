@@ -96,4 +96,56 @@ class Order extends Model
     {
         return Attribute::make(get: fn () => 'Rp. ' .  number_format($this->shipping_cost, 0, ',', '.'));
     }
+
+    protected function finalPriceLabel(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return 'Rp. ' . number_format($this->grandtotal + $this->shipping_cost, 0, ',', '.');
+        });
+    }
+
+    protected function statusColor(): Attribute
+    {
+        return Attribute::make(get: function () {
+            switch ($this->status->value) {
+                case OrderStatus::WaitingPayment:
+                    return 'secondary';
+                    break;
+                case OrderStatus::Paid:
+                    return 'info';
+                    break;
+                case OrderStatus::PackageSent:
+                    return 'success';
+                    break;
+                case OrderStatus::Completed:
+                    return 'success';
+                    break;
+                case OrderStatus::Canceled:
+                    return 'danger';
+                    break;
+                default:
+                    return 'warning';
+                    break;
+            }
+        });
+    }
+
+    protected function dateFormatId(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->created_at->locale('id')->isoFormat('DD MMMM YYYY, HH:mm [WIB]'));
+    }
+
+    protected function totalItem(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->items->count('quantity'));
+    }
+
+    protected function totalWeight(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->items->sum(function ($item) {
+                return $item->weight * $item->quantity;
+            });
+        });
+    }
 }

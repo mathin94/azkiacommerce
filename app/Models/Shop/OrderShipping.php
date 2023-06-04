@@ -72,4 +72,13 @@ class OrderShipping extends Model
             return 'Rp. ' . number_format($this->shipping_cost_estimation, 0, ',', '.');
         });
     }
+
+    protected function courierLabelAlternative(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $prop = json_decode($this->courier_properties['value']);
+            $name = strtoupper($this->courier->code);
+            return "{$name} - {$prop->description} ({$this->courier_properties['name']})";
+        });
+    }
 }

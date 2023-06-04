@@ -53,7 +53,8 @@
                                         href="{{ route('customer.wishlist') }}">Wishlist</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Pesanan
+                                    <a class="nav-link {{ request()->routeIs('customer.orders') ? 'active' : '' }}"
+                                        href="{{ route('customer.orders') }}">Pesanan
                                         Saya</a>
                                 </li>
                                 <li class="nav-item">

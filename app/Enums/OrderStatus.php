@@ -20,4 +20,7 @@ final class OrderStatus extends Enum
 
     #[Description('Pesanan Selesai')]
     const Completed = 4;
+
+    #[Description('Pesanan Dibatalkan')]
+    const Canceled = 4;
 }
