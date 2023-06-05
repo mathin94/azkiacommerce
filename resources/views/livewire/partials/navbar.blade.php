@@ -1,4 +1,14 @@
 <div>
+    @if ($head_notification)
+        <div class="notification {{ $head_notification['class'] ?? '' }}">
+            <div class="notify-content">
+                <h3>{!! $head_notification['content'] !!}</h3>
+            </div>
+            <div class="notify-action">
+                <a href="#" id="head-notification-close"><i class="icon-close"></i></a>
+            </div>
+        </div>
+    @endif
     <header class="header">
         <div class="header-top">
             <div class="container">
@@ -96,7 +106,8 @@
 
                                             <figure class="product-image-container">
                                                 <a href="product.html" class="product-image">
-                                                    <img src="{{ $item->product_image_url }}" alt="{{ $item->name }}">
+                                                    <img src="{{ $item->product_image_url }}"
+                                                        alt="{{ $item->name }}">
                                                 </a>
                                             </figure>
                                             <a href="#" class="btn-remove" title="Hapus Produk"><i
@@ -155,6 +166,10 @@
                     type: 'inline'
                 }
             });
+        })
+
+        $('.notify-action #head-notification-close').on('click', function() {
+            $('.notification').css('display', 'none');
         })
     </script>
 @endpush

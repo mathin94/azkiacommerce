@@ -13,11 +13,20 @@ class Navbar extends Component
     public $cart_count;
     public $cartItems;
     public $cart_total;
+    public $head_notification;
 
     public function __construct()
     {
         if (auth()->guard('shop')->check()) {
             $this->user = auth()->guard('shop')->user();
+            if ($this->user->is_default_password) {
+                $link = route('customer.profile');
+
+                $this->head_notification = [
+                    'content'   => "Anda masih menggunakan password default, demi keamanan harap ubah password anda. <a href='{$link}'>Ubah Password</a>",
+                    'class'     => 'bg-danger'
+                ];
+            }
         }
     }
 
