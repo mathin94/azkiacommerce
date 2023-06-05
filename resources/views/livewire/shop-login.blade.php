@@ -28,10 +28,15 @@
                     <div class="tab-content">
                         <div class="tab-pane fade @if ($tab !== 'register') show active @endif" id="signin-2"
                             role="tabpanel" aria-labelledby="signin-tab-2">
+                            @if (session()->has('success'))
+                                <div class="alert alert-success mb-3">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
                             <form wire:submit.prevent="submitLogin">
                                 <div class="form-group">
                                     <label for="singin-email-2">Alamat email *</label>
-                                    <input type="text" class="form-control" wire:model.lazy="email">
+                                    <input type="text" class="form-control" wire:model.lazy="email" autofocus>
                                     @error('email')
                                         <span class="error text-danger">{{ $message }}</span>
                                     @enderror
@@ -63,7 +68,7 @@
                                             Saya</label>
                                     </div><!-- End .custom-checkbox -->
 
-                                    <a href="#" class="forgot-link">Lupa Kata Sandi?</a>
+                                    <a href="{{ route('password.forgot') }}" class="forgot-link">Lupa Kata Sandi?</a>
                                 </div><!-- End .form-footer -->
                             </form>
                         </div><!-- .End .tab-pane -->

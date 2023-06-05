@@ -51,7 +51,11 @@ Route::middleware(['guest:shop'])->group(function () {
     Route::get('/login', App\Http\Livewire\ShopLogin::class)
         ->name('login');
 
-    # Route Shop Logout
-    Route::get('/logout', App\Http\Livewire\ShopLogout::class)
-        ->name('logout');
+    # Route Shop Forgot
+    Route::get('/password/forgot', App\Http\Livewire\ShopForgotPassword::class)
+        ->name('password.forgot');
+
+    # Route Reset
+    Route::get('/password/reset', App\Http\Livewire\ShopResetPassword::class)
+        ->name('password.reset');
 });
