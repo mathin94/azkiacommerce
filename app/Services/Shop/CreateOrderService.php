@@ -79,12 +79,12 @@ class CreateOrderService
             'discount'          => 0, # TODO: Implement Discount
             'details'           => $this->buildSalesDetails(),
             'is_preorder'       => false, # TODO: Implement Preorder,
-            'is_dropship'       => empty($dropship) ? false : true,
+            'is_dropship'       => empty($this->dropship) ? false : true,
         ];
 
-        if (!empty($dropship)) {
-            $data['dropshipper_name'] = $dropship['dropshipper_name'];
-            $data['dropshipper_phone'] = $dropship['dropshipper_phone'];
+        if (!empty($this->dropship)) {
+            $data['dropshipper_name']  = $this->dropship['dropshipper_name'];
+            $data['dropshipper_phone'] = $this->dropship['dropshipper_phone'];
         }
 
         $service = new OrderService(token: $this->customer->authorization_token);
@@ -159,7 +159,7 @@ class CreateOrderService
             'courier_id' => $this->courier_id,
             'courier_service' => $this->service()->name,
             'courier_properties' => $this->service(),
-            'is_dropship' => empty($dropship) ? false : true,
+            'is_dropship' => empty($this->dropship) ? false : true,
             'recipient_name' => $this->shippingAddress->recipient_name,
             'recipient_phone' => $this->shippingAddress->recipient_phone,
             'recipient_address' => $this->shippingAddress->address_line,
@@ -167,9 +167,9 @@ class CreateOrderService
             'shipping_cost' => $this->service()->cost,
         ];
 
-        if (!empty($dropship)) {
-            $data['dropshipper_name'] = $dropship['dropshipper_name'];
-            $data['dropshipper_phone'] = $dropship['dropshipper_phone'];
+        if (!empty($this->dropship)) {
+            $data['dropshipper_name'] = $this->dropship['dropshipper_name'];
+            $data['dropshipper_phone'] = $this->dropship['dropshipper_phone'];
         }
 
         $this->order->shipping()->create($data);

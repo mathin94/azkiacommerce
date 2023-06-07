@@ -6,9 +6,8 @@ use App\Models\Backoffice\Courier;
 use App\Models\Shop\Order;
 use App\Services\RajaOngkir;
 use App\Services\Shop\CreateOrderService;
-use Livewire\Component;
 
-class CartCheckout extends Component
+class CartCheckout extends BaseComponent
 {
     public $cart,
         $couriers,
@@ -20,15 +19,20 @@ class CartCheckout extends Component
         $grandtotal = 0,
         $grandtotal_label,
         $order,
-        $shippingAddress;
+        $isDropship,
+        $shippingAddress,
+        $dropshipperName,
+        $dropshipperPhone;
 
-    protected $user, $origin_city_id = 430;
+    protected $origin_city_id = 430;
 
-    public function __construct()
+    public $listeners = ['select-address' => 'selectAddress'];
+
+    public function selectAddress($id)
     {
-        if (auth()->guard('shop')->check()) {
-            $this->user = auth()->guard('shop')->user();
-        }
+        $this->shippingAddress = $this->customer->addresses->find($id);
+
+        $this->emit('close-address-modal');
     }
 
     public function updatedCourierId($courierId)
@@ -98,12 +102,15 @@ class CartCheckout extends Component
         }
 
         $service = new CreateOrderService(
-            customer: $this->user,
+            customer: $this->customer,
             shippingAddress: $this->shippingAddress,
             courier_id: $this->courierId,
             courierServices: $this->courierServices,
             selectedService: $this->courierService,
-            dropship: null,
+            dropship: [
+                'dropshipper_name' => $this->dropshipperName,
+                'dropshipper_phone' => $this->dropshipperPhone
+            ],
             cart: $this->cart
         );
 
@@ -131,17 +138,26 @@ class CartCheckout extends Component
         }
     }
 
+    public function openAddressModal()
+    {
+        $this->emit('open-address-modal', [
+            'selectedId' => $this->shippingAddress->id
+        ]);
+    }
+
     public function mount()
     {
-        if (empty($this->user->cart)) {
+        if (empty($this->customer->cart)) {
             return redirect('/');
         }
 
-        $this->cart = $this->user->cart;
-        $this->couriers = Courier::supported()->get();
+        $this->cart = $this->customer->cart;
+        $this->couriers = cache()->remember('supported_couriers', 24 * 60 * 60, function () {
+            return Courier::supported()->get();
+        });
 
         if (!$this->shippingAddress) {
-            $this->shippingAddress = $this->user->mainAddress;
+            $this->shippingAddress = $this->customer->mainAddress;
         }
 
         if (!$this->courierId || !$this->courierService) {

@@ -75,11 +75,14 @@
                                             <td colspan="2">{{ $order->total_weight_label }}</td>
                                         </tr>
                                         <tr>
-                                            <td>Ekspedisi:</td>
-                                            <td colspan="2">{{ $order->shipping->courier_label }}</td>
+                                            <td class="text-left" colspan="3">Ekspedisi:
+                                                <span class="pull-right">
+                                                    {{ $order->shipping->courier_label }}
+                                                </span>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td>Biaya Pengiriman:</td>
+                                            <td>Biaya Pengiriman ({{ $order->total_weight }}gr) :</td>
                                             <td colspan="2">{{ $order->shipping->shipping_cost_label }}</td>
                                         </tr>
                                         <tr class="summary-total">
@@ -91,6 +94,25 @@
                                 <h3 class="summary-title mt-2">Informasi Pengiriman</h3>
                                 <table class=" table-summary">
                                     <tbody>
+                                        @if ($order->shipping->is_dropship)
+                                            <tr>
+                                                <td width="5" class="text-nowrap pr-2">Nama Pengirim
+                                                </td>
+                                                <td width="1">:</td>
+                                                <td class="text-left pl-2">{{ $order->shipping->dropshipper_name }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="5" class="text-nowrap pr-2">Telp Pengirim
+                                                </td>
+                                                <td width="1">:</td>
+                                                <td class="text-left pl-2">{{ $order->shipping->dropshipper_phone }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3">&nbsp;</td>
+                                            </tr>
+                                        @endif
                                         <tr>
                                             <td width="5" class="text-nowrap pr-2">Nama Penerima</td>
                                             <td width="1">:</td>

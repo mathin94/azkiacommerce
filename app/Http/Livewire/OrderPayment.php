@@ -4,7 +4,6 @@ namespace App\Http\Livewire;
 
 use App\Models\BankAccount;
 use App\Models\Shop\Order;
-use App\Models\Shop\OrderPayment as ShopOrderPayment;
 use Livewire\Component;
 
 class OrderPayment extends Component

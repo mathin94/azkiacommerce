@@ -55,6 +55,27 @@ class Address extends Model
         });
     }
 
+    // scope search
+    public function scopeSearch($query, $search)
+    {
+        return $query->where('label', 'like', "%$search%")
+            ->orWhere('recipient_name', 'like', "%$search%")
+            ->orWhere('recipient_phone', 'like', "%$search%")
+            ->orWhere('address_line', 'like', "%$search%")
+            ->orWhere('post_code', 'like', "%$search%")
+            ->orWhereHas('subdistrict', function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('city_name', 'like', "%$search%");
+            });
+    }
+
+    // scope Order Default
+    public function scopeOrderDefault($query)
+    {
+        return $query->orderBy('is_main', 'desc')
+            ->orderBy('label', 'asc');
+    }
+
     protected static function boot()
     {
         parent::boot();
