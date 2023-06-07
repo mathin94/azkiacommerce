@@ -25,7 +25,7 @@ class SyncVariantService
     public function handle()
     {
         foreach ($this->product->resource->products()->get() as $variant) {
-            $this->product->variants()->updateOrCreate(
+            $this->product->variants()->dontCache()->updateOrCreate(
                 ['resource_id' => $variant->id],
                 [
                     'barcode'     => $variant->barcode,

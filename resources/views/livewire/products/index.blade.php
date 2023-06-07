@@ -38,7 +38,7 @@
                         <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                             <div class="product">
                                 <figure class="product-media">
-                                    <span class="product-label label-new">New</span>
+                                    {{-- <span class="product-label label-new">New</span> --}}
                                     <a href="{{ $item->public_url }}">
                                         <img src="{{ $item->main_image_url }}" alt="{{ $item->name }} image"
                                             class="product-image">
@@ -49,10 +49,10 @@
                                             <span>tambahkan ke wishlist</span></a>
                                     </div><!-- End .product-action -->
 
-                                    <div class="product-action action-icon-top">
+                                    {{-- <div class="product-action action-icon-top">
                                         <a href="#" class="btn-product btn-cart">
                                             <span>Tambahkan Ke Keranjang</span></a>
-                                    </div><!-- End .product-action -->
+                                    </div><!-- End .product-action --> --}}
                                 </figure><!-- End .product-media -->
 
                                 <div class="product-body">

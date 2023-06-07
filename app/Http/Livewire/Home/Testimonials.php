@@ -12,11 +12,9 @@ class Testimonials extends Component
 
     public function mount()
     {
-        $this->testimonials = Cache::remember(Testimonial::ACTIVE_CACHE_KEY, 24 * 60 * 60, function () {
-            return Testimonial::with('media')
-                ->whereActive(true)
-                ->get();
-        });
+        $this->testimonials = Testimonial::cacheTags(['testimonials_home'])->with('media')
+            ->whereActive(true)
+            ->get();
     }
 
     public function render()

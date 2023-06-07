@@ -24,9 +24,11 @@ class PostFactory extends Factory
             })->toArray();
 
         $post = implode($post);
+        $cat = \App\Models\Shop\Category::pluck('id');
+        $category_id = \rand($cat->min(), $cat->max());
 
         return [
-            'blog_post_category_id' => 13,
+            'blog_post_category_id' => $category_id,
             'author_id'             => 1,
             'title'                 => $title,
             'slug'                  => \Str::slug($title),

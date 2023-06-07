@@ -100,4 +100,9 @@ class Product extends Model
 
         return $this->price;
     }
+
+    protected function productOutletId(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->detail->id);
+    }
 }

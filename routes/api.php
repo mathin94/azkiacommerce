@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/subdistricts', [\App\Http\Controllers\API\SubdistrictController::class, 'index'])->name('api.subdistricts.index');
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

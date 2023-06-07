@@ -9,21 +9,13 @@ use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use RalphJSmit\Filament\SEO\SEO;
-use Filament\Forms\Components\Card;
 use Livewire\TemporaryUploadedFile;
-use Filament\Forms\Components\Repeater;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Validator;
 use App\Services\Backoffice\CategoryService;
 use CoringaWc\FilamentInputLoading\TextInput;
-use App\Models\Backoffice\Product as PosProduct;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\Shop\ProductResource\Pages;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use App\Filament\Resources\Shop\ProductResource\RelationManagers;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use App\Filament\Resources\Shop\ProductResource\RelationManagers\VariantsRelationManager;
-use Filament\Tables\Filters\Filter;
 
 class ProductResource extends Resource
 {

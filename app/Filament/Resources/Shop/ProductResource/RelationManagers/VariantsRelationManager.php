@@ -2,16 +2,9 @@
 
 namespace App\Filament\Resources\Shop\ProductResource\RelationManagers;
 
-use Filament\Forms;
 use Filament\Tables;
-use Ramsey\Uuid\Uuid;
-use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Tables\Filters\Filter;
-use Illuminate\Support\Facades\File;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Database\Eloquent\Model;
-use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,10 +13,7 @@ use App\Services\Product\SyncVariantService;
 use Illuminate\Database\Eloquent\Collection;
 use App\Exports\ProductVariantTemplateExport;
 use App\Jobs\NotifyUploadVariantCompleted;
-use App\Models\Backoffice\Product as PosProduct;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class VariantsRelationManager extends RelationManager
 {
@@ -130,5 +120,15 @@ class VariantsRelationManager extends RelationManager
                     })
                     ->deselectRecordsAfterCompletion()
             ]);
+    }
+
+    protected function getDefaultTableSortColumn(): ?string
+    {
+        return 'name';
+    }
+
+    protected function getDefaultTableSortDirection(): ?string
+    {
+        return 'asc';
     }
 }

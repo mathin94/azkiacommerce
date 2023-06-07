@@ -11,7 +11,7 @@
                                 <li><a href="wishlist.html"><i class="icon-heart-o"></i>Wishlist <span>(3)</span></a></li>
                                 <li>
                                     @if (auth()->guard('shop')->guest())
-                                        <a href="{{ route('auth.login') }}" data-toggle="modal">
+                                        <a href="{{ route('login') }}" data-toggle="modal">
                                             <i class="icon-user"></i>Login
                                         </a>
                                     @endif

@@ -74,12 +74,17 @@ class ShopLogin extends Component
         $remote_user = $data['customer'];
 
         $customer = Customer::updateOrCreate(
-            ['email' => $remote_user['email']],
             [
-                'resource_id'         => $remote_user['id'],
+                'email'         => $remote_user['email'],
+                'resource_id'   => $remote_user['id'],
+            ],
+            [
                 'name'                => $remote_user['name'],
                 'password'            => bcrypt($credentials['password']),
-                'authorization_token' => $data['token']
+                'authorization_token' => $data['token'],
+                'is_default_password' => $remote_user['is_default_password'],
+                'customer_type_id'    => $remote_user['customer_type']['id'],
+                'customer_type'       => $remote_user['customer_type'],
             ]
         );
 

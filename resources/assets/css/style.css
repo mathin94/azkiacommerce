@@ -18491,6 +18491,11 @@ button:focus {
     padding: 4rem 2.8rem 2rem;
 }
 
+.card-order {
+    margin-bottom: 10px;
+    border: 0.1rem solid #ebebeb;
+}
+
 /*--------------------- 5.17.404 -------------------- */
 /* 404 - Error */
 .error-content {

@@ -20,11 +20,13 @@ return new class extends Migration
                 ->constrained('shop_product_variants')
                 ->cascadeOnDelete();
             $table->string('name');
-            $table->decimal('unit_price');
-            $table->integer('weight');
-            $table->integer('quantity');
-            $table->decimal('discount');
-            $table->decimal('total');
+            $table->string('alternate_name')->nullable();
+            $table->decimal('normal_price', 12, 3)->default(0);
+            $table->decimal('price', 12, 3)->default(0);
+            $table->integer('weight')->default(0);
+            $table->integer('quantity')->default(0);
+            $table->decimal('discount', 12, 3)->default(0);
+            $table->decimal('total_price', 12, 3)->default(0);
             $table->timestamps();
         });
     }

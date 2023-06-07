@@ -13,16 +13,14 @@ return new class extends Migration
     {
         Schema::create('shop_carts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('shipping_address_id')->nullable();
             $table->foreignIdFor(\App\Models\Shop\Customer::class, 'shop_customer_id')
                 ->constrained('shop_customers')
                 ->cascadeOnDelete();
-            $table->string('number')->unique();
             $table->integer('status');
-            $table->decimal('total_weight');
-            $table->decimal('subtotal');
-            $table->decimal('shipping_cost');
-            $table->decimal('total_price');
+            $table->decimal('total_weight', 12, 2, true)->default(0);
+            $table->decimal('subtotal', 13, 2, true)->default(0);
+            $table->decimal('shipping_cost', 13, 2, true)->default(0);
+            $table->decimal('grandtotal', 13, 2, true)->default(0);
             $table->timestamp('checked_out_at')->nullable();
             $table->softDeletes();
             $table->timestamps();

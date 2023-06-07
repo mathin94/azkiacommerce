@@ -36,6 +36,14 @@ class Comment extends Model
     public $cachePrefix = 'comments_';
 
     /**
+     * Invalidate the cache automatically
+     * upon update in the database.
+     *
+     * @var bool
+     */
+    protected static $flushCacheOnUpdate = true;
+
+    /**
      * The cache driver to be used.
      *
      * @var string

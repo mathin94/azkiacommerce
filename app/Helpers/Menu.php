@@ -43,8 +43,9 @@ class Menu
                     ->add(Link::to('/wishlists', "<i class=\"icon-heart-o\"></i> Wishlist <span class=\"wishlist-count\">$count</span>"));
 
                 if (auth()->guard('shop')->guest()) {
-                    $menu->add(Link::to(route('auth.login'), '<i class="icon-user"></i> Masuk / Daftar'));
+                    $menu->add(Link::to(route('login'), '<i class="icon-user"></i> Masuk / Daftar'));
                 } else {
+                    $menu->add(Link::to(route('customer.dashboard'), '<i class="icon-user"></i> Akun Saya'));
                     $menu->add(Html::raw("<a wire:click=\"openModal\" style=\"cursor: pointer\"><i class=\"fa fa-sign-out\" style=\"font-weight: 400;\"></i> Keluar</a>"));
                 }
             })
