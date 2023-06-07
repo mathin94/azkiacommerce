@@ -10,9 +10,9 @@ class Navbar extends Component
     public $navbar_menu;
     public $user;
     public $wishlist_count;
-    public $cart_count;
+    public $cartCount;
     public $cartItems;
-    public $cart_total;
+    public $cartTotal;
     public $head_notification;
 
     public function __construct()
@@ -62,11 +62,11 @@ class Navbar extends Component
 
     private function getCart()
     {
-        $this->cart_count = $this->user?->cart?->item_count;
+        $this->cartCount = $this->user?->cart?->item_count;
 
         $this->cartItems = $this->user?->cart?->items;
 
-        $this->cart_total = $this->user?->cart?->grandtotal_label ?? 'Rp. 0';
+        $this->cartTotal = $this->user?->cart?->subtotal_label ?? 'Rp. 0';
     }
 
     public function mount()

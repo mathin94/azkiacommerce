@@ -35,9 +35,13 @@ class CartCheckout extends BaseComponent
         $this->emit('close-address-modal');
     }
 
+    public function updatingCourierId($courierId)
+    {
+        $this->courierService = '';
+    }
+
     public function updatedCourierId($courierId)
     {
-        $this->courierService = null;
         $this->shipping_cost = 0;
 
         $courier        = $this->couriers->find($courierId);
@@ -64,7 +68,7 @@ class CartCheckout extends BaseComponent
             $data[] = [
                 'name'  => $row['service'],
                 'cost'  => $row['cost'][0]['value'],
-                'etd'  => $etd_label,
+                'etd'   => $etd_label,
                 'value' => json_encode($row),
             ];
         }
@@ -81,13 +85,35 @@ class CartCheckout extends BaseComponent
         }
 
         $data = json_decode($data);
-        $this->shipping_cost = $data->cost[0]->value;
+        $this->shipping_cost = $data->cost[0]?->value ?? 0;
 
         $this->mount();
     }
 
     public function submit()
     {
+        $dropshipParam = [];
+
+        if ($this->isDropship) {
+            if (empty($this->dropshipperName) || empty($this->dropshipperPhone)) {
+                $this->emit('showAlert', [
+                    "alert" => "
+                        <div class=\"white-popup\">
+                            <h5>Pemesanan Gagal !</h5>
+                            <p>Harap lengkapi informasi dropshipper</p>
+                        </div>
+                    "
+                ]);
+
+                return;
+            }
+
+            $dropshipParam = [
+                'dropshipper_name' => $this->dropshipperName,
+                'dropshipper_phone' => $this->dropshipperPhone
+            ];
+        }
+
         if (!$this->courierId && empty($this->courierService)) {
             $this->emit('showAlert', [
                 "alert" => "
@@ -107,10 +133,7 @@ class CartCheckout extends BaseComponent
             courier_id: $this->courierId,
             courierServices: $this->courierServices,
             selectedService: $this->courierService,
-            dropship: [
-                'dropshipper_name' => $this->dropshipperName,
-                'dropshipper_phone' => $this->dropshipperPhone
-            ],
+            dropship: $dropshipParam,
             cart: $this->cart
         );
 

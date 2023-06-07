@@ -83,6 +83,7 @@ class CreateOrderService
         ];
 
         if (!empty($this->dropship)) {
+            info($this->dropship);
             $data['dropshipper_name']  = $this->dropship['dropshipper_name'];
             $data['dropshipper_phone'] = $this->dropship['dropshipper_phone'];
         }
@@ -120,16 +121,16 @@ class CreateOrderService
     private function createOrder(): void
     {
         $this->order = $this->customer->orders()->create([
-            'resource_id' => $this->backoffice_sales['id'],
-            'number' => AutoNumber::createUniqueOrderNumber(),
-            'invoice_number' => $this->backoffice_sales['invoice_number'],
-            'total_weight' => $this->totalWeight(),
-            'total' => $this->cart->subtotal,
+            'resource_id'      => $this->backoffice_sales['id'],
+            'number'           => AutoNumber::createUniqueOrderNumber(),
+            'invoice_number'   => $this->backoffice_sales['invoice_number'],
+            'total_weight'     => $this->totalWeight(),
+            'total'            => $this->backoffice_sales['total_amount'],
             'discount_voucher' => $this->backoffice_sales['discount'],
-            'shipping_cost' => $this->service()->cost,
-            'grandtotal' => $this->backoffice_sales['total_amount'],
-            'total_profit' => $this->backoffice_sales['total_profit'],
-            'status' => OrderStatus::WaitingPayment,
+            'shipping_cost'    => $this->service()->cost,
+            'grandtotal'       => $this->backoffice_sales['total_amount'] + $this->service()->cost,
+            'total_profit'     => $this->backoffice_sales['total_profit'],
+            'status'           => OrderStatus::WaitingPayment,
         ]);
     }
 

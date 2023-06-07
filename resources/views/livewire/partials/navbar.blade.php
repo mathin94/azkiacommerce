@@ -85,12 +85,12 @@
                         <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false" data-display="static">
                             <i class="icon-shopping-cart"></i>
-                            <span class="cart-count">{{ $cart_count ?? 0 }}</span>
+                            <span class="cart-count">{{ $cartCount ?? 0 }}</span>
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right">
                             <div class="dropdown-cart-products">
-                                @if ($cart_count > 0)
+                                @if ($cartCount > 0)
                                     @foreach ($cartItems as $item)
                                         <div class="product">
                                             <div class="product-cart-details">
@@ -124,10 +124,10 @@
                             <div class="dropdown-cart-total">
                                 <span>Total</span>
 
-                                <span class="cart-total-price">{{ $cart_total }}</span>
+                                <span class="cart-total-price">{{ $cartTotal }}</span>
                             </div><!-- End .dropdown-cart-total -->
 
-                            @if ($cart_count > 0)
+                            @if ($cartCount > 0)
                                 <div class="dropdown-cart-action">
                                     <a href="{{ route('cart') }}" class="btn btn-primary">Lihat Keranjang</a>
                                 </div><!-- End .dropdown-cart-total -->

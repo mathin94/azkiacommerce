@@ -49,10 +49,10 @@
                                             <span>tambahkan ke wishlist</span></a>
                                     </div><!-- End .product-action -->
 
-                                    <div class="product-action action-icon-top">
+                                    {{-- <div class="product-action action-icon-top">
                                         <a href="#" class="btn-product btn-cart">
                                             <span>Tambahkan Ke Keranjang</span></a>
-                                    </div><!-- End .product-action -->
+                                    </div><!-- End .product-action --> --}}
                                 </figure><!-- End .product-media -->
 
                                 <div class="product-body">

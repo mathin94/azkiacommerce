@@ -75,9 +75,15 @@
                                         </select>
                                     </div>
                                     <div class="col-lg-6">
+                                        <div wire:loading wire:target="courierId">
+                                            <x-css-spinner class="fa-spin" />
+                                        </div>
                                         <select class="form-control select-custom" wire:model="courierService"
-                                            @if (!$courierId) disabled @endif>
-                                            <option value="">Pilih Layanan</option>
+                                            wire:loading.attr="hidden" wire:target="courierId"
+                                            @if (!$courierId && empty($courierService)) disabled @endif>
+                                            <option value="">
+                                                Pilih Layanan
+                                            </option>
                                             @foreach ($courierServices as $key => $item)
                                                 <option value="{{ $item['value'] }}">
                                                     {{ $item['name'] . ' - ' . 'Rp. ' . number_format($item['cost'], 0, ',', '.') }}
@@ -118,14 +124,24 @@
                                                 <td colspan="2">{{ $cart->total_weight . ' gram' }}</td>
                                             </tr>
                                             <tr>
-                                                <td>Biaya Kirim:</td>
-                                                <td colspan="2">
-                                                    {{ $shipping_cost_label }}
+                                                <td colspan="3" class="text-left">
+                                                    Biaya Kirim:
+                                                    <div wire:loading wire:target="courierService" class="pull-right">
+                                                        <x-css-spinner class="fa-spin" />
+                                                    </div>
+                                                    <span class="pull-right" wire:loading.attr="hidden"
+                                                        wire:target="courierService">{{ $shipping_cost_label }}</span>
                                                 </td>
                                             </tr>
                                             <tr class="summary-total">
                                                 <td>Total:</td>
-                                                <td colspan="2">{{ $grandtotal_label }}</td>
+                                                <td colspan="2">
+                                                    <div wire:loading wire:target="courierService" class="pull-right">
+                                                        <x-css-spinner class="fa-spin" />
+                                                    </div>
+                                                    <span wire:loading.attr="hidden"
+                                                        wire:target="courierService">{{ $grandtotal_label }}</span>
+                                                </td>
                                             </tr><!-- End .summary-total -->
                                         </tbody>
                                     </table><!-- End .table table-summary -->
