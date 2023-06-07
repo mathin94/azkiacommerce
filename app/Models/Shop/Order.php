@@ -190,6 +190,24 @@ class Order extends Model
         return $query->where('status', OrderStatus::Canceled);
     }
 
+    public function scopeWaitingPayment($query)
+    {
+        return $query->where('status', OrderStatus::WaitingPayment);
+    }
+
+    public function scopeWaitingDelivery($query)
+    {
+        return $query->whereIn('status', [
+            OrderStatus::WaitingConfirmation,
+            OrderStatus::Paid,
+        ]);
+    }
+
+    public function scopeDelivered($query)
+    {
+        return $query->where('status', OrderStatus::PackageSent);
+    }
+
     // scope ongoing
     public function scopeOngoing($query)
     {
@@ -205,5 +223,12 @@ class Order extends Model
     public function scopeCompleted($query)
     {
         return $query->where('status', OrderStatus::Completed);
+    }
+
+    public function courierLabel(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->shipping->courier_label_alternative;
+        });
     }
 }
