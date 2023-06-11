@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Shop;
 
 use Filament\Forms;
 use Filament\Tables;
+use App\Enums\OrderStatus;
 use App\Models\Shop\Order;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
@@ -12,24 +13,29 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\Layout;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\Component;
+use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use App\Services\Admin\ConfirmOrderService;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\Shop\OrderResource\Pages;
 use App\Filament\Resources\Shop\OrderResource\RelationManagers;
+use App\Services\Admin\CancelOrderService;
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+
+    protected static ?string $navigationGroup = 'Pesanan';
+
+    protected static ?string $modelLabel = 'Kelola Pesanan';
 
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                //
-            ]);
+            ->schema([]);
     }
 
     public static function table(Table $table): Table
@@ -39,14 +45,31 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Tanggal Transaksi')
                     ->sortable()
-                    ->dateTime('d F Y H:i'),
+                    ->getStateUsing(function (Model $record) {
+                        $text = "<span>{$record->created_at->format('d F Y H:i')}</span> <br>";
+
+                        if ($record->status == OrderStatus::WaitingConfirmation()) {
+                            $text .= "» Lihat Bukti Transfer";
+                        }
+
+                        return $text;
+                    })
+                    ->url(function (Model $record) {
+                        if ($record->status == OrderStatus::WaitingConfirmation()) {
+                            return $record->proof_of_payment_url;
+                        }
+
+                        return null;
+                    }, true)
+                    ->html(),
                 Tables\Columns\TextColumn::make('number')
                     ->label('No. Order')
                     ->searchable()
                     ->getStateUsing(function (Model $record) {
                         return "{$record->number} <br>
                         <small class=\"font-weight-bold\">No. Invoice: {$record->invoice_number}</small>";
-                    })->html(),
+                    })
+                    ->html(),
                 Tables\Columns\TextColumn::make('customer.name')
                     ->label('Nama Customer')
                     ->searchable()
@@ -103,7 +126,81 @@ class OrderResource extends Resource
                 ],
             )
             ->actions([
-                // Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make()
+                        ->label('Lihat Detail')
+                        ->modalHeading('Detail Pesanan')
+                        ->modalContent(function (Order $record) {
+                            return view('filament.orders.show', ['order' => $record]);
+                        }),
+
+                    Tables\Actions\Action::make('cancel')
+                        ->action(function (Order $record) {
+                            $service = new CancelOrderService($record, auth()->user());
+
+                            if (!$service->execute()) {
+                                Notification::make()
+                                    ->warning()
+                                    ->title('Gagal!')
+                                    ->body('Terjadi kesalahan, harap refresh browser anda atau hubungi admin.')
+                                    ->persistent()
+                                    ->send();
+
+                                dd($service->errors);
+
+                                return;
+                            }
+
+                            Notification::make()
+                                ->success()
+                                ->title('Sukses!')
+                                ->body('Order berhasil dibatalkan.')
+                                ->persistent()
+                                ->send();
+                        })
+                        ->label('Batalkan Pesanan')
+                        ->icon('eos-cancel')
+                        ->color('danger')
+                        ->modalHeading(function (Order $record) {
+                            return "Batalkan Order " . $record->number;
+                        })
+                        ->requiresConfirmation()
+                        ->hidden(function (Order $record) {
+                            return !$record->admin_cancelable;
+                        }),
+                    Tables\Actions\Action::make('confirm')
+                        ->action(function (Order $record) {
+                            $service = new ConfirmOrderService($record, auth()->user());
+
+                            if (!$service->execute()) {
+                                Notification::make()
+                                    ->warning()
+                                    ->title('Gagal Konfirmasi!')
+                                    ->body('Terjadi kesalahan, harap refresh browser anda atau hubungi admin.')
+                                    ->persistent()
+                                    ->send();
+
+                                return;
+                            }
+
+                            Notification::make()
+                                ->success()
+                                ->title('Sukses!')
+                                ->body('Order berhasil di konfirmasi. segera lakukan pengiriman.')
+                                ->persistent()
+                                ->send();
+                        })
+                        ->label('Konfirmasi Pesanan')
+                        ->icon('eos-check')
+                        ->color('success')
+                        ->modalHeading(function (Order $record) {
+                            return "Konfirmasi Pesanan " . $record->number;
+                        })
+                        ->requiresConfirmation()
+                        ->hidden(function (Order $record) {
+                            return $record->status != OrderStatus::WaitingConfirmation();
+                        })
+                ]),
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
@@ -122,13 +219,16 @@ class OrderResource extends Resource
     {
         return [
             'index' => Pages\ListOrders::route('/'),
-            // 'create' => Pages\CreateOrder::route('/create'),
-            // 'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
 
     public static function canCreate(): bool
     {
         return false;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return static::getModel()::with(['customer', 'payment', 'shipping.courier'])->orderBy('status', 'desc');
     }
 }

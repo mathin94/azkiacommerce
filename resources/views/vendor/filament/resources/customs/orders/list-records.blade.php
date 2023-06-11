@@ -2,6 +2,6 @@
     'filament-resources-list-records-page',
     'filament-resources-' . str_replace('/', '-', $this->getResource()::getSlug()),
 ])">
-    <livewire:admin.order-tab-filter />
+    <livewire:admin.orders.top-filter />
     {{ $this->table }}
 </x-filament::page>

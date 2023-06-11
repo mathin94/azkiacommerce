@@ -192,15 +192,15 @@ class Order extends Model
 
     public function scopeWaitingPayment($query)
     {
-        return $query->where('status', OrderStatus::WaitingPayment);
+        return $query->whereIn('status', [
+            OrderStatus::WaitingConfirmation,
+            OrderStatus::WaitingPayment,
+        ]);
     }
 
     public function scopeWaitingDelivery($query)
     {
-        return $query->whereIn('status', [
-            OrderStatus::WaitingConfirmation,
-            OrderStatus::Paid,
-        ]);
+        return $query->where('status', OrderStatus::Paid);
     }
 
     public function scopeDelivered($query)
@@ -228,7 +228,25 @@ class Order extends Model
     public function courierLabel(): Attribute
     {
         return Attribute::make(get: function () {
-            return $this->shipping->courier_label_alternative;
+            return $this->shipping?->courier_label_alternative;
+        });
+    }
+
+    protected function proofOfPaymentUrl(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->payment?->proof_of_payment_url);
+    }
+
+    protected function transferTo(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if (empty($this->payment->payment_properties)) {
+                return null;
+            }
+
+            $props = json_decode($this->payment->payment_properties);
+
+            return $props->bank_name . ' - ' . $props->account_name . ' - ' . $props->account_number;
         });
     }
 }

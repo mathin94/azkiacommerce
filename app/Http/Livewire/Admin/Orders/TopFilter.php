@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Livewire\Admin;
+namespace App\Http\Livewire\Admin\Orders;
 
-use App\Enums\OrderStatus;
 use Livewire\Component;
 
-class OrderTabFilter extends Component
+class TopFilter extends Component
 {
-    public $menus, $status = 'waitingPayment';
+    public $menus, $status, $filters;
 
     protected $listeners = ['setStatus'];
+
+    protected $queryString = ['filters'];
 
     public function setStatus($status)
     {
@@ -25,10 +26,12 @@ class OrderTabFilter extends Component
             'completed' => 'Selesai',
             'canceled' => 'Dibatalkan',
         ];
+
+        $this->status = $this->filters['status']['value'] ?? 'waitingPayment';
     }
 
     public function render()
     {
-        return view('livewire.admin.order-tab-filter');
+        return view('livewire.admin.orders.top-filter');
     }
 }
