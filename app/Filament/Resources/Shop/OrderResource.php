@@ -16,11 +16,12 @@ use Filament\Forms\Components\Component;
 use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use App\Services\Admin\CancelOrderService;
+use App\Services\Admin\SendPackageService;
 use App\Services\Admin\ConfirmOrderService;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\Shop\OrderResource\Pages;
 use App\Filament\Resources\Shop\OrderResource\RelationManagers;
-use App\Services\Admin\CancelOrderService;
 
 class OrderResource extends Resource
 {
@@ -112,10 +113,7 @@ class OrderResource extends Resource
                         ])
                         ->default('waitingPayment')
                         ->query(function (Builder $query, array $data) {
-                            $status = $data['value'];
-
                             if (!in_array($data['value'], ['waitingPayment', 'waitingDelivery', 'delivered', 'completed', 'canceled'])) {
-                                $status = 'waitingPayment';
                                 $builder = $query->waitingPayment();
                             } else {
                                 $builder = $query->{$data['value']}();
@@ -199,6 +197,68 @@ class OrderResource extends Resource
                         ->requiresConfirmation()
                         ->hidden(function (Order $record) {
                             return $record->status != OrderStatus::WaitingConfirmation();
+                        }),
+                    Tables\Actions\Action::make('send-package')
+                        ->action(function (Order $record, array $data) {
+                            $receipt_number = $data['receipt_number'];
+
+                            $service = new SendPackageService($record, auth()->user(), $receipt_number);
+
+                            if (!$service->execute()) {
+                                Notification::make()
+                                    ->warning()
+                                    ->title('Gagal!')
+                                    ->body('Terjadi kesalahan, harap refresh browser anda atau hubungi admin.')
+                                    ->persistent()
+                                    ->send();
+
+                                return;
+                            }
+
+                            Notification::make()
+                                ->success()
+                                ->title('Sukses!')
+                                ->body('Pesanan berhasil di update.')
+                                ->persistent()
+                                ->send();
+                        })
+                        ->modalWidth('sm')
+                        ->label('Kirim Pesanan')
+                        ->icon('eos-local-shipping-o')
+                        ->color('success')
+                        ->modalHeading('Kirim Pesanan')
+                        ->modalSubheading('Silahkan masukan nomor resi sesuai pesanan')
+                        ->hidden(function (Order $record) {
+                            return $record->status != OrderStatus::Paid();
+                        })
+                        ->form([
+                            Forms\Components\TextInput::make('order_number')
+                                ->default(fn (Order $record) => $record->number)
+                                ->label('Nomor Order')
+                                ->disabled(),
+                            Forms\Components\TextInput::make('courier')
+                                ->default(fn (Order $record) => $record->courier_label)
+                                ->label('Kurir Pengiriman')
+                                ->disabled(),
+                            Forms\Components\TextInput::make('receipt_number')
+                                ->default(fn (Order $record) => $record->shipping->receipt_number)
+                                ->label('Nomor Resi')
+                                ->placeholder('Masukkan nomor resi')
+                                ->required(),
+                        ]),
+                    Tables\Actions\ViewAction::make('tracking')
+                        ->label('Lacak Paket')
+                        ->modalHeading('Lacak Paket')
+                        ->color('success')
+                        ->icon('carbon-map')
+                        ->modalContent(function (Order $record) {
+                            return view('filament.orders.show', ['order' => $record]);
+                        })
+                        ->hidden(function (Order $record) {
+                            return !in_array($record->status, [
+                                OrderStatus::PackageSent(),
+                                OrderStatus::Completed(),
+                            ]);
                         })
                 ]),
             ])

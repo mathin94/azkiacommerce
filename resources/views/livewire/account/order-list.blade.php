@@ -13,7 +13,109 @@
         </ul><!-- End .blog-menu -->
     </nav>
     <div class="row">
-        <div class="col-12">
+        <div class="col-12" wire:loading wire:target="setTab">
+            <table class="table table-cart table-mobile ssc">
+                <tbody>
+                    <tr>
+                        <td colspan="2" style="padding: 0;">
+                            <span class="ssc-line" style="max-width: 300px;"></span>
+                        </td>
+                        <td class="text-right">
+                            <span class="ssc-line"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="product-col mr-4" width="150">
+                            <div class="product">
+                                <figure class="product-media ssc-square mb" style="max-width: 150px;">
+                                </figure>
+                            </div><!-- End .product -->
+                        </td>
+                        <td class="align-top" width="290">
+                            <h3 class="product-title ml-4">
+                                <a href="#">
+                                    <span class="ssc-line" style="max-width: 300px;"></span> <br>
+                                    <span class="ssc-line" style="max-width: 150px;"></span>
+                                </a>
+                                <p class="mt-1">
+                                    <span class="ssc-line" style="max-width: 50px;"></span>
+                                </p>
+                                <p class="mt-1">
+                                    <span class="ssc-line" style="max-width: 50px;"></span>
+                                </p>
+                                <p class="mt-2">
+                                    <span class="ssc-line" style="max-width: 50px;"></span>
+                                </p>
+                            </h3><!-- End .product-title -->
+                        </td>
+                        <td class="price-col text-nowrap align-top text-right">
+                            <span class="ssc-line pull-right" style="max-width: 150px;"></span> <br>
+                            <span class="ssc-line pull-right" style="max-width: 100px;"></span> <br>
+                            <span class="ssc-line pull-right" style="max-width: 100px;"></span>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td class="align-top" colspan="2">
+                        </td>
+                        <td class="text-right">
+                            <div class="ssc-square mb" style="height: 35px"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-cart table-mobile ssc">
+                <tbody>
+                    <tr>
+                        <td colspan="2" style="padding: 0;">
+                            <span class="ssc-line" style="max-width: 300px;"></span>
+                        </td>
+                        <td class="text-right">
+                            <span class="ssc-line"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="product-col mr-4" width="150">
+                            <div class="product">
+                                <figure class="product-media ssc-square mb" style="max-width: 150px;">
+                                </figure>
+                            </div><!-- End .product -->
+                        </td>
+                        <td class="align-top" width="290">
+                            <h3 class="product-title ml-4">
+                                <a href="#">
+                                    <span class="ssc-line" style="max-width: 300px;"></span> <br>
+                                    <span class="ssc-line" style="max-width: 150px;"></span>
+                                </a>
+                                <p class="mt-1">
+                                    <span class="ssc-line" style="max-width: 50px;"></span>
+                                </p>
+                                <p class="mt-1">
+                                    <span class="ssc-line" style="max-width: 50px;"></span>
+                                </p>
+                                <p class="mt-2">
+                                    <span class="ssc-line" style="max-width: 50px;"></span>
+                                </p>
+                            </h3><!-- End .product-title -->
+                        </td>
+                        <td class="price-col text-nowrap align-top text-right">
+                            <span class="ssc-line pull-right" style="max-width: 150px;"></span> <br>
+                            <span class="ssc-line pull-right" style="max-width: 100px;"></span> <br>
+                            <span class="ssc-line pull-right" style="max-width: 100px;"></span>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td class="align-top" colspan="2">
+                        </td>
+                        <td class="text-right">
+                            <div class="ssc-square mb" style="height: 35px"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12" wire:loading.class="d-none" wire:target="setTab">
             @forelse ($orders as $order)
                 @php
                     $item = $order->items->first();
@@ -26,7 +128,7 @@
                                 <x-heroicon-o-shopping-bag style="max-width: 15px;" /> Tanggal Pesanan :
                                 {{ $order->date_format_id }}
                             </td>
-                            <td>
+                            <td class="text-right">
                                 @if ($order->is_canceled)
                                     <s>
                                         <x-heroicon-o-hashtag style="max-width: 15px;" />{{ $order->number }}

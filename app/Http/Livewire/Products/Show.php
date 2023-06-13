@@ -160,8 +160,7 @@ class Show extends Component
         }
 
         $cart = $this->customer->cart()->firstOrNew(['status' => CartStatus::Draft]);
-
-
+        $cart->save();
 
         $cartItem                 = $cart->items()->firstOrNew(['shop_product_variant_id' => $this->variant->id]);
         $cartItem->quantity       = (int) $cartItem->quantity + $this->quantity;
@@ -174,8 +173,10 @@ class Show extends Component
             $cartItem->weight         = $this->variant->weight;
             $cartItem->discount       = 0; # TODO: Implement Discount If Module Discount Done
             $cartItem->save();
+
             $cart->recalculate();
             $cart->save();
+
             $this->emit('showAlert', [
                 "alert" => "
                         <div class=\"white-popup\">

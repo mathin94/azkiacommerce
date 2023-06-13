@@ -4,12 +4,10 @@ namespace App\Services\Admin;
 
 use App\Models\User;
 use App\Enums\OrderStatus;
-use App\Models\BankAccount;
 use App\Models\Shop\Order;
-use App\Services\Backoffice\ApiService;
 use App\Services\Backoffice\OrderService;
 
-class ConfirmOrderService extends ApiService
+class ConfirmOrderService
 {
     public $errors, $bankAccount, $payment_properties, $transfer_to;
 
