@@ -1,7 +1,10 @@
-const colors = require("tailwindcss/colors");
+import colors from "tailwindcss/colors";
+import forms from "@tailwindcss/forms";
+import typography from "@tailwindcss/typography";
 
-module.exports = {
+export default {
     content: ["./resources/**/*.blade.php", "./vendor/filament/**/*.blade.php"],
+    darkMode: "class",
     theme: {
         extend: {
             colors: {
@@ -12,4 +15,5 @@ module.exports = {
             },
         },
     },
+    plugins: [forms, typography, require("tailwindcss-tables")()],
 };

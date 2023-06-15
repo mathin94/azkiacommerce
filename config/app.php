@@ -23,6 +23,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | RajaOngkir Environment
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the "environment" your application is currently
+    | running in. This may determine how you prefer to configure various
+    | services the application utilizes. Set this in your ".env" file.
+    |
+    */
+
+    'rajaongkir' => [
+        'api_key'   => env('RAJAONGKIR_API_KEY', 'apikey'),
+        'base_url'  => env('RAJAONGKIR_API_URL', 'https://pro.rajaongkir.com/api'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

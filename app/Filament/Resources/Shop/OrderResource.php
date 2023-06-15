@@ -22,6 +22,7 @@ use App\Services\Admin\ConfirmOrderService;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\Shop\OrderResource\Pages;
 use App\Filament\Resources\Shop\OrderResource\RelationManagers;
+use App\Services\RajaOngkir\TrackWaybillService;
 
 class OrderResource extends Resource
 {
@@ -252,7 +253,17 @@ class OrderResource extends Resource
                         ->color('success')
                         ->icon('carbon-map')
                         ->modalContent(function (Order $record) {
-                            return view('filament.orders.show', ['order' => $record]);
+                            $service = new TrackWaybillService($record);
+                            $manifests = [];
+
+                            if ($service->execute()) {
+                                $manifests = $service->details();
+                            }
+
+                            return view('filament.orders.tracking', [
+                                'shipping' => $record->shipping,
+                                'manifests' => $manifests
+                            ]);
                         })
                         ->hidden(function (Order $record) {
                             return !in_array($record->status, [
