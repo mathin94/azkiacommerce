@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Account;
 use App\Http\Livewire\BaseComponent;
 use App\Models\BankAccount;
 use App\Models\Shop\Order;
+use App\Services\RajaOngkir\TrackWaybillService;
 use App\Services\Shop\CancelOrderService;
 use App\Services\Shop\UploadPaymentProofService;
 use Livewire\WithFileUploads;
@@ -13,7 +14,7 @@ class OrderList extends BaseComponent
 {
     use WithFileUploads;
 
-    public $tab, $detail, $orderPayment, $bankAccounts, $selectedBankAccount;
+    public $tab, $detail, $orderPayment, $bankAccounts, $selectedBankAccount, $manifests;
 
     public $bankAccountId, $file;
 
@@ -45,6 +46,30 @@ class OrderList extends BaseComponent
         $this->emit('open-payment-modal');
 
         info($this->orderPayment);
+    }
+
+    public function trackingPackage($id)
+    {
+        $this->detail = $this->getOrder($id);
+
+        $service = new TrackWaybillService($this->detail);
+
+        if (!$service->execute()) {
+            $this->emit('showAlert', [
+                "alert" => "
+                        <div class=\"white-popup\">
+                            <h5>Gagal</h5>
+                            <p>Tidak dapat melakukan lacak paket</p>
+                        </div>
+                    "
+            ]);
+
+            return;
+        }
+
+        $this->manifests = $service->details();
+
+        $this->emit('open-tracking-modal');
     }
 
     public function updatedBankAccountId()

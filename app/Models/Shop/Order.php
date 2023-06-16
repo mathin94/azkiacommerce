@@ -249,4 +249,11 @@ class Order extends Model
             return $props->bank_name . ' - ' . $props->account_name . ' - ' . $props->account_number;
         });
     }
+
+    protected function trackable(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return !blank($this->shipping?->receipt_number) && $this->status->value === OrderStatus::PackageSent;
+        });
+    }
 }
