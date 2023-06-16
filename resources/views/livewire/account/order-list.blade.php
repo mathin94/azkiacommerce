@@ -202,14 +202,24 @@
                             </tr>
                         @else
                             <tr>
-                                <td class="align-top" colspan="2">
-                                    @if ($order->status->value === App\Enums\OrderStatus::WaitingConfirmation)
+                                @if (!$order->trackable)
+                                    <td class="align-top" colspan="2">
+                                        @if ($order->status->value === App\Enums\OrderStatus::WaitingConfirmation)
                                         <i>Menunggu konfirmasi admin</i>
-                                    @endif
-                                </td>
-                                <td class="text-right text-nowrap">
+                                        @endif
+                                    </td>
+                                @endif
+                                <td class="text-right text-nowrap" @if ($order->trackable)
+                                    colspan="3"
+                                @endif>
                                     @if ($order->trackable)
-                                        <button class="btn btn-success mr-2"  wire:click="trackingPackage({{ $order->id }})">
+                                        <button class="btn btn-success mr-2" wire:click="openCompleteDialog({{ $order->id }})">
+                                            <div wire:loading.class="d-none" wire:target="openCompleteDialog({{ $order->id }})">Selesaikan Pesanan</div>
+                                            <div wire:loading wire:target="openCompleteDialog({{ $order->id }})">
+                                                <x-css-spinner class="fa-spin" />
+                                            </div>
+                                        </button>
+                                        <button class="btn btn-info mr-2"  wire:click="trackingPackage({{ $order->id }})">
                                             <div wire:loading.class="d-none" wire:target="trackingPackage({{ $order->id }})">Lacak Paket</div>
                                             <div wire:loading wire:target="trackingPackage({{ $order->id }})">
                                                 <x-css-spinner class="fa-spin" />
@@ -261,6 +271,18 @@
     @include('livewire.account.partials.order-payment')
 
     @include('livewire.account.partials.order-tracking-modal')
+
+    <div id="complete-order-dialog" class="white-popup mfp-hide">
+        <div class="text-center">
+            <h5>Selesaikan Pesanan ?</h5>
+            <button type="button" class="btn btn-success" id="complete-order-button" wire:click="complete">
+                Ya, Selesaikan
+            </button>
+            <button type="button" class="btn btn-outline-dark" id="cancel-complete-button" onclick="$.magnificPopup.close()">
+                Tutup
+            </button>
+        </div>
+    </div>
 </div>
 
 @push('scripts')
@@ -273,6 +295,19 @@
             $.magnificPopup.open({
                 items: {
                     src: '#cancel-confirm-dialog',
+                    type: 'inline'
+                }
+            });
+        })
+
+        Livewire.on('close-complete-dialog', function() {
+            $.magnificPopup.close();
+        })
+
+        window.addEventListener('open-complete-dialog', event => {
+            $.magnificPopup.open({
+                items: {
+                    src: '#complete-order-dialog',
                     type: 'inline'
                 }
             });

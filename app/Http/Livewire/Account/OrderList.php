@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Account;
 
+use App\Enums\OrderStatus;
 use App\Http\Livewire\BaseComponent;
 use App\Models\BankAccount;
 use App\Models\Shop\Order;
@@ -16,7 +17,7 @@ class OrderList extends BaseComponent
 
     public $tab, $detail, $orderPayment, $bankAccounts, $selectedBankAccount, $manifests;
 
-    public $bankAccountId, $file;
+    public $bankAccountId, $file, $toCompleteId;
 
     protected $queryString = ['tab'];
 
@@ -152,6 +153,56 @@ class OrderList extends BaseComponent
         return $this->customer->orders()
             ->with(['items.productVariant.media', 'shipping', 'payment'])
             ->findOrFail($id);
+    }
+
+    public function openCompleteDialog($id)
+    {
+        $this->toCompleteId = $id;
+        $this->dispatchBrowserEvent('open-complete-dialog');
+    }
+
+    public function complete()
+    {
+        $order = $this->getOrder($this->toCompleteId);
+
+        if ($order->is_completed) {
+            $this->emit('showAlert', [
+                "alert" => "
+                        <div class=\"white-popup\">
+                            <h5>Gagal !</h5>
+                            <p>Order sudah diselesaikan sebelumnya</p>
+                        </div>
+                    "
+            ]);
+
+            return;
+        }
+
+        if (!$order->trackable) {
+            $this->emit('showAlert', [
+                "alert" => "
+                        <div class=\"white-popup\">
+                            <h5>Gagal !</h5>
+                            <p>Order tidak dapat diselesaikan</p>
+                        </div>
+                    "
+            ]);
+
+            return;
+        }
+
+        $order->update([
+            'status' => OrderStatus::Completed
+        ]);
+
+        $this->emit('showAlert', [
+            "alert" => "
+                <div class=\"white-popup\">
+                    <h5>Sukses !</h5>
+                    <p>Pesanan Berhasil Diselesaikan</p>
+                </div>
+            "
+        ]);
     }
 
     public function render()

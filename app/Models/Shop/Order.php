@@ -256,4 +256,9 @@ class Order extends Model
             return !blank($this->shipping?->receipt_number) && $this->status->value === OrderStatus::PackageSent;
         });
     }
+
+    protected function isCompleted(): Attribute
+    {
+        return Attribute::make(fn () => $this->status->value === OrderStatus::Completed);
+    }
 }
