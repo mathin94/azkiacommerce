@@ -15,7 +15,7 @@ class Show extends Component
 {
     public $product, $colors, $sizes, $stock, $stockLabel, $liked = false;
 
-    public $quantity = 1, $variant, $sizeId, $colorId, $price, $weight;
+    public $quantity = 1, $variant, $sizeId, $colorId, $price, $weight, $normalPrice;
 
     protected $customer;
 
@@ -92,17 +92,19 @@ class Show extends Component
             ->first();
 
         if ($variant) {
-            $this->price = 'Rp. ' . number_format($variant->resource->getFinalPrice($this->quantity), 0, ',', '.');
-            $this->weight = $variant->weight . ' gram';
+            // dd($variant->resource->getFinalPrice($this->quantity));
+            $this->normalPrice = 'Rp. ' . number_format($variant->resource->getFinalPrice($this->quantity), 0, ',', '.');
+            $this->price       = 'Rp. ' . number_format($variant->resource->getFinalPrice($this->quantity, $this->getDiscountVariant($variant)), 0, ',', '.');
+            $this->weight      = $variant->weight . ' gram';
 
             $this->emit('variantChanged', [
                 'image' => $variant->media?->original_url
             ]);
         }
 
-        $this->stock = $variant?->resource->stock ?? 0;
+        $this->stock      = $variant?->resource->stock ?? 0;
         $this->stockLabel = $variant?->resource->stock_label;
-        $this->variant = $variant;
+        $this->variant    = $variant;
     }
 
     public function mount()
@@ -112,6 +114,7 @@ class Show extends Component
         $product = Product::with([
             'media',
             'category',
+            'activeDiscount.discountVariants',
             'variants.color',
             'variants.size',
             'variants.resource',
@@ -130,11 +133,12 @@ class Show extends Component
             ->pluck('size.name', 'size_id')
             ->toArray();
 
-        $this->product = $product;
-        $this->price = $product->price_label;
-        $this->weight = $product->weight_label;
-        $this->colors = Arr::where($colors, fn ($val) => !is_null($val));
-        $this->sizes = Arr::where($sizes, fn ($val) => !is_null($val));
+        $this->product     = $product;
+        $this->normalPrice = $product->normal_price_label;
+        $this->price       = $product->price_label;
+        $this->weight      = $product->weight_label;
+        $this->colors      = Arr::where($colors, fn ($val) => !is_null($val));
+        $this->sizes       = Arr::where($sizes, fn ($val)  => !is_null($val));
 
         if ($this->customer) {
             $this->liked = $this->customer->wishlists()->dontCache()->whereShopProductId($this->product->id)->count() > 0;
@@ -166,12 +170,14 @@ class Show extends Component
         $cartItem->quantity       = (int) $cartItem->quantity + $this->quantity;
 
         if ($cartItem->quantity <= $this->variant->resource->stock) {
+            $discount = $this->getDiscountVariant($this->variant);
+
             $cartItem->name           = $this->variant->name;
             $cartItem->alternate_name = $this->variant->alternate_name;
-            $cartItem->normal_price   = $this->variant->resource->price;
-            $cartItem->price          = $this->variant->resource->getFinalPrice();
+            $cartItem->normal_price   = $this->variant->resource->getFinalPrice();
+            $cartItem->price          = $this->variant->resource->getFinalPrice(1, $discount);
             $cartItem->weight         = $this->variant->weight;
-            $cartItem->discount       = 0; # TODO: Implement Discount If Module Discount Done
+            $cartItem->discount       = $discount;
             $cartItem->save();
 
             $cart->recalculate();
@@ -195,6 +201,14 @@ class Show extends Component
                     "
             ]);
         }
+    }
+
+    private function getDiscountVariant($variant)
+    {
+        return $this->product
+            ->activeDiscount?->discountVariants
+            ->where('shop_product_variant_id', $variant->id)
+            ->first() ? $this->product->discount_percentage : 0;
     }
 
     public function render()

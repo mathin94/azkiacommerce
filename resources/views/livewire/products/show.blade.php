@@ -54,9 +54,14 @@
                                 <a class="ratings-text" href="#product-review-link" id="review-link">( 2 Reviews
                                     )</a>
                             </div><!-- End .rating-container -->
-
+                            @if ($normalPrice != $price)
+                                <div class="product-price">
+                                    <span class="old-price" wire:loading.class="d-none" wire:target="setSize,setColor">{{ $normalPrice }}</span>
+                                    <x-css-spinner-alt wire:loading class="ml-1 fa-spin" wire:target="setSize,setColor" />
+                                </div>
+                            @endif
                             <div class="product-price">
-                                <span wire:loading.class="d-none"
+                                <span class="new-price" wire:loading.class="d-none"
                                     wire:target="setSize,setColor">{{ $price }}</span>
                                 <x-css-spinner-alt wire:loading class="ml-1 fa-spin" wire:target="setSize,setColor" />
                             </div><!-- End .product-price -->

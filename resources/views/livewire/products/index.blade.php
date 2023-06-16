@@ -38,7 +38,9 @@
                         <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                             <div class="product">
                                 <figure class="product-media">
-                                    {{-- <span class="product-label label-new">New</span> --}}
+                                    @if ($item->activeDiscount)
+                                        <span class="product-label label-sale">Diskon {{ $item->activeDiscount->discount_percentage }}%</span>
+                                    @endif
                                     <a href="{{ $item->public_url }}">
                                         <img src="{{ $item->main_image_url }}" alt="{{ $item->name }} image"
                                             class="product-image">
@@ -63,7 +65,10 @@
                                     </h3>
                                     <!-- End .product-title -->
                                     <div class="product-price">
-                                        {{ $item->price_label }}
+                                        @if ($item->activeDiscount)
+                                        <span class="old-price">{{ $item->normal_price_label }}</span>
+                                        @endif
+                                        <span class="new-price">{{ $item->price_label }}</span>
                                     </div><!-- End .product-price -->
                                     <div class="ratings-container">
                                         <div class="ratings">

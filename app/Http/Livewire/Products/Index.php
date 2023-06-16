@@ -43,7 +43,7 @@ class Index extends Component
 
     public function render()
     {
-        $products = Product::with(['media']);
+        $products = Product::with(['media', 'activeDiscount']);
 
         if ($this->search) {
             $products->where('name', 'like', "%{$this->search}%");

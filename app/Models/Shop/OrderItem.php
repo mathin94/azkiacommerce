@@ -42,6 +42,11 @@ class OrderItem extends Model
         return Attribute::make(get: fn () => (int) $this->weight . ' gram');
     }
 
+    protected function normalPriceLabel(): Attribute
+    {
+        return Attribute::make(get: fn () => 'Rp. ' . number_format($this->normal_price, 0, ',', '.'));
+    }
+
     protected function priceLabel(): Attribute
     {
         return Attribute::make(get: fn () => 'Rp. ' . number_format($this->price, 0, ',', '.'));

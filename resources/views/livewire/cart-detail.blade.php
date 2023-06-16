@@ -48,7 +48,12 @@
                                                     </h3><!-- End .product-title -->
                                                 </div><!-- End .product -->
                                             </td>
-                                            <td class="price-col text-nowrap">{{ $item->price_label }}</td>
+                                            <td class="price-col text-nowrap">
+                                                @if ($item->discount > 0)
+                                                    <span class="old-price">{{ $item->normal_price_label }}</span> <br>
+                                                @endif
+                                                <span class="new-price">{{ $item->price_label }}</span>
+                                            </td>
                                             <td class="quantity-col" wire:ignore>
                                                 <div class="cart-product-quantity" wire:ignore>
                                                     <input type="number" class="form-control" wire:ignore

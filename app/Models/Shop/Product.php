@@ -101,6 +101,16 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(\App\Models\Backoffice\Category::class, 'resource_id');
     }
 
+    public function discounts()
+    {
+        return $this->hasMany(ProductDiscount::class, 'shop_product_id');
+    }
+
+    public function activeDiscount()
+    {
+        return $this->hasOne(ProductDiscount::class, 'shop_product_id')->active();
+    }
+
     public function publicUrl(): Attribute
     {
         return Attribute::make(get: fn () => route('products.show', $this->slug));
@@ -118,21 +128,53 @@ class Product extends Model implements HasMedia
         return Attribute::make(get: fn () => $this->category->name);
     }
 
-    protected function priceLabel(): Attribute
+    protected function prices(): Attribute
     {
         return Attribute::make(get: function () {
             $min_price = $this->variants?->min('price');
             $max_price = $this->variants?->max('price');
 
             if ($min_price && $max_price) {
-                $min_price = number_format($min_price, 0, ',', '.');
-                $max_price = number_format($max_price, 0, ',', '.');
-
-                return collect([
-                    "Rp. {$min_price}",
-                    "Rp. {$max_price}",
-                ])->unique()->implode(' - ');
+                return collect([$min_price, $max_price])->unique()->toArray();
             }
+        });
+    }
+
+    protected function discountPercentage(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if (!$this->activeDiscount) {
+                return 0;
+            }
+
+            return $this->activeDiscount->discount_percentage;
+        });
+    }
+
+    protected function priceLabel(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $prices = [];
+
+            foreach ($this->prices as $key => $value) {
+                $price = $value - ($value * ($this->discount_percentage / 100));
+                $prices[] = 'Rp. ' . number_format($price, 0, ',', '.');
+            }
+
+            return collect($prices)->unique()->implode(' - ');
+        });
+    }
+
+    protected function normalPriceLabel(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $prices = [];
+
+            foreach ($this->prices as $key => $value) {
+                $prices[] = 'Rp. ' . number_format($value, 0, ',', '.');
+            }
+
+            return collect($prices)->unique()->implode(' - ');
         });
     }
 

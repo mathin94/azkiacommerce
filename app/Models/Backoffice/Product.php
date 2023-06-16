@@ -79,26 +79,32 @@ class Product extends Model
         });
     }
 
-    public function getFinalPrice($qty = 1)
+    public function getFinalPrice($qty = 1, $discount = 0)
     {
         if (auth()->guard('shop')->guest()) {
-            return $this->price;
+            $price = $this->price;
+        } else {
+            $response = Http::baseUrl(config('app.backoffice_api_url'))
+                ->withOptions([
+                    'verify' => false,
+                ])
+                ->withToken(auth()->guard('shop')->user()->authorization_token)
+                ->post("/customer/products/{$this->detail->id}/price", [
+                    'qty' => $qty
+                ]);
+
+            if ($response->ok()) {
+                $price = $response->json('price');
+            } else {
+                $price = $this->price;
+            }
         }
 
-        $response = Http::baseUrl(config('app.backoffice_api_url'))
-            ->withOptions([
-                'verify' => false,
-            ])
-            ->withToken(auth()->guard('shop')->user()->authorization_token)
-            ->post("/customer/products/{$this->detail->id}/price", [
-                'qty' => $qty
-            ]);
-
-        if ($response->ok()) {
-            return $response->json('price');
+        if ($discount > 0) {
+            $price -= $price * ($discount / 100);
         }
 
-        return $this->price;
+        return $price;
     }
 
     protected function productOutletId(): Attribute
