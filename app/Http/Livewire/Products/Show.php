@@ -6,6 +6,7 @@ use App\Enums\CartStatus;
 use App\Helpers\AutoNumber;
 use App\Models\Shop\Cart;
 use App\Models\Shop\Product;
+use App\Models\Shop\ProductVariantReview;
 use App\Models\Shop\Wishlist;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Arr;
@@ -13,7 +14,7 @@ use Livewire\Component;
 
 class Show extends Component
 {
-    public $product, $colors, $sizes, $stock, $stockLabel, $liked = false;
+    public $product, $colors, $sizes, $stock, $stockLabel, $liked = false, $reviews;
 
     public $quantity = 1, $variant, $sizeId, $colorId, $price, $weight, $normalPrice;
 
@@ -117,7 +118,7 @@ class Show extends Component
             'variants.color',
             'variants.size',
             'variants.resource',
-            'seo'
+            'seo', 'reviews'
         ])
             ->cacheTags(["products:$slug"])
             ->where('slug', $slug)
@@ -142,6 +143,14 @@ class Show extends Component
         if ($this->customer) {
             $this->liked = $this->customer->wishlists()->dontCache()->whereShopProductId($this->product->id)->count() > 0;
         }
+
+        $this->getReviews();
+    }
+
+    public function getReviews()
+    {
+        # TODO: add pagination when more than 100
+        $this->reviews = $this->product->reviews->sortBy('created_at')->reverse();
     }
 
     public function addToCart()

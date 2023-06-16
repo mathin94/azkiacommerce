@@ -79,6 +79,7 @@ class Product extends Model implements HasMedia
         'allow_preorder',
         'order_count',
         'view_count',
+        'review_count',
         'rating',
     ];
 
@@ -110,6 +111,11 @@ class Product extends Model implements HasMedia
     public function activeDiscount()
     {
         return $this->hasOne(ProductDiscount::class, 'shop_product_id')->active();
+    }
+
+    public function reviews()
+    {
+        return $this->hasManyThrough(ProductVariantReview::class, ProductVariant::class, 'shop_product_id', 'shop_product_variant_id');
     }
 
     public function publicUrl(): Attribute
@@ -192,5 +198,10 @@ class Product extends Model implements HasMedia
                 ])->unique()->implode(' - ') . ' gram';
             }
         });
+    }
+
+    protected function ratingPercentage(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->rating * 20);
     }
 }

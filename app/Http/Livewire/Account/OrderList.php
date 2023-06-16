@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Account;
 
 use App\Enums\OrderStatus;
 use App\Http\Livewire\BaseComponent;
+use App\Jobs\RecalculateProductRatingJob;
 use App\Models\BankAccount;
 use App\Models\Shop\Order;
 use App\Services\RajaOngkir\TrackWaybillService;
@@ -230,6 +231,8 @@ class OrderList extends BaseComponent
                 'review' => $review['review'],
                 'rating' => $review['rating'],
             ]);
+
+            RecalculateProductRatingJob::dispatch($item->productVariant->shop_product_id);
 
             $this->detail->refresh();
         }

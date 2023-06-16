@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('shop_products', function (Blueprint $table) {
-            $table->decimal('rating', 1, 1, true)->default(0);
-            $table->integer('review_count')->default(0);
+            $table->decimal('rating', 12, 2, true)->after('order_count')->default(0);
+            $table->integer('review_count')->after('rating')->default(0);
         });
     }
 
