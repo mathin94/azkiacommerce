@@ -91,6 +91,11 @@ class ProductVariant extends Model
         return $this->belongsTo(\App\Models\Media::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(ProductVariantReview::class, 'shop_product_variant_id');
+    }
+
     public function resource()
     {
         return $this->belongsTo(\App\Models\Backoffice\Product::class, 'resource_id');

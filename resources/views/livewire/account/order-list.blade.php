@@ -209,7 +209,7 @@
                                         @endif
                                     </td>
                                 @endif
-                                <td class="text-right text-nowrap" @if ($order->trackable)
+                                <td class="text-right text-nowrap" @if ($order->trackable || $order->is_completed)
                                     colspan="3"
                                 @endif>
                                     @if ($order->trackable)
@@ -222,6 +222,15 @@
                                         <button class="btn btn-info mr-2"  wire:click="trackingPackage({{ $order->id }})">
                                             <div wire:loading.class="d-none" wire:target="trackingPackage({{ $order->id }})">Lacak Paket</div>
                                             <div wire:loading wire:target="trackingPackage({{ $order->id }})">
+                                                <x-css-spinner class="fa-spin" />
+                                            </div>
+                                        </button>
+                                    @endif
+
+                                    @if ($order->is_completed)
+                                        <button class="btn btn-success mr-2" wire:click="openReviewModal({{ $order->id }})">
+                                            <div wire:loading.class="d-none" wire:target="openReviewModal({{ $order->id }})">Ulas Pesanan</div>
+                                            <div wire:loading wire:target="openReviewModal({{ $order->id }})">
                                                 <x-css-spinner class="fa-spin" />
                                             </div>
                                         </button>
@@ -271,6 +280,8 @@
     @include('livewire.account.partials.order-payment')
 
     @include('livewire.account.partials.order-tracking-modal')
+
+    @include('livewire.account.partials.order-review-modal')
 
     <div id="complete-order-dialog" class="white-popup mfp-hide">
         <div class="text-center">

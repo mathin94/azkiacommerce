@@ -37,6 +37,11 @@ class OrderItem extends Model
         return $this->belongsTo(ProductVariant::class, 'shop_product_variant_id');
     }
 
+    public function review()
+    {
+        return $this->hasOne(ProductVariantReview::class, 'shop_order_item_id');
+    }
+
     protected function weightLabel(): Attribute
     {
         return Attribute::make(get: fn () => (int) $this->weight . ' gram');
@@ -69,6 +74,17 @@ class OrderItem extends Model
             }
 
             return $this->productVariant->product->main_image_url;
+        });
+    }
+
+    protected function ratingPercentage(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if (!$this->review) {
+                return 0;
+            }
+
+            return $this->review->rating_percentage;
         });
     }
 }

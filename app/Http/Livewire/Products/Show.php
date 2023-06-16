@@ -92,7 +92,6 @@ class Show extends Component
             ->first();
 
         if ($variant) {
-            // dd($variant->resource->getFinalPrice($this->quantity));
             $this->normalPrice = 'Rp. ' . number_format($variant->resource->getFinalPrice($this->quantity), 0, ',', '.');
             $this->price       = 'Rp. ' . number_format($variant->resource->getFinalPrice($this->quantity, $this->getDiscountVariant($variant)), 0, ',', '.');
             $this->weight      = $variant->weight . ' gram';

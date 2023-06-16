@@ -79,6 +79,7 @@ class Product extends Model implements HasMedia
         'allow_preorder',
         'order_count',
         'view_count',
+        'rating',
     ];
 
     public function category(): BelongsTo

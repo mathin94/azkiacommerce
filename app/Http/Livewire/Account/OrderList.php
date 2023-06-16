@@ -17,7 +17,7 @@ class OrderList extends BaseComponent
 
     public $tab, $detail, $orderPayment, $bankAccounts, $selectedBankAccount, $manifests;
 
-    public $bankAccountId, $file, $toCompleteId;
+    public $bankAccountId, $file, $toCompleteId, $reviews = [];
 
     protected $queryString = ['tab'];
 
@@ -76,6 +76,11 @@ class OrderList extends BaseComponent
     public function updatedBankAccountId()
     {
         $this->selectedBankAccount = $this->bankAccounts->find($this->bankAccountId);
+    }
+
+    public function updatedReviews()
+    {
+        info($this->reviews);
     }
 
     public function savePayment()
@@ -203,6 +208,31 @@ class OrderList extends BaseComponent
                 </div>
             "
         ]);
+    }
+
+    public function openReviewModal($id)
+    {
+        $this->detail = $this->getOrder($id);
+
+        $this->emit('open-review-modal');
+    }
+
+    public function saveReview($id)
+    {
+        $item = $this->detail->items()->findOrFail($id);
+
+        $review = $this->reviews[$id] ?? [];
+
+        if (!blank($review)) {
+            $item->review()->updateOrCreate([
+                'shop_product_variant_id' => $item->shop_product_variant_id,
+                'shop_customer_id' => $this->customer->id,
+                'review' => $review['review'],
+                'rating' => $review['rating'],
+            ]);
+
+            $this->detail->refresh();
+        }
     }
 
     public function render()
