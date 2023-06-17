@@ -138,8 +138,8 @@ class Product extends Model implements HasMedia
     protected function prices(): Attribute
     {
         return Attribute::make(get: function () {
-            $min_price = $this->variants?->min('price');
-            $max_price = $this->variants?->max('price');
+            $min_price = base_price($this->variants?->min('price'), $this->discount_with_membership);
+            $max_price = base_price($this->variants?->max('price'), $this->discount_with_membership);
 
             if ($min_price && $max_price) {
                 return collect([$min_price, $max_price])->unique()->toArray();
@@ -155,6 +155,17 @@ class Product extends Model implements HasMedia
             }
 
             return $this->activeDiscount->discount_percentage;
+        });
+    }
+
+    protected function discountWithMembership(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if (!$this->activeDiscount) {
+                return false;
+            }
+
+            return $this->activeDiscount->with_membership_price;
         });
     }
 
@@ -203,5 +214,16 @@ class Product extends Model implements HasMedia
     protected function ratingPercentage(): Attribute
     {
         return Attribute::make(get: fn () => $this->rating * 20);
+    }
+
+    private function getFinalPrice($price)
+    {
+        $membership_discount = auth()->guard('shop')->user()?->discount_percentage;
+
+        if ($membership_discount) {
+            $price -= ($price * $membership_discount / 100);
+        }
+
+        return $price;
     }
 }

@@ -25,9 +25,10 @@ class ProductDiscount extends Model
     ];
 
     protected $casts = [
-        'active_at' => 'datetime',
-        'inactive_at' => 'datetime',
-        'discount_type' => DiscountType::class
+        'active_at'             => 'datetime',
+        'inactive_at'           => 'datetime',
+        'discount_type'         => DiscountType::class,
+        'with_membership_price' => 'boolean',
     ];
 
     public function product()
