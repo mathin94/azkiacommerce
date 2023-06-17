@@ -37,8 +37,24 @@ class Voucher extends Model
         'inactive_at'  => 'datetime',
     ];
 
+    public function usages()
+    {
+        return $this->hasMany(VoucherUsage::class, 'shop_voucher_id');
+    }
+
     protected function isPercentage(): Attribute
     {
         return Attribute::make(get: fn () => $this->value_type == ValueType::Percentage());
+    }
+
+    public function scopeActive($query)
+    {
+        $now = now();
+
+        $query->where('active_at', '<=', $now)
+            ->where(function ($q) use ($now) {
+                $q->where('inactive_at', '>', $now)
+                    ->orWhereNull('inactive_at');
+            });
     }
 }

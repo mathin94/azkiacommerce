@@ -18,7 +18,7 @@
                             <ul>
                                 <li><a href="/contact-us">Kontak Kami</a></li>
                                 <li>
-                                    <a href="/wishlists">
+                                    <a href="{{ route('customer.wishlist') }}">
                                         <i class="icon-heart-o"></i> Wishlist
                                         <span class="wishlist-count">
                                             {{ $wishlist_count }}

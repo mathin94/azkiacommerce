@@ -8,6 +8,7 @@ use App\Helpers\AutoNumber;
 use App\Models\Backoffice\Address;
 use App\Models\Shop\Cart;
 use App\Models\Shop\Customer;
+use App\Models\Shop\Voucher;
 use App\Services\Backoffice\OrderService;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,8 @@ class CreateOrderService
         private $selectedService,
         private $dropship,
         private Cart $cart,
+        private ?Voucher $selectedVoucher = null,
+        private ?Int $discountVoucher = 0
     ) {
     }
 
@@ -43,6 +46,10 @@ class CreateOrderService
             $this->createOrderShipping();
             $this->createOrderPayment();
             $this->updateCart();
+
+            if (!empty($this->selectedVoucher)) {
+                $this->createVoucherUsage();
+            }
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -76,7 +83,7 @@ class CreateOrderService
             'subdistrict_id'    => $this->shippingAddress->subdistrict_id,
             'courier_service'   => $this->service()->name,
             'shipping_cost'     => $this->service()->cost,
-            'discount'          => 0, # TODO: Implement Discount
+            'discount'          => $this->discountVoucher, # TODO: Implement Discount
             'details'           => $this->buildSalesDetails(),
             'is_preorder'       => false, # TODO: Implement Preorder,
             'is_dropship'       => empty($this->dropship) ? false : true,
@@ -128,7 +135,7 @@ class CreateOrderService
             'total'            => $this->backoffice_sales['total_amount'],
             'discount_voucher' => $this->backoffice_sales['discount'],
             'shipping_cost'    => $this->service()->cost,
-            'grandtotal'       => $this->backoffice_sales['total_amount'] + $this->service()->cost,
+            'grandtotal'       => $this->backoffice_sales['total_amount'] + $this->service()->cost - $this->backoffice_sales['discount'],
             'total_profit'     => $this->backoffice_sales['total_profit'],
             'status'           => OrderStatus::WaitingPayment,
         ]);
@@ -210,5 +217,15 @@ class CreateOrderService
         return (int) $this->cart->items->sum(function ($item) {
             return $item->weight * $item->quantity;
         });
+    }
+
+    private function createVoucherUsage(): void
+    {
+        $this->order->voucherUsage()->create([
+            'shop_voucher_id' => $this->selectedVoucher->id,
+            'amount' => $this->discountVoucher
+        ]);
+
+        $this->selectedVoucher->decrement('quota', 1);
     }
 }

@@ -77,6 +77,11 @@ class Order extends Model
         return $this->hasOne(OrderPayment::class, 'shop_order_id');
     }
 
+    public function voucherUsage()
+    {
+        return $this->hasOne(VoucherUsage::class, 'shop_order_id');
+    }
+
     protected function grandtotalLabel(): Attribute
     {
         return Attribute::make(get: fn () => 'Rp. ' . number_format($this->grandtotal, 0, ',', '.'));

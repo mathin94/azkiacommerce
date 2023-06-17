@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Shop\ProductDiscountResource\Pages;
 
 use Filament\Pages\Actions;
 use App\Models\Shop\ProductDiscount;
+use App\Jobs\RecalculateCartDiscountJob;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\Shop\ProductDiscountResource;
@@ -22,6 +23,8 @@ class CreateProductDiscount extends CreateRecord
         $variants = $this->data['discountVariants'];
 
         $this->record->variants()->sync($variants);
+
+        RecalculateCartDiscountJob::dispatch($this->data['id']);
     }
 
     private function validateActiveDiscount(): void

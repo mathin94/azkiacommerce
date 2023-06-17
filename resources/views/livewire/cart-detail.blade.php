@@ -49,7 +49,7 @@
                                                 </div><!-- End .product -->
                                             </td>
                                             <td class="price-col text-nowrap">
-                                                @if ($item->discount > 0)
+                                                @if ($item->normal_price != $item->price)
                                                     <span class="old-price">{{ $item->normal_price_label }}</span> <br>
                                                 @endif
                                                 <span class="new-price">{{ $item->price_label }}</span>

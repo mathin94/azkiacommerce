@@ -29,8 +29,8 @@ class Cart extends Model
     ];
 
     protected $casts = [
-        'status' => CartStatus::class,
-        'deleted_at' => 'datetime',
+        'status'         => CartStatus::class,
+        'deleted_at'     => 'datetime',
         'checked_out_at' => 'datetime',
     ];
 
@@ -81,6 +81,11 @@ class Cart extends Model
         $this->subtotal     = $this->items->sum('total_price');
         $this->total_weight = $this->getTotalWeightAttribute();
         $this->save();
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', CartStatus::Draft);
     }
 
     public static function boot()

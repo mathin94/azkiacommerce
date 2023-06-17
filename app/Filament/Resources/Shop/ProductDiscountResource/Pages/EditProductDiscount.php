@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Shop\ProductDiscountResource\Pages;
 
 use App\Filament\Resources\Shop\ProductDiscountResource;
+use App\Jobs\RecalculateCartDiscountJob;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -22,5 +23,7 @@ class EditProductDiscount extends EditRecord
         $variants = $this->data['discountVariants'];
 
         $this->record->variants()->sync($variants);
+
+        RecalculateCartDiscountJob::dispatch($this->data['id']);
     }
 }

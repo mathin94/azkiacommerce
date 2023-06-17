@@ -14,3 +14,10 @@ if (!function_exists('base_price')) {
         return $price;
     }
 }
+
+if (!function_exists('format_rupiah')) {
+    function format_rupiah($price): string
+    {
+        return 'Rp. ' . number_format($price, 0, ',', '.');
+    }
+}
