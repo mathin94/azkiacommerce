@@ -93,8 +93,8 @@ class Show extends Component
             ->first();
 
         if ($variant) {
-            $this->normalPrice = 'Rp. ' . number_format($variant->resource->getFinalPrice($this->quantity), 0, ',', '.');
-            $this->price       = 'Rp. ' . number_format($variant->resource->getFinalPrice($this->quantity, $this->getDiscountVariant($variant)), 0, ',', '.');
+            $this->normalPrice = format_rupiah($variant->resource->getFinalPrice($this->quantity));
+            $this->price       = format_rupiah($variant->resource->getFinalPrice($this->quantity, $this->getDiscountVariant($variant)));
             $this->weight      = $variant->weight . ' gram';
 
             $this->emit('variantChanged', [
@@ -213,10 +213,20 @@ class Show extends Component
 
     private function getDiscountVariant($variant)
     {
-        return $this->product
+        $discount = $this->product
             ->activeDiscount?->discountVariants
             ->where('shop_product_variant_id', $variant->id)
-            ->first() ? $this->product->discount_percentage : 0;
+            ->first();
+
+        if (blank($discount)) {
+            return 0;
+        }
+
+        if (!blank($discount->max_quantity) && $this->quantity > $discount->max_quantity) {
+            return 0;
+        }
+
+        return $discount->discount_percentage;
     }
 
     public function render()

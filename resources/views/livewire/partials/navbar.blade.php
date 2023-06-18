@@ -73,10 +73,10 @@
                     <div class="header-search">
                         <a href="#" class="search-toggle" role="button" title="Search"><i
                                 class="icon-search"></i></a>
-                        <form action="#" method="get">
+                        <form action="{{ route('products.index') }}" method="get">
                             <div class="header-search-wrapper">
                                 <label for="q" class="sr-only">Search</label>
-                                <input type="search" class="form-control" name="q" id="q"
+                                <input type="search" class="form-control" name="search"
                                     placeholder="Cari Produk..." required>
                             </div><!-- End .header-search-wrapper -->
                         </form>
