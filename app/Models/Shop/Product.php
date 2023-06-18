@@ -81,6 +81,8 @@ class Product extends Model implements HasMedia
         'view_count',
         'review_count',
         'rating',
+        'total_score',
+        'total_like',
     ];
 
     public function category(): BelongsTo
@@ -225,5 +227,25 @@ class Product extends Model implements HasMedia
         }
 
         return $price;
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('featured', true);
+    }
+
+    public function scopeVisible($query)
+    {
+        return $query->where('visible', true);
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->where('published_at', '<=', now());
+    }
+
+    public function scopeOnSale($query)
+    {
+        return $query->has('activeDiscount');
     }
 }

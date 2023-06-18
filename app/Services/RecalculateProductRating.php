@@ -13,17 +13,31 @@ class RecalculateProductRating
 
     public function execute()
     {
-        $product = Product::with('reviews')->find($this->product_id);
+        $product = Product::find($this->product_id);
+
+        if (!$product) {
+            return false;
+        }
+
         $reviews = $product->reviews;
 
-        $rating_count = $reviews->count();
-        $rating_total = $reviews->sum('rating');
+        if (!$reviews) {
+            $product->rating       = 0;
+            $product->review_count = 0;
+            $product->total_score  = 0;
+            $product->save();
+
+            return false;
+        }
+
+        $rating_count   = $reviews->count();
+        $rating_total   = $reviews->sum('rating');
         $rating_average = $rating_total / $rating_count;
 
-        $product->update([
-            'rating' => $rating_average,
-            'review_count' => $rating_count
-        ]);
+        $product->rating       = $rating_average;
+        $product->review_count = $rating_count;
+        $product->total_score  = $rating_total;
+        $product->save();
 
         return true;
     }
