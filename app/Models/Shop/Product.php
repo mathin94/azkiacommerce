@@ -248,4 +248,74 @@ class Product extends Model implements HasMedia
     {
         return $query->has('activeDiscount');
     }
+
+    public function scopeByCategories($query, $categoryIds)
+    {
+        return $query->whereIn('shop_product_category_id', $categoryIds);
+    }
+
+    public function scopeBySizes($query, $sizeIds)
+    {
+        return $query->whereHas('variants', function ($query) use ($sizeIds) {
+            $query->whereIn('size_id', $sizeIds);
+        });
+    }
+
+    public function scopeByColor($query, $colorId)
+    {
+        return $query->whereHas('variants', function ($query) use ($colorId) {
+            $query->where('color_id', $colorId);
+        });
+    }
+
+    public function scopeMinPrice($query, $price)
+    {
+        return $query->whereHas('variants', function ($query) use ($price) {
+            $query->where('price', '>=', $price);
+        });
+    }
+
+    public function scopeMaxPrice($query, $price)
+    {
+        return $query->whereHas('variants', function ($query) use ($price) {
+            $query->where('price', '<=', $price);
+        });
+    }
+
+    public function scopeSortByValue($query, $value)
+    {
+        if ($value == 'created_at') {
+            return $query->orderBy('created_at', 'desc');
+        }
+
+        if ($value == 'top_rated') {
+            return $query->orderBy('total_score', 'desc');
+        }
+
+        if ($value == 'lowest_price') {
+            return $query->orderBy(function ($q) {
+                $q->select('price')
+                    ->from('shop_product_variants')
+                    ->whereColumn('shop_product_variants.shop_product_id', '=', 'shop_products.id')
+                    ->orderBy('price')
+                    ->limit(1);
+            }, 'asc');
+        }
+
+        if ($value == 'highest_price') {
+            return $query->orderBy(function ($q) {
+                $q->select('price')
+                    ->from('shop_product_variants')
+                    ->whereColumn('shop_product_variants.shop_product_id', '=', 'shop_products.id')
+                    ->orderBy('price', 'desc')
+                    ->limit(1);
+            }, 'desc');
+        }
+
+        if ($value == 'name_desc') {
+            return $query->orderBy('name', 'desc');
+        }
+
+        return $query->orderBy('name', 'asc');
+    }
 }

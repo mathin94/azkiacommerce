@@ -44,47 +44,7 @@
                                 }
                             }'>
                 @forelse ($featuredProducts as $item)
-                    <div class="product product-2">
-                        <figure class="product-media">
-                            @if ($item->discount_percentage > 0)
-                            <span class="product-label label-sale">Diskon {{ $item->discount_percentage }}%</span>
-                            @endif
-                            <a href="{{ $item->public_url }}">
-                                <img src="{{ $item->main_image_url }}" alt="{{ $item->name }} image" class="product-image">
-                            </a>
-
-                            <div class="product-action-vertical">
-                                <a href="#" class="btn-product-icon btn-wishlist btn-expandable">
-                                    <span>tambahkan ke wishlist</span></a>
-                            </div><!-- End .product-action -->
-
-                            {{-- <div class="product-action action-icon-top">
-                                <a href="#" class="btn-product btn-cart">
-                                    <span>Tambahkan Ke Keranjang</span></a>
-                            </div><!-- End .product-action --> --}}
-                        </figure>
-
-                        <div class="product-body">
-                            <div class="product-cat">
-                                <a href="{{ $item->category->public_url }}">{{ $item->category_name }}</a>
-                            </div><!-- End .product-cat -->
-                            <h3 class="product-title"><a href="{{ $item->public_url }}">{{ $item->name }}</a>
-                            </h3>
-                            <!-- End .product-title -->
-                            <div class="product-price">
-                                @if ($item->activeDiscount)
-                                <span class="old-price">{{ $item->normal_price_label }}</span>
-                                @endif
-                                <span class="new-price">{{ $item->price_label }}</span>
-                            </div><!-- End .product-price -->
-                            <div class="ratings-container">
-                                <div class="ratings">
-                                    <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->
-                                </div><!-- End .ratings -->
-                                <span class="ratings-text">( 0 Reviews )</span>
-                            </div><!-- End .rating-container -->
-                        </div>
-                    </div>
+                    <livewire:product-figure :product=$item />
                 @empty
                     Belum ada produk
                 @endforelse
@@ -118,47 +78,7 @@
                                 }
                             }'>
                 @forelse ($onSaleProducts as $item)
-                    <div class="product product-2">
-                        <figure class="product-media">
-                            @if ($item->discount_percentage > 0)
-                            <span class="product-label label-sale">Diskon {{ $item->discount_percentage }}%</span>
-                            @endif
-                            <a href="{{ $item->public_url }}">
-                                <img src="{{ $item->main_image_url }}" alt="{{ $item->name }} image" class="product-image">
-                            </a>
-
-                            <div class="product-action-vertical">
-                                <a href="#" class="btn-product-icon btn-wishlist btn-expandable">
-                                    <span>tambahkan ke wishlist</span></a>
-                            </div><!-- End .product-action -->
-
-                            {{-- <div class="product-action action-icon-top">
-                                <a href="#" class="btn-product btn-cart">
-                                    <span>Tambahkan Ke Keranjang</span></a>
-                            </div><!-- End .product-action --> --}}
-                        </figure>
-
-                        <div class="product-body">
-                            <div class="product-cat">
-                                <a href="{{ $item->category->public_url }}">{{ $item->category_name }}</a>
-                            </div><!-- End .product-cat -->
-                            <h3 class="product-title"><a href="{{ $item->public_url }}">{{ $item->name }}</a>
-                            </h3>
-                            <!-- End .product-title -->
-                            <div class="product-price">
-                                @if ($item->activeDiscount)
-                                <span class="old-price">{{ $item->normal_price_label }}</span>
-                                @endif
-                                <span class="new-price">{{ $item->price_label }}</span>
-                            </div><!-- End .product-price -->
-                            <div class="ratings-container">
-                                <div class="ratings">
-                                    <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->
-                                </div><!-- End .ratings -->
-                                <span class="ratings-text">( 0 Reviews )</span>
-                            </div><!-- End .rating-container -->
-                        </div>
-                    </div>
+                    <livewire:product-figure :product=$item />
                 @empty
                     Belum ada produk
                 @endforelse
@@ -193,47 +113,7 @@
                             }'>
 
                 @forelse ($topRatedProducts as $item)
-                    <div class="product product-2">
-                        <figure class="product-media">
-                            @if ($item->discount_percentage > 0)
-                                <span class="product-label label-sale">Diskon {{ $item->discount_percentage }}%</span>
-                            @endif
-                            <a href="{{ $item->public_url }}">
-                                <img src="{{ $item->main_image_url }}" alt="{{ $item->name }} image" class="product-image">
-                            </a>
-
-                            <div class="product-action-vertical">
-                                <a href="#" class="btn-product-icon btn-wishlist btn-expandable">
-                                    <span>tambahkan ke wishlist</span></a>
-                            </div><!-- End .product-action -->
-
-                            {{-- <div class="product-action action-icon-top">
-                                <a href="#" class="btn-product btn-cart">
-                                    <span>Tambahkan Ke Keranjang</span></a>
-                            </div><!-- End .product-action --> --}}
-                        </figure>
-
-                        <div class="product-body">
-                            <div class="product-cat">
-                                <a href="{{ $item->category->public_url }}">{{ $item->category_name }}</a>
-                            </div><!-- End .product-cat -->
-                            <h3 class="product-title"><a href="{{ $item->public_url }}">{{ $item->name }}</a>
-                            </h3>
-                            <!-- End .product-title -->
-                            <div class="product-price">
-                                @if ($item->activeDiscount)
-                                <span class="old-price">{{ $item->normal_price_label }}</span>
-                                @endif
-                                <span class="new-price">{{ $item->price_label }}</span>
-                            </div><!-- End .product-price -->
-                            <div class="ratings-container">
-                                <div class="ratings">
-                                    <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->
-                                </div><!-- End .ratings -->
-                                <span class="ratings-text">( 0 Reviews )</span>
-                            </div><!-- End .rating-container -->
-                        </div>
-                    </div>
+                    <livewire:product-figure :product=$item />
                 @empty
                     Belum ada produk
                 @endforelse

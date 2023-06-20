@@ -10,6 +10,7 @@ use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use RalphJSmit\Filament\SEO\SEO;
 use Livewire\TemporaryUploadedFile;
+use App\Jobs\RecalculateCategoryStatJob;
 use App\Services\Backoffice\CategoryService;
 use CoringaWc\FilamentInputLoading\TextInput;
 use App\Filament\Resources\Shop\ProductResource\Pages;
@@ -208,7 +209,10 @@ class ProductResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()
+                    ->after(function (?Product $record) {
+                        RecalculateCategoryStatJob::dispatch($record->shop_product_category_id);
+                    }),
             ]);
     }
 
