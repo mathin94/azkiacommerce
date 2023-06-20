@@ -164,7 +164,7 @@ class Product extends Model implements HasMedia
     {
         return Attribute::make(get: function () {
             if (!$this->activeDiscount) {
-                return false;
+                return true;
             }
 
             return $this->activeDiscount->with_membership_price;
@@ -178,7 +178,7 @@ class Product extends Model implements HasMedia
 
             foreach ($this->prices as $key => $value) {
                 $price = $value - ($value * ($this->discount_percentage / 100));
-                $prices[] = 'Rp. ' . number_format($price, 0, ',', '.');
+                $prices[] = format_rupiah($price);
             }
 
             return collect($prices)->unique()->implode(' - ');
@@ -191,7 +191,7 @@ class Product extends Model implements HasMedia
             $prices = [];
 
             foreach ($this->prices as $key => $value) {
-                $prices[] = 'Rp. ' . number_format($value, 0, ',', '.');
+                $prices[] = format_rupiah($value);
             }
 
             return collect($prices)->unique()->implode(' - ');

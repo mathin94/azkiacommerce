@@ -178,7 +178,7 @@ class Show extends Component
         $cartItem->quantity       = (int) $cartItem->quantity + $this->quantity;
 
         if ($cartItem->quantity <= $this->variant->resource->stock) {
-            $discount = $this->getDiscountVariant($this->variant);
+            $discount = $this->getDiscountVariant($this->variant) ?? 0;
 
             $cartItem->name           = $this->variant->name;
             $cartItem->alternate_name = $this->variant->alternate_name;
@@ -213,12 +213,16 @@ class Show extends Component
 
     private function getDiscountVariant($variant)
     {
-        $discount = $this->product
-            ->activeDiscount?->discountVariants
-            ->where('shop_product_variant_id', $variant->id)
+        $discount = $this->product->activeDiscount;
+
+        if (!$discount) {
+            return 0;
+        }
+
+        $discount_variant = $discount->discountVariants()->where('shop_product_variant_id', $variant->id)
             ->first();
 
-        if (blank($discount)) {
+        if (!$discount_variant) {
             return 0;
         }
 

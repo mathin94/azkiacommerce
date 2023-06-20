@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use App\Jobs\RecalculateCartDiscountDelayedJob;
+use App\Services\Shop\DeleteCartDiscountService;
 use App\Services\Shop\RecalculateCartDiscountService;
 
 class RecalculateCartDiscountJob implements ShouldQueue
@@ -30,9 +31,15 @@ class RecalculateCartDiscountJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $discount = ProductDiscount::find($this->discount_id);
+        $discount = ProductDiscount::withTrashed()->find($this->discount_id);
 
         if (!$discount) {
+            return;
+        }
+
+        if (!empty($discount->deleted_at)) {
+            $service = new DeleteCartDiscountService($discount);
+            $service->execute();
             return;
         }
 

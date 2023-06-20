@@ -63,6 +63,27 @@
                                     <span>Tambahkan Ke Keranjang</span></a>
                             </div><!-- End .product-action --> --}}
                         </figure>
+
+                        <div class="product-body">
+                            <div class="product-cat">
+                                <a href="{{ $item->category->public_url }}">{{ $item->category_name }}</a>
+                            </div><!-- End .product-cat -->
+                            <h3 class="product-title"><a href="{{ $item->public_url }}">{{ $item->name }}</a>
+                            </h3>
+                            <!-- End .product-title -->
+                            <div class="product-price">
+                                @if ($item->activeDiscount)
+                                <span class="old-price">{{ $item->normal_price_label }}</span>
+                                @endif
+                                <span class="new-price">{{ $item->price_label }}</span>
+                            </div><!-- End .product-price -->
+                            <div class="ratings-container">
+                                <div class="ratings">
+                                    <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->
+                                </div><!-- End .ratings -->
+                                <span class="ratings-text">( 0 Reviews )</span>
+                            </div><!-- End .rating-container -->
+                        </div>
                     </div>
                 @empty
                     Belum ada produk
@@ -116,6 +137,27 @@
                                     <span>Tambahkan Ke Keranjang</span></a>
                             </div><!-- End .product-action --> --}}
                         </figure>
+
+                        <div class="product-body">
+                            <div class="product-cat">
+                                <a href="{{ $item->category->public_url }}">{{ $item->category_name }}</a>
+                            </div><!-- End .product-cat -->
+                            <h3 class="product-title"><a href="{{ $item->public_url }}">{{ $item->name }}</a>
+                            </h3>
+                            <!-- End .product-title -->
+                            <div class="product-price">
+                                @if ($item->activeDiscount)
+                                <span class="old-price">{{ $item->normal_price_label }}</span>
+                                @endif
+                                <span class="new-price">{{ $item->price_label }}</span>
+                            </div><!-- End .product-price -->
+                            <div class="ratings-container">
+                                <div class="ratings">
+                                    <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->
+                                </div><!-- End .ratings -->
+                                <span class="ratings-text">( 0 Reviews )</span>
+                            </div><!-- End .rating-container -->
+                        </div>
                     </div>
                 @empty
                     Belum ada produk
@@ -170,6 +212,27 @@
                                     <span>Tambahkan Ke Keranjang</span></a>
                             </div><!-- End .product-action --> --}}
                         </figure>
+
+                        <div class="product-body">
+                            <div class="product-cat">
+                                <a href="{{ $item->category->public_url }}">{{ $item->category_name }}</a>
+                            </div><!-- End .product-cat -->
+                            <h3 class="product-title"><a href="{{ $item->public_url }}">{{ $item->name }}</a>
+                            </h3>
+                            <!-- End .product-title -->
+                            <div class="product-price">
+                                @if ($item->activeDiscount)
+                                <span class="old-price">{{ $item->normal_price_label }}</span>
+                                @endif
+                                <span class="new-price">{{ $item->price_label }}</span>
+                            </div><!-- End .product-price -->
+                            <div class="ratings-container">
+                                <div class="ratings">
+                                    <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->
+                                </div><!-- End .ratings -->
+                                <span class="ratings-text">( 0 Reviews )</span>
+                            </div><!-- End .rating-container -->
+                        </div>
                     </div>
                 @empty
                     Belum ada produk

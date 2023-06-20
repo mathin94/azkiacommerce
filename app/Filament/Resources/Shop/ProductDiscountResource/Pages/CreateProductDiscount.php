@@ -24,7 +24,7 @@ class CreateProductDiscount extends CreateRecord
 
         $this->record->variants()->sync($variants);
 
-        RecalculateCartDiscountJob::dispatch($this->data['id']);
+        RecalculateCartDiscountJob::dispatch($this->record->id);
     }
 
     private function validateActiveDiscount(): void

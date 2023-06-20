@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\Shop\ProductDiscountResource\Pages;
 use App\Filament\Resources\Shop\ProductDiscountResource\RelationManagers;
+use App\Jobs\RecalculateCartDiscountJob;
 use Illuminate\Database\Eloquent\Model;
 use LucasGiovanny\FilamentMultiselectTwoSides\Forms\Components\Fields\MultiselectTwoSides;
 
@@ -123,9 +124,13 @@ class ProductDiscountResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->after(function (Model $record) {
+                        RecalculateCartDiscountJob::dispatch($record->id);
+                    })
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 

@@ -98,6 +98,11 @@ class CartCheckout extends BaseComponent
             return;
         }
 
+        $this->calculateVoucher();
+    }
+
+    private function calculateVoucher()
+    {
         $voucher = Voucher::active()->whereCode($this->voucher)->first();
 
         if (!$voucher) {
@@ -162,9 +167,11 @@ class CartCheckout extends BaseComponent
         $data = json_decode($data);
         $this->shipping_cost = $data->cost[0]?->value ?? 0;
 
-        $this->applyVoucher();
-
-        $this->mount();
+        if ($this->voucher) {
+            $this->calculateVoucher();
+        } else {
+            $this->mount();
+        }
     }
 
     public function submit()

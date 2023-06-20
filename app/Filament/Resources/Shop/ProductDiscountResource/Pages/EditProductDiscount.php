@@ -2,10 +2,11 @@
 
 namespace App\Filament\Resources\Shop\ProductDiscountResource\Pages;
 
-use App\Filament\Resources\Shop\ProductDiscountResource;
-use App\Jobs\RecalculateCartDiscountJob;
 use Filament\Pages\Actions;
+use Illuminate\Database\Eloquent\Model;
+use App\Jobs\RecalculateCartDiscountJob;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Shop\ProductDiscountResource;
 
 class EditProductDiscount extends EditRecord
 {
@@ -14,7 +15,10 @@ class EditProductDiscount extends EditRecord
     protected function getActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->after(function (Model $record) {
+                    RecalculateCartDiscountJob::dispatch($record->id);
+                }),
         ];
     }
 

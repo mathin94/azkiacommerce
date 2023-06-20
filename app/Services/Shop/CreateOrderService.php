@@ -83,7 +83,7 @@ class CreateOrderService
             'subdistrict_id'    => $this->shippingAddress->subdistrict_id,
             'courier_service'   => $this->service()->name,
             'shipping_cost'     => $this->service()->cost,
-            'discount'          => $this->discountVoucher, # TODO: Implement Discount
+            'discount'          => $this->discountVoucher ?? 0, # TODO: Implement Discount
             'details'           => $this->buildSalesDetails(),
             'is_preorder'       => false, # TODO: Implement Preorder,
             'is_dropship'       => empty($this->dropship) ? false : true,
