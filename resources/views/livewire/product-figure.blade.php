@@ -1,5 +1,5 @@
 <div>
-    <div class="product product-2">
+    <div class="product product-2 text-center">
         <figure class="product-media">
             @if ($product->discount_percentage > 0)
             <span class="product-label label-sale">Diskon {{ $product->discount_percentage }}%</span>
