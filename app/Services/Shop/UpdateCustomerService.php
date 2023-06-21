@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Shop;
 
 use App\Models\Shop\Customer;
 use Illuminate\Support\Facades\Http;
 
 class UpdateCustomerService
 {
-    public Customer $customer, $errors;
+    public $errors;
     private $baseUrl;
 
-    public function __construct(Customer $customer)
-    {
+    public function __construct(
+        public Customer $customer
+    ) {
         $this->customer = $customer;
         $this->baseUrl = config('app.backoffice_api_url');
     }

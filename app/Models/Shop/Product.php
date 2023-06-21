@@ -79,6 +79,10 @@ class Product extends Model implements HasMedia
         'allow_preorder',
         'order_count',
         'view_count',
+        'review_count',
+        'rating',
+        'total_score',
+        'total_like',
     ];
 
     public function category(): BelongsTo
@@ -101,6 +105,21 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(\App\Models\Backoffice\Category::class, 'resource_id');
     }
 
+    public function discounts()
+    {
+        return $this->hasMany(ProductDiscount::class, 'shop_product_id');
+    }
+
+    public function activeDiscount()
+    {
+        return $this->hasOne(ProductDiscount::class, 'shop_product_id')->active();
+    }
+
+    public function reviews()
+    {
+        return $this->hasManyThrough(ProductVariantReview::class, ProductVariant::class, 'shop_product_id', 'shop_product_variant_id');
+    }
+
     public function publicUrl(): Attribute
     {
         return Attribute::make(get: fn () => route('products.show', $this->slug));
@@ -118,21 +137,64 @@ class Product extends Model implements HasMedia
         return Attribute::make(get: fn () => $this->category->name);
     }
 
+    protected function prices(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $min_price = base_price($this->variants?->min('price'), $this->discount_with_membership);
+            $max_price = base_price($this->variants?->max('price'), $this->discount_with_membership);
+
+            if ($min_price && $max_price) {
+                return collect([$min_price, $max_price])->unique()->toArray();
+            }
+        });
+    }
+
+    protected function discountPercentage(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if (!$this->activeDiscount) {
+                return 0;
+            }
+
+            return $this->activeDiscount->discount_percentage;
+        });
+    }
+
+    protected function discountWithMembership(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if (!$this->activeDiscount) {
+                return true;
+            }
+
+            return $this->activeDiscount->with_membership_price;
+        });
+    }
+
     protected function priceLabel(): Attribute
     {
         return Attribute::make(get: function () {
-            $min_price = $this->variants?->min('price');
-            $max_price = $this->variants?->max('price');
+            $prices = [];
 
-            if ($min_price && $max_price) {
-                $min_price = number_format($min_price, 0, ',', '.');
-                $max_price = number_format($max_price, 0, ',', '.');
-
-                return collect([
-                    "Rp. {$min_price}",
-                    "Rp. {$max_price}",
-                ])->unique()->implode(' - ');
+            foreach ($this->prices as $key => $value) {
+                $price = $value - ($value * ($this->discount_percentage / 100));
+                $prices[] = format_rupiah($price);
             }
+
+            return collect($prices)->unique()->implode(' - ');
+        });
+    }
+
+    protected function normalPriceLabel(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $prices = [];
+
+            foreach ($this->prices as $key => $value) {
+                $prices[] = format_rupiah($value);
+            }
+
+            return collect($prices)->unique()->implode(' - ');
         });
     }
 
@@ -149,5 +211,111 @@ class Product extends Model implements HasMedia
                 ])->unique()->implode(' - ') . ' gram';
             }
         });
+    }
+
+    protected function ratingPercentage(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->rating * 20);
+    }
+
+    private function getFinalPrice($price)
+    {
+        $membership_discount = auth()->guard('shop')->user()?->discount_percentage;
+
+        if ($membership_discount) {
+            $price -= ($price * $membership_discount / 100);
+        }
+
+        return $price;
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('featured', true);
+    }
+
+    public function scopeVisible($query)
+    {
+        return $query->where('visible', true);
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->where('published_at', '<=', now());
+    }
+
+    public function scopeOnSale($query)
+    {
+        return $query->has('activeDiscount');
+    }
+
+    public function scopeByCategories($query, $categoryIds)
+    {
+        return $query->whereIn('shop_product_category_id', $categoryIds);
+    }
+
+    public function scopeBySizes($query, $sizeIds)
+    {
+        return $query->whereHas('variants', function ($query) use ($sizeIds) {
+            $query->whereIn('size_id', $sizeIds);
+        });
+    }
+
+    public function scopeByColor($query, $colorId)
+    {
+        return $query->whereHas('variants', function ($query) use ($colorId) {
+            $query->where('color_id', $colorId);
+        });
+    }
+
+    public function scopeMinPrice($query, $price)
+    {
+        return $query->whereHas('variants', function ($query) use ($price) {
+            $query->where('price', '>=', $price);
+        });
+    }
+
+    public function scopeMaxPrice($query, $price)
+    {
+        return $query->whereHas('variants', function ($query) use ($price) {
+            $query->where('price', '<=', $price);
+        });
+    }
+
+    public function scopeSortByValue($query, $value)
+    {
+        if ($value == 'created_at') {
+            return $query->orderBy('created_at', 'desc');
+        }
+
+        if ($value == 'top_rated') {
+            return $query->orderBy('total_score', 'desc');
+        }
+
+        if ($value == 'lowest_price') {
+            return $query->orderBy(function ($q) {
+                $q->select('price')
+                    ->from('shop_product_variants')
+                    ->whereColumn('shop_product_variants.shop_product_id', '=', 'shop_products.id')
+                    ->orderBy('price')
+                    ->limit(1);
+            }, 'asc');
+        }
+
+        if ($value == 'highest_price') {
+            return $query->orderBy(function ($q) {
+                $q->select('price')
+                    ->from('shop_product_variants')
+                    ->whereColumn('shop_product_variants.shop_product_id', '=', 'shop_products.id')
+                    ->orderBy('price', 'desc')
+                    ->limit(1);
+            }, 'desc');
+        }
+
+        if ($value == 'name_desc') {
+            return $query->orderBy('name', 'desc');
+        }
+
+        return $query->orderBy('name', 'asc');
     }
 }

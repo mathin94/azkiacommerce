@@ -2,9 +2,12 @@
 
 namespace App\Http\Livewire\Account;
 
+use App\Enums\OrderStatus;
 use App\Http\Livewire\BaseComponent;
+use App\Jobs\RecalculateProductRatingJob;
 use App\Models\BankAccount;
 use App\Models\Shop\Order;
+use App\Services\RajaOngkir\TrackWaybillService;
 use App\Services\Shop\CancelOrderService;
 use App\Services\Shop\UploadPaymentProofService;
 use Livewire\WithFileUploads;
@@ -13,9 +16,9 @@ class OrderList extends BaseComponent
 {
     use WithFileUploads;
 
-    public $tab, $detail, $orderPayment, $bankAccounts, $selectedBankAccount;
+    public $tab, $detail, $orderPayment, $bankAccounts, $selectedBankAccount, $manifests;
 
-    public $bankAccountId, $file;
+    public $bankAccountId, $file, $toCompleteId, $reviews = [];
 
     protected $queryString = ['tab'];
 
@@ -47,9 +50,38 @@ class OrderList extends BaseComponent
         info($this->orderPayment);
     }
 
+    public function trackingPackage($id)
+    {
+        $this->detail = $this->getOrder($id);
+
+        $service = new TrackWaybillService($this->detail);
+
+        if (!$service->execute()) {
+            $this->emit('showAlert', [
+                "alert" => "
+                        <div class=\"white-popup\">
+                            <h5>Gagal</h5>
+                            <p>Tidak dapat melakukan lacak paket</p>
+                        </div>
+                    "
+            ]);
+
+            return;
+        }
+
+        $this->manifests = $service->details();
+
+        $this->emit('open-tracking-modal');
+    }
+
     public function updatedBankAccountId()
     {
         $this->selectedBankAccount = $this->bankAccounts->find($this->bankAccountId);
+    }
+
+    public function updatedReviews()
+    {
+        info($this->reviews);
     }
 
     public function savePayment()
@@ -127,6 +159,83 @@ class OrderList extends BaseComponent
         return $this->customer->orders()
             ->with(['items.productVariant.media', 'shipping', 'payment'])
             ->findOrFail($id);
+    }
+
+    public function openCompleteDialog($id)
+    {
+        $this->toCompleteId = $id;
+        $this->dispatchBrowserEvent('open-complete-dialog');
+    }
+
+    public function complete()
+    {
+        $order = $this->getOrder($this->toCompleteId);
+
+        if ($order->is_completed) {
+            $this->emit('showAlert', [
+                "alert" => "
+                        <div class=\"white-popup\">
+                            <h5>Gagal !</h5>
+                            <p>Order sudah diselesaikan sebelumnya</p>
+                        </div>
+                    "
+            ]);
+
+            return;
+        }
+
+        if (!$order->trackable) {
+            $this->emit('showAlert', [
+                "alert" => "
+                        <div class=\"white-popup\">
+                            <h5>Gagal !</h5>
+                            <p>Order tidak dapat diselesaikan</p>
+                        </div>
+                    "
+            ]);
+
+            return;
+        }
+
+        $order->update([
+            'status' => OrderStatus::Completed
+        ]);
+
+        $this->emit('showAlert', [
+            "alert" => "
+                <div class=\"white-popup\">
+                    <h5>Sukses !</h5>
+                    <p>Pesanan Berhasil Diselesaikan</p>
+                </div>
+            "
+        ]);
+    }
+
+    public function openReviewModal($id)
+    {
+        $this->detail = $this->getOrder($id);
+
+        $this->emit('open-review-modal');
+    }
+
+    public function saveReview($id)
+    {
+        $item = $this->detail->items()->findOrFail($id);
+
+        $review = $this->reviews[$id] ?? [];
+
+        if (!blank($review)) {
+            $item->review()->updateOrCreate([
+                'shop_product_variant_id' => $item->shop_product_variant_id,
+                'shop_customer_id' => $this->customer->id,
+                'review' => $review['review'],
+                'rating' => $review['rating'],
+            ]);
+
+            RecalculateProductRatingJob::dispatch($item->productVariant->shop_product_id);
+
+            $this->detail->refresh();
+        }
     }
 
     public function render()

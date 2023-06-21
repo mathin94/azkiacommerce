@@ -141,6 +141,16 @@ class Customer extends Authenticatable
         return $this->belongsTo(\App\Models\Backoffice\Customer::class, 'resource_id');
     }
 
+    protected function customerTypeName(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->customer_type['name'] ?? '-');
+    }
+
+    protected function discountPercentage(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->customer_type['discount'] ?? '-');
+    }
+
     /**
      * Boot the model.
      *

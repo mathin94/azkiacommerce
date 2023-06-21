@@ -6,6 +6,7 @@ use App\Enums\CartStatus;
 use App\Helpers\AutoNumber;
 use App\Models\Shop\Cart;
 use App\Models\Shop\Product;
+use App\Models\Shop\ProductVariantReview;
 use App\Models\Shop\Wishlist;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Arr;
@@ -13,9 +14,9 @@ use Livewire\Component;
 
 class Show extends Component
 {
-    public $product, $colors, $sizes, $stock, $stockLabel, $liked = false;
+    public $product, $colors, $sizes, $stock, $stockLabel, $liked = false, $reviews;
 
-    public $quantity = 1, $variant, $sizeId, $colorId, $price, $weight;
+    public $quantity = 1, $variant, $sizeId, $colorId, $price, $weight, $normalPrice;
 
     protected $customer;
 
@@ -92,17 +93,18 @@ class Show extends Component
             ->first();
 
         if ($variant) {
-            $this->price = 'Rp. ' . number_format($variant->resource->getFinalPrice($this->quantity), 0, ',', '.');
-            $this->weight = $variant->weight . ' gram';
+            $this->normalPrice = format_rupiah($variant->resource->getFinalPrice($this->quantity));
+            $this->price       = format_rupiah($variant->resource->getFinalPrice($this->quantity, $this->getDiscountVariant($variant)));
+            $this->weight      = $variant->weight . ' gram';
 
             $this->emit('variantChanged', [
                 'image' => $variant->media?->original_url
             ]);
         }
 
-        $this->stock = $variant?->resource->stock ?? 0;
+        $this->stock      = $variant?->resource->stock ?? 0;
         $this->stockLabel = $variant?->resource->stock_label;
-        $this->variant = $variant;
+        $this->variant    = $variant;
     }
 
     public function mount()
@@ -112,10 +114,11 @@ class Show extends Component
         $product = Product::with([
             'media',
             'category',
+            'activeDiscount.discountVariants',
             'variants.color',
             'variants.size',
             'variants.resource',
-            'seo'
+            'seo', 'reviews'
         ])
             ->cacheTags(["products:$slug"])
             ->where('slug', $slug)
@@ -130,15 +133,24 @@ class Show extends Component
             ->pluck('size.name', 'size_id')
             ->toArray();
 
-        $this->product = $product;
-        $this->price = $product->price_label;
-        $this->weight = $product->weight_label;
-        $this->colors = Arr::where($colors, fn ($val) => !is_null($val));
-        $this->sizes = Arr::where($sizes, fn ($val) => !is_null($val));
+        $this->product     = $product;
+        $this->normalPrice = $product->normal_price_label;
+        $this->price       = $product->price_label;
+        $this->weight      = $product->weight_label;
+        $this->colors      = Arr::where($colors, fn ($val) => !is_null($val));
+        $this->sizes       = Arr::where($sizes, fn ($val)  => !is_null($val));
 
         if ($this->customer) {
             $this->liked = $this->customer->wishlists()->dontCache()->whereShopProductId($this->product->id)->count() > 0;
         }
+
+        $this->getReviews();
+    }
+
+    public function getReviews()
+    {
+        # TODO: add pagination when more than 100
+        $this->reviews = $this->product->reviews->sortBy('created_at')->reverse();
     }
 
     public function addToCart()
@@ -160,22 +172,25 @@ class Show extends Component
         }
 
         $cart = $this->customer->cart()->firstOrNew(['status' => CartStatus::Draft]);
-
-
+        $cart->save();
 
         $cartItem                 = $cart->items()->firstOrNew(['shop_product_variant_id' => $this->variant->id]);
         $cartItem->quantity       = (int) $cartItem->quantity + $this->quantity;
 
         if ($cartItem->quantity <= $this->variant->resource->stock) {
+            $discount = $this->getDiscountVariant($this->variant) ?? 0;
+
             $cartItem->name           = $this->variant->name;
             $cartItem->alternate_name = $this->variant->alternate_name;
-            $cartItem->normal_price   = $this->variant->resource->price;
-            $cartItem->price          = $this->variant->resource->getFinalPrice();
+            $cartItem->normal_price   = $this->variant->resource->getFinalPrice();
+            $cartItem->price          = $this->variant->resource->getFinalPrice(1, $discount);
             $cartItem->weight         = $this->variant->weight;
-            $cartItem->discount       = 0; # TODO: Implement Discount If Module Discount Done
+            $cartItem->discount       = $discount;
             $cartItem->save();
+
             $cart->recalculate();
             $cart->save();
+
             $this->emit('showAlert', [
                 "alert" => "
                         <div class=\"white-popup\">
@@ -194,6 +209,28 @@ class Show extends Component
                     "
             ]);
         }
+    }
+
+    private function getDiscountVariant($variant)
+    {
+        $discount = $this->product->activeDiscount;
+
+        if (!$discount) {
+            return 0;
+        }
+
+        $discount_variant = $discount->discountVariants()->where('shop_product_variant_id', $variant->id)
+            ->first();
+
+        if (!$discount_variant) {
+            return 0;
+        }
+
+        if (!blank($discount->max_quantity) && $this->quantity > $discount->max_quantity) {
+            return 0;
+        }
+
+        return $discount->discount_percentage;
     }
 
     public function render()

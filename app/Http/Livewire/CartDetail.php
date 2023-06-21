@@ -32,6 +32,8 @@ class CartDetail extends Component
 
             # Recalculate Cart
             $this->cart->recalculate();
+
+            $this->emit('refreshComponent');
         }
     }
 
@@ -43,6 +45,8 @@ class CartDetail extends Component
             $item->quantity = $quantity;
             $item->save();
         }
+
+        $this->emit('refreshComponent');
 
         $this->mount();
     }

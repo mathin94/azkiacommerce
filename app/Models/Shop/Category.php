@@ -70,4 +70,9 @@ class Category extends Model implements HasMedia
     {
         return Attribute::make(get: fn () => route('category.show', $this->slug));
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'shop_product_category_id');
+    }
 }

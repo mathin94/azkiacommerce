@@ -82,6 +82,11 @@ class Page extends Model implements HasMedia
         return Attribute::make(get: fn () => route('page', $this->slug));
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('active', true);
+    }
+
     public static function boot()
     {
         parent::boot();

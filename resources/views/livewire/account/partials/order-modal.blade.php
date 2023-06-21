@@ -64,7 +64,9 @@
                                                     <small>{{ $item->name }}</small>
                                                 </a>
                                                 <p>
-                                                    {{ $item->quantity }} x {{ $item->price_label }}
+                                                    {{ $item->quantity }} x {{ $item->price_label }} @if ($item->price != $item->normal_price)
+                                                        <span class="old-price">{{ $item->normal_price_label }}</span>
+                                                    @endif
                                                 </p>
                                             </div>
                                             <div class="col-md-4 text-right">

@@ -49,14 +49,19 @@
 
                             <div class="ratings-container">
                                 <div class="ratings">
-                                    <div class="ratings-val" style="width: 80%;"></div><!-- End .ratings-val -->
+                                    <div class="ratings-val" style="width: {{ $product->rating_percentage }}%;"></div><!-- End .ratings-val -->
                                 </div><!-- End .ratings -->
-                                <a class="ratings-text" href="#product-review-link" id="review-link">( 2 Reviews
+                                <a class="ratings-text" href="#product-review-link" id="review-link">( {{ $product->review_count }} Ulasan
                                     )</a>
                             </div><!-- End .rating-container -->
-
+                            @if ($normalPrice != $price)
+                                <div class="product-price">
+                                    <span class="old-price" wire:loading.class="d-none" wire:target="setSize,setColor">{{ $normalPrice }}</span>
+                                    <x-css-spinner-alt wire:loading class="ml-1 fa-spin" wire:target="setSize,setColor" />
+                                </div>
+                            @endif
                             <div class="product-price">
-                                <span wire:loading.class="d-none"
+                                <span class="new-price" wire:loading.class="d-none"
                                     wire:target="setSize,setColor">{{ $price }}</span>
                                 <x-css-spinner-alt wire:loading class="ml-1 fa-spin" wire:target="setSize,setColor" />
                             </div><!-- End .product-price -->
@@ -176,7 +181,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="product-review-link" data-toggle="tab" href="#product-review-tab"
-                            role="tab" aria-controls="product-review-tab" aria-selected="false">Ulasan (2)</a>
+                            role="tab" aria-controls="product-review-tab" aria-selected="false">Ulasan Produk ({{ $product->review_count }})</a>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -189,68 +194,34 @@
                     <div class="tab-pane fade" id="product-review-tab" role="tabpanel"
                         aria-labelledby="product-review-link">
                         <div class="reviews">
-                            <h3>Reviews (2)</h3>
-                            <div class="review">
-                                <div class="row no-gutters">
-                                    <div class="col-auto">
-                                        <h4><a href="#">Samanta J.</a></h4>
-                                        <div class="ratings-container">
-                                            <div class="ratings">
-                                                <div class="ratings-val" style="width: 80%;"></div>
-                                                <!-- End .ratings-val -->
-                                            </div><!-- End .ratings -->
-                                        </div><!-- End .rating-container -->
-                                        <span class="review-date">6 days ago</span>
-                                    </div><!-- End .col -->
-                                    <div class="col">
-                                        <h4>Good, perfect size</h4>
-
-                                        <div class="review-content">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus cum
-                                                dolores assumenda asperiores facilis porro reprehenderit animi culpa
-                                                atque blanditiis commodi perspiciatis doloremque, possimus,
-                                                explicabo,
-                                                autem fugit beatae quae voluptas!</p>
-                                        </div><!-- End .review-content -->
-
-                                        <div class="review-action">
-                                            <a href="#"><i class="icon-thumbs-up"></i>Helpful (2)</a>
-                                            <a href="#"><i class="icon-thumbs-down"></i>Unhelpful (0)</a>
-                                        </div><!-- End .review-action -->
-                                    </div><!-- End .col-auto -->
-                                </div><!-- End .row -->
-                            </div><!-- End .review -->
-
-                            <div class="review">
-                                <div class="row no-gutters">
-                                    <div class="col-auto">
-                                        <h4><a href="#">John Doe</a></h4>
-                                        <div class="ratings-container">
-                                            <div class="ratings">
-                                                <div class="ratings-val" style="width: 100%;"></div>
-                                                <!-- End .ratings-val -->
-                                            </div><!-- End .ratings -->
-                                        </div><!-- End .rating-container -->
-                                        <span class="review-date">5 days ago</span>
-                                    </div><!-- End .col -->
-                                    <div class="col">
-                                        <h4>Very good</h4>
-
-                                        <div class="review-content">
-                                            <p>Sed, molestias, tempore? Ex dolor esse iure hic veniam laborum
-                                                blanditiis
-                                                laudantium iste amet. Cum non voluptate eos enim, ab cumque nam,
-                                                modi,
-                                                quas iure illum repellendus, blanditiis perspiciatis beatae!</p>
-                                        </div><!-- End .review-content -->
-
-                                        <div class="review-action">
-                                            <a href="#"><i class="icon-thumbs-up"></i>Helpful (0)</a>
-                                            <a href="#"><i class="icon-thumbs-down"></i>Unhelpful (0)</a>
-                                        </div><!-- End .review-action -->
-                                    </div><!-- End .col-auto -->
-                                </div><!-- End .row -->
-                            </div><!-- End .review -->
+                            <h3>Ulasan ({{ $product->review_count }})</h3>
+                            @forelse ($reviews as $review)
+                                <div class="review">
+                                    <div class="row no-gutters">
+                                        <div class="col-md-2">
+                                            <h4><a href="#">{{ $review->customer->name }}</a></h4>
+                                            <div class="ratings-container">
+                                                <div class="ratings">
+                                                    <div class="ratings-val" style="width: {{ $review->rating_percentage }}%;"></div>
+                                                    <!-- End .ratings-val -->
+                                                </div><!-- End .ratings -->
+                                            </div><!-- End .rating-container -->
+                                            <span class="review-date">{{ $review->created_at->diffForHumans() }}</span>
+                                        </div><!-- End .col -->
+                                        <div class="col-md-10">
+                                            <div class="review-content">
+                                                <p>{{ $review->review }}</p>
+                                            </div><!-- End .review-content -->
+                                        </div><!-- End .col-auto -->
+                                    </div><!-- End .row -->
+                                </div><!-- End .review -->
+                            @empty
+                                <div class="review">
+                                    <div class="text-center">
+                                        <p>Belum ada ulasan</p>
+                                    </div>
+                                </div>
+                            @endforelse
                         </div><!-- End .reviews -->
                     </div><!-- .End .tab-pane -->
                 </div><!-- End .tab-content -->
@@ -296,7 +267,7 @@
                             <div class="ratings">
                                 <div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
                             </div><!-- End .ratings -->
-                            <span class="ratings-text">( 2 Reviews )</span>
+                            <span class="ratings-text">( {{ $product->review_count }} Ulasan )</span>
                         </div><!-- End .rating-container -->
 
                         <div class="product-nav product-nav-thumbs">
@@ -484,7 +455,7 @@
                             <div class="ratings">
                                 <div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
                             </div><!-- End .ratings -->
-                            <span class="ratings-text">( 2 Reviews )</span>
+                            <span class="ratings-text">( {{ $product->review_count }} Ulasan )</span>
                         </div><!-- End .rating-container -->
                     </div><!-- End .product-body -->
                 </div><!-- End .product -->

@@ -13,7 +13,109 @@
         </ul><!-- End .blog-menu -->
     </nav>
     <div class="row">
-        <div class="col-12">
+        <div class="col-12" wire:loading wire:target="setTab">
+            <table class="table table-cart table-mobile ssc">
+                <tbody>
+                    <tr>
+                        <td colspan="2" style="padding: 0;">
+                            <span class="ssc-line" style="max-width: 300px;"></span>
+                        </td>
+                        <td class="text-right">
+                            <span class="ssc-line"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="product-col mr-4" width="150">
+                            <div class="product">
+                                <figure class="product-media ssc-square mb" style="max-width: 150px;">
+                                </figure>
+                            </div><!-- End .product -->
+                        </td>
+                        <td class="align-top" width="290">
+                            <h3 class="product-title ml-4">
+                                <a href="#">
+                                    <span class="ssc-line" style="max-width: 300px;"></span> <br>
+                                    <span class="ssc-line" style="max-width: 150px;"></span>
+                                </a>
+                                <p class="mt-1">
+                                    <span class="ssc-line" style="max-width: 50px;"></span>
+                                </p>
+                                <p class="mt-1">
+                                    <span class="ssc-line" style="max-width: 50px;"></span>
+                                </p>
+                                <p class="mt-2">
+                                    <span class="ssc-line" style="max-width: 50px;"></span>
+                                </p>
+                            </h3><!-- End .product-title -->
+                        </td>
+                        <td class="price-col text-nowrap align-top text-right">
+                            <span class="ssc-line pull-right" style="max-width: 150px;"></span> <br>
+                            <span class="ssc-line pull-right" style="max-width: 100px;"></span> <br>
+                            <span class="ssc-line pull-right" style="max-width: 100px;"></span>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td class="align-top" colspan="2">
+                        </td>
+                        <td class="text-right">
+                            <div class="ssc-square mb" style="height: 35px"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-cart table-mobile ssc">
+                <tbody>
+                    <tr>
+                        <td colspan="2" style="padding: 0;">
+                            <span class="ssc-line" style="max-width: 300px;"></span>
+                        </td>
+                        <td class="text-right">
+                            <span class="ssc-line"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="product-col mr-4" width="150">
+                            <div class="product">
+                                <figure class="product-media ssc-square mb" style="max-width: 150px;">
+                                </figure>
+                            </div><!-- End .product -->
+                        </td>
+                        <td class="align-top" width="290">
+                            <h3 class="product-title ml-4">
+                                <a href="#">
+                                    <span class="ssc-line" style="max-width: 300px;"></span> <br>
+                                    <span class="ssc-line" style="max-width: 150px;"></span>
+                                </a>
+                                <p class="mt-1">
+                                    <span class="ssc-line" style="max-width: 50px;"></span>
+                                </p>
+                                <p class="mt-1">
+                                    <span class="ssc-line" style="max-width: 50px;"></span>
+                                </p>
+                                <p class="mt-2">
+                                    <span class="ssc-line" style="max-width: 50px;"></span>
+                                </p>
+                            </h3><!-- End .product-title -->
+                        </td>
+                        <td class="price-col text-nowrap align-top text-right">
+                            <span class="ssc-line pull-right" style="max-width: 150px;"></span> <br>
+                            <span class="ssc-line pull-right" style="max-width: 100px;"></span> <br>
+                            <span class="ssc-line pull-right" style="max-width: 100px;"></span>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td class="align-top" colspan="2">
+                        </td>
+                        <td class="text-right">
+                            <div class="ssc-square mb" style="height: 35px"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12" wire:loading.class="d-none" wire:target="setTab">
             @forelse ($orders as $order)
                 @php
                     $item = $order->items->first();
@@ -26,7 +128,7 @@
                                 <x-heroicon-o-shopping-bag style="max-width: 15px;" /> Tanggal Pesanan :
                                 {{ $order->date_format_id }}
                             </td>
-                            <td>
+                            <td class="text-right">
                                 @if ($order->is_canceled)
                                     <s>
                                         <x-heroicon-o-hashtag style="max-width: 15px;" />{{ $order->number }}
@@ -100,12 +202,40 @@
                             </tr>
                         @else
                             <tr>
-                                <td class="align-top" colspan="2">
-                                    @if ($order->status->value === App\Enums\OrderStatus::WaitingConfirmation)
+                                @if (!$order->trackable)
+                                    <td class="align-top" colspan="2">
+                                        @if ($order->status->value === App\Enums\OrderStatus::WaitingConfirmation)
                                         <i>Menunggu konfirmasi admin</i>
+                                        @endif
+                                    </td>
+                                @endif
+                                <td class="text-right text-nowrap" @if ($order->trackable || $order->is_completed)
+                                    colspan="3"
+                                @endif>
+                                    @if ($order->trackable)
+                                        <button class="btn btn-success mr-2" wire:click="openCompleteDialog({{ $order->id }})">
+                                            <div wire:loading.class="d-none" wire:target="openCompleteDialog({{ $order->id }})">Selesaikan Pesanan</div>
+                                            <div wire:loading wire:target="openCompleteDialog({{ $order->id }})">
+                                                <x-css-spinner class="fa-spin" />
+                                            </div>
+                                        </button>
+                                        <button class="btn btn-info mr-2"  wire:click="trackingPackage({{ $order->id }})">
+                                            <div wire:loading.class="d-none" wire:target="trackingPackage({{ $order->id }})">Lacak Paket</div>
+                                            <div wire:loading wire:target="trackingPackage({{ $order->id }})">
+                                                <x-css-spinner class="fa-spin" />
+                                            </div>
+                                        </button>
                                     @endif
-                                </td>
-                                <td class="text-right">
+
+                                    @if ($order->is_completed)
+                                        <button class="btn btn-success mr-2" wire:click="openReviewModal({{ $order->id }})">
+                                            <div wire:loading.class="d-none" wire:target="openReviewModal({{ $order->id }})">Ulas Pesanan</div>
+                                            <div wire:loading wire:target="openReviewModal({{ $order->id }})">
+                                                <x-css-spinner class="fa-spin" />
+                                            </div>
+                                        </button>
+                                    @endif
+
                                     <button class="btn btn-outline-dark" wire:click="show({{ $order->id }})">Lihat
                                         Detail</button>
                                 </td>
@@ -148,6 +278,22 @@
     @include('livewire.account.partials.order-modal')
 
     @include('livewire.account.partials.order-payment')
+
+    @include('livewire.account.partials.order-tracking-modal')
+
+    @include('livewire.account.partials.order-review-modal')
+
+    <div id="complete-order-dialog" class="white-popup mfp-hide">
+        <div class="text-center">
+            <h5>Selesaikan Pesanan ?</h5>
+            <button type="button" class="btn btn-success" id="complete-order-button" wire:click="complete">
+                Ya, Selesaikan
+            </button>
+            <button type="button" class="btn btn-outline-dark" id="cancel-complete-button" onclick="$.magnificPopup.close()">
+                Tutup
+            </button>
+        </div>
+    </div>
 </div>
 
 @push('scripts')
@@ -160,6 +306,19 @@
             $.magnificPopup.open({
                 items: {
                     src: '#cancel-confirm-dialog',
+                    type: 'inline'
+                }
+            });
+        })
+
+        Livewire.on('close-complete-dialog', function() {
+            $.magnificPopup.close();
+        })
+
+        window.addEventListener('open-complete-dialog', event => {
+            $.magnificPopup.open({
+                items: {
+                    src: '#complete-order-dialog',
                     type: 'inline'
                 }
             });

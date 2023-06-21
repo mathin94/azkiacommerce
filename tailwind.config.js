@@ -1,9 +1,16 @@
-const colors = require("tailwindcss/colors");
+import colors from "tailwindcss/colors";
+import forms from "@tailwindcss/forms";
+import typography from "@tailwindcss/typography";
+import defaultTheme from "tailwindcss/defaultTheme";
 
-module.exports = {
+export default {
     content: ["./resources/**/*.blade.php", "./vendor/filament/**/*.blade.php"],
+    darkMode: "class",
     theme: {
         extend: {
+            fontFamily: {
+                sans: ["Nunito", ...defaultTheme.fontFamily.sans],
+            },
             colors: {
                 danger: colors.rose,
                 primary: colors.blue,
@@ -12,4 +19,5 @@ module.exports = {
             },
         },
     },
+    plugins: [forms, typography, require("tailwindcss-tables")()],
 };

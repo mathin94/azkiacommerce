@@ -1,5 +1,5 @@
 <div>
-    @if (empty($wishlist))
+    @if (empty($wishlists))
         <div class="col-12">
             <div class="text-center">
                 <x-lucide-package-open class="mt-5 mb-2" style="max-width: 150px;" />

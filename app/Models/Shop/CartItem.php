@@ -72,7 +72,7 @@ class CartItem extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->total_price = ($model->price - $model->discount) * $model->quantity;
+            $model->total_price = $model->price * $model->quantity;
         });
 
         static::created(function ($model) {
@@ -80,7 +80,7 @@ class CartItem extends Model
         });
 
         static::updating(function ($model) {
-            $model->total_price = ($model->price - $model->discount) * $model->quantity;
+            $model->total_price = $model->price * $model->quantity;
         });
     }
 }

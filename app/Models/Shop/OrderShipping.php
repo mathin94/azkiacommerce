@@ -29,11 +29,16 @@ class OrderShipping extends Model
         'recipient_address',
         'shipping_cost_estimation',
         'shipping_cost',
+        'delivered_at',
+        'tracking_details',
+        'tracking_updated_at',
     ];
 
     protected $casts = [
-        'is_dropship' => 'boolean',
-        'courier_properties' => 'json',
+        'is_dropship'         => 'boolean',
+        'courier_properties'  => 'json',
+        'tracking_details'    => 'json',
+        'tracking_updated_at' => 'datetime',
     ];
 
     public function order()
@@ -80,5 +85,10 @@ class OrderShipping extends Model
             $name = strtoupper($this->courier->code);
             return "{$name} - {$prop->description} ({$this->courier_properties['name']})";
         });
+    }
+
+    protected function delivered(): Attribute
+    {
+        return Attribute::make(get: fn () => !is_null($this->delivered_at));
     }
 }

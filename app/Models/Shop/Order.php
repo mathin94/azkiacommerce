@@ -77,6 +77,11 @@ class Order extends Model
         return $this->hasOne(OrderPayment::class, 'shop_order_id');
     }
 
+    public function voucherUsage()
+    {
+        return $this->hasOne(VoucherUsage::class, 'shop_order_id');
+    }
+
     protected function grandtotalLabel(): Attribute
     {
         return Attribute::make(get: fn () => 'Rp. ' . number_format($this->grandtotal, 0, ',', '.'));
@@ -190,6 +195,24 @@ class Order extends Model
         return $query->where('status', OrderStatus::Canceled);
     }
 
+    public function scopeWaitingPayment($query)
+    {
+        return $query->whereIn('status', [
+            OrderStatus::WaitingConfirmation,
+            OrderStatus::WaitingPayment,
+        ]);
+    }
+
+    public function scopeWaitingDelivery($query)
+    {
+        return $query->where('status', OrderStatus::Paid);
+    }
+
+    public function scopeDelivered($query)
+    {
+        return $query->where('status', OrderStatus::PackageSent);
+    }
+
     // scope ongoing
     public function scopeOngoing($query)
     {
@@ -205,5 +228,42 @@ class Order extends Model
     public function scopeCompleted($query)
     {
         return $query->where('status', OrderStatus::Completed);
+    }
+
+    public function courierLabel(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->shipping?->courier_label_alternative;
+        });
+    }
+
+    protected function proofOfPaymentUrl(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->payment?->proof_of_payment_url);
+    }
+
+    protected function transferTo(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if (empty($this->payment->payment_properties)) {
+                return null;
+            }
+
+            $props = json_decode($this->payment->payment_properties);
+
+            return $props->bank_name . ' - ' . $props->account_name . ' - ' . $props->account_number;
+        });
+    }
+
+    protected function trackable(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return !blank($this->shipping?->receipt_number) && $this->status->value === OrderStatus::PackageSent;
+        });
+    }
+
+    protected function isCompleted(): Attribute
+    {
+        return Attribute::make(fn () => $this->status->value === OrderStatus::Completed);
     }
 }

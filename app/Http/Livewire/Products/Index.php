@@ -2,12 +2,8 @@
 
 namespace App\Http\Livewire\Products;
 
-use App\Models\Color;
-use App\Models\Shop\Category;
-use App\Models\Shop\Product;
-use App\Models\Size;
-use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
+use App\Models\Shop\Product;
 use Livewire\WithPagination;
 
 class Index extends Component
@@ -16,45 +12,66 @@ class Index extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $categories,
-        $sizes,
-        $colors;
+    public $search, $sortBy = 'created_at';
 
-    public $search;
+    protected $selectedCategories = [];
 
-    protected $queryString = ['search'];
+    protected $selectedSizes = [];
 
-    public function mount()
+    protected $colorId, $minimumPrice, $maximumPrice;
+
+    protected $queryString = ['search', 'sortBy'];
+
+    protected $listeners = ['filterUpdated', 'refreshProduct'];
+
+    public function filterUpdated($selectedCategories, $selectedSizes, $colorId, $minimumPrice, $maximumPrice)
     {
-        $ttl = 24 * 60 * 60;
-
-        $this->categories = Cache::remember(Category::ALL_CATEGORY_CACHE, $ttl, function () {
-            return Category::orderBy('name', 'asc')->get();
-        });
-
-        $this->sizes = Cache::remember(Size::ALL_CACHE_KEY, $ttl, function () {
-            return Size::orderBy('code', 'asc')->get();
-        });
-
-        $this->colors = Cache::remember(Color::ALL_CACHE_KEY, $ttl, function () {
-            return Color::orderBy('name', 'asc')->get();
-        });
+        $this->selectedCategories = $selectedCategories;
+        $this->selectedSizes      = $selectedSizes;
+        $this->colorId            = $colorId;
+        $this->minimumPrice       = $minimumPrice;
+        $this->maximumPrice       = $maximumPrice;
     }
 
-    public function render()
+    public function refreshProduct()
     {
-        $products = Product::with(['media']);
+        $products = Product::with(['media', 'activeDiscount'])
+            ->visible()
+            ->published();
 
         if ($this->search) {
             $products->where('name', 'like', "%{$this->search}%");
         }
 
+        if ($this->selectedCategories) {
+            $products->byCategories($this->selectedCategories);
+        }
+
+        if ($this->selectedSizes) {
+            $products->bySizes($this->selectedSizes);
+        }
+
+        if ($this->colorId) {
+            $products->byColor($this->colorId);
+        }
+
+        if ($this->minimumPrice) {
+            $products->minPrice($this->minimumPrice);
+        }
+
+        if ($this->maximumPrice) {
+            $products->maxPrice($this->maximumPrice);
+        }
+
+        return $products->sortByValue($this->sortBy);
+    }
+
+    public function render()
+    {
+        $products = $this->refreshProduct();
+
         return view('livewire.products.index', [
             'products' => $products->paginate(10)
-        ])
-            ->layoutData([
-                'title' => 'Cari Produk'
-            ])
-            ->layout('layouts.frontpage');
+        ])->layout('layouts.frontpage');
     }
 }

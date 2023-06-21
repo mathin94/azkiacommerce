@@ -10,7 +10,7 @@ use Spatie\Menu\Laravel\Menu as SpatieMenu;
 
 class Menu
 {
-    public function navbar()
+    private function mainMenu()
     {
         return SpatieMenu::new()
             ->link('/', 'Home')
@@ -18,16 +18,27 @@ class Menu
             ->add(Link::to('/blogs', 'Blog'))
             ->submenu('<a href="#" class="sf-with-ul">Informasi</a>', function (SpatieMenu $menu) {
                 $pages = Cache::remember(Page::ACTIVE_CACHE_KEY, 24 * 60 * 60, function () {
-                    return Page::whereActive(true)->get();
+                    return Page::active()->get();
                 });
 
                 foreach ($pages as $item) {
                     $menu->link($item->public_url, $item->title);
                 }
             })
-            ->add(Link::to('/partner-locations', 'Peta Mitra'))
-            ->add(Link::to('/tracking-order', 'Lacak Pesanan'))
+            ->add(Link::to('/partner-locations', 'Peta Mitra'));
+    }
+
+    public function navbar()
+    {
+
+        return $this->mainMenu()
             ->addClass('menu sf-arrows');
+    }
+
+    public function mobile()
+    {
+        return $this->mainMenu()
+            ->addClass('mobile-menu');
     }
 
     public function topbar()

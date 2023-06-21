@@ -68,4 +68,72 @@ class OrderService extends ApiService
 
         return $request->json();
     }
+
+    public function confirmPayment(string $transfer_to)
+    {
+        if (empty($this->sales)) {
+            return false;
+        }
+
+        $endpoint = "/orders/{$this->sales->uuid}/confirm-payment";
+
+        $request = $this->request()
+            ->withToken($this->token)
+            ->post($endpoint, [
+                'transfer_to' => $transfer_to
+            ]);
+
+        if ($request->failed()) {
+            $this->errors = $request->body();
+            return false;
+        }
+
+        return $request->json();
+    }
+
+    public function cancelByAdmin()
+    {
+        if (empty($this->sales)) {
+            return false;
+        }
+
+        $endpoint = "/orders/{$this->sales->uuid}/cancel";
+
+        $request = $this->request()
+            ->withToken($this->token)
+            ->post($endpoint);
+
+        if ($request->failed()) {
+            $this->errors = $request->body();
+            return false;
+        }
+
+        return $request->json();
+    }
+
+    public function updateReceiptNumber($receipt_number)
+    {
+        if (empty($receipt_number)) {
+            return false;
+        }
+
+        if (empty($this->sales)) {
+            return false;
+        }
+
+        $endpoint = "/orders/{$this->sales->uuid}/receipt-number";
+
+        $request = $this->request()
+            ->withToken($this->token)
+            ->patch($endpoint, [
+                'receipt_number' => $receipt_number
+            ]);
+
+        if ($request->failed()) {
+            $this->errors = $request->body();
+            return false;
+        }
+
+        return $request->json();
+    }
 }

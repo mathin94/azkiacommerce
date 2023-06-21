@@ -5,6 +5,7 @@ namespace App\Models\Shop;
 use App\Models\BankAccount;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class OrderPayment extends Model
 {
@@ -34,6 +35,15 @@ class OrderPayment extends Model
     public function bankAccount()
     {
         return $this->belongsTo(BankAccount::class);
+    }
+
+    public function proofOfPaymentUrl(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if (!blank($this->proof_of_payment)) {
+                return asset("storage/$this->proof_of_payment", config('app.env') !== 'local');
+            }
+        });
     }
 
     public static function boot()

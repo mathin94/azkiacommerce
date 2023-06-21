@@ -8,9 +8,10 @@
 @import './../assets/css/style.css';
 // @import './../assets/css/skins/skin-demo-8.css';
 @import './../assets/css/demos/demo-8.css';
-@import 'sweetalert2/dist/sweetalert2';
 @import 'font-awesome/css/font-awesome.css';
 @import 'virtual-select-plugin/dist/virtual-select.min.css';
+@import "skeleton-screen-css";
+
 .white-popup {
   position: relative;
   background: #FFF;
@@ -207,4 +208,42 @@
     letter-spacing: -.01em;
     color: #fff;
     line-height: 0;
+}
+
+// Rating
+$stars: 5;
+$star-size: 30px;
+$star-spacing: 2px;
+$star-on-color: #F9DF4A;
+$star-off-color: #CCCCCC;
+
+.rating {
+	label {
+		float: right;
+		position: relative;
+		width: $star-size;
+		height: $star-size;
+		cursor: pointer;
+
+		&:not(:first-of-type) {
+			padding-right: $star-spacing;
+		}
+
+		&:before {
+			content: "\2605";
+			font-size: $star-size + 2px;
+			color: $star-off-color;
+			line-height: 1;
+		}
+	}
+
+	input {
+		display: none;
+	}
+
+	input:checked ~ label:before,
+	&:not(:checked) > label:hover:before,
+	&:not(:checked) > label:hover ~ label:before {
+		color: $star-on-color;
+	}
 }

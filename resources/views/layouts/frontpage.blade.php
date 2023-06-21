@@ -9,10 +9,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title wire:loading.remove>{{ $title ? "{$title} - " : null }} {{ config('app.brand') }}</title>
+    <title wire:loading.remove>{{ $title ? "{$title} - " : null }} {{ app(App\Settings\SiteSettings::class)->siteTitle() }}</title>
 
     @livewireStyles
     @vite('resources/sass/app.scss')
+
 
     @stack('styles')
 </head>
@@ -39,7 +40,6 @@
     <script src="{{ asset('build/assets/js/main.js') }}"></script>
     <script src="{{ asset('build/assets/js/demos/demo-5.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js"></script>
-
     @stack('scripts')
 
     <script type="text/javascript">

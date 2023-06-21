@@ -2,8 +2,10 @@
 
 namespace App\Http\Livewire;
 
+use App\Enums\VoucherType;
 use App\Models\Backoffice\Courier;
 use App\Models\Shop\Order;
+use App\Models\Shop\Voucher;
 use App\Services\RajaOngkir;
 use App\Services\Shop\CreateOrderService;
 
@@ -22,7 +24,10 @@ class CartCheckout extends BaseComponent
         $isDropship,
         $shippingAddress,
         $dropshipperName,
-        $dropshipperPhone;
+        $voucher,
+        $discountVoucher,
+        $dropshipperPhone,
+        $selectedVoucher;
 
     protected $origin_city_id = 430;
 
@@ -78,6 +83,81 @@ class CartCheckout extends BaseComponent
         $this->mount();
     }
 
+    public function applyVoucher()
+    {
+        if (empty($this->voucher)) {
+            $this->emit('showAlert', [
+                "alert" => "
+                    <div class=\"white-popup\">
+                        <h5>Gagal !</h5>
+                        <p>Anda belum memilih voucher</p>
+                    </div>
+                "
+            ]);
+
+            return;
+        }
+
+        $this->calculateVoucher();
+    }
+
+    private function calculateVoucher()
+    {
+        $voucher = Voucher::active()->whereCode($this->voucher)->first();
+
+        if (!$voucher) {
+            $this->emit('showAlert', [
+                "alert" => "
+                    <div class=\"white-popup\">
+                        <h5>Gagal !</h5>
+                        <p>Kode Voucher Tidak Valid</p>
+                    </div>
+                "
+            ]);
+
+            return;
+        }
+
+        if ($this->cart->subtotal < $voucher->minimum_order) {
+            $this->emit('showAlert', [
+                "alert" => "
+                    <div class=\"white-popup\">
+                        <h5>Gagal !</h5>
+                        <p>Kode Voucher Tidak Valid</p>
+                    </div>
+                "
+            ]);
+
+            return;
+        }
+
+        if ($voucher->voucher_type->value === VoucherType::ShippingCostDiscount) {
+            $subject = $this->shipping_cost;
+        } else {
+            $subject = $this->cart->subtotal;
+        }
+
+        if ($voucher->is_percentage) {
+            $discount = $subject * ($voucher->value / 100);
+        } else {
+            $discount = $voucher->value;
+        }
+
+        if ($discount > $voucher->maximum_discount) {
+            $discount = $voucher->maximum_discount;
+        }
+
+        $this->discountVoucher = $discount;
+        $this->selectedVoucher = $voucher;
+        $this->mount();
+    }
+
+    public function removeVoucher()
+    {
+        $this->reset(['discountVoucher', 'selectedVoucher', 'voucher']);
+        $this->mount();
+    }
+
     public function updatedCourierService($data)
     {
         if (!$data) {
@@ -87,7 +167,11 @@ class CartCheckout extends BaseComponent
         $data = json_decode($data);
         $this->shipping_cost = $data->cost[0]?->value ?? 0;
 
-        $this->mount();
+        if ($this->voucher) {
+            $this->calculateVoucher();
+        } else {
+            $this->mount();
+        }
     }
 
     public function submit()
@@ -134,7 +218,9 @@ class CartCheckout extends BaseComponent
             courierServices: $this->courierServices,
             selectedService: $this->courierService,
             dropship: $dropshipParam,
-            cart: $this->cart
+            cart: $this->cart,
+            discountVoucher: $this->discountVoucher,
+            selectedVoucher: $this->selectedVoucher
         );
 
         if (!$service->perform()) {
@@ -187,12 +273,12 @@ class CartCheckout extends BaseComponent
             $this->shipping_cost_label = 'Layanan Pengiriman Belum Dipilih';
         } else {
             if ($this->shipping_cost >= 0) {
-                $this->shipping_cost_label = 'Rp. ' . number_format($this->shipping_cost, 0, ',', '.');
+                $this->shipping_cost_label = format_rupiah($this->shipping_cost);
             }
         }
 
-        $this->grandtotal = $this->cart->subtotal + $this->shipping_cost;
-        $this->grandtotal_label = 'Rp. ' . number_format($this->grandtotal, 0, ',', '.');
+        $this->grandtotal = $this->cart->subtotal + $this->shipping_cost - $this->discountVoucher;
+        $this->grandtotal_label = format_rupiah($this->grandtotal);
     }
 
     public function render()

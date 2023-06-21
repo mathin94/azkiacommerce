@@ -14,6 +14,13 @@
     @livewireStyles
     @vite(['resources/sass/app.scss'])
 
+    <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/css/star-rating.min.css" media="all"
+        rel="stylesheet" type="text/css" />
+
+    <!-- with v4.1.0 Krajee SVG theme is used as default (and must be loaded as below) - include any of the other theme CSS files as mentioned below (and change the theme property of the plugin) -->
+    <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.css" media="all"
+        rel="stylesheet" type="text/css" />
+
     @stack('styles')
 </head>
 
@@ -95,6 +102,13 @@
     <script src="{{ asset('build/assets/js/demos/demo-5.js') }}"></script>
     <script src="{{ asset('build/assets/virtual-select-plugin/dist/virtual-select.min.js') }}"></script>
     @vite('resources/js/app.js')
+
+    <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/star-rating.min.js"
+        type="text/javascript"></script>
+
+    <!-- with v4.1.0 Krajee SVG theme is used as default (and must be loaded as below) - include any of the other theme JS files as mentioned below (and change the theme property of the plugin) -->
+    <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.js"></script>
+
     @stack('scripts')
 
     <script type="text/javascript">
@@ -113,6 +127,10 @@
         function logout() {
             Livewire.emit('open-logout-modal');
         }
+
+        $(document).ready(function () {
+            $('.rating-input').rating();
+        });
     </script>
 </body>
 

@@ -14,12 +14,32 @@
             <div class="checkout">
                 <div class="container">
                     <div class="checkout-discount">
-                        <form action="#">
-                            <input type="text" class="form-control" required id="checkout-discount-input">
+                        <form wire:prevent.submit wire:ignore onsubmit="return false">
+                            <input type="text" class="form-control" wire:model="voucher" onkeyup="this.value = this.value.toUpperCase();" id="checkout-discount-input" @if (!blank($selectedVoucher))
+                                disabled
+                            @endif>
                             <label for="checkout-discount-input" class="text-truncate">Punya Voucher Belanja? <span>Klik
                                     Disini</span></label>
                         </form>
                     </div><!-- End .checkout-discount -->
+                    @if (!blank($voucher) && empty($selectedVoucher))
+                        <a href="#" wire:click="applyVoucher">
+                            <span wire:loading.class="d-none" wire:target="applyVoucher"><i class="icon-check"></i> Terapkan Voucher</span>
+                            <div wire:loading wire:target="applyVoucher">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </a>
+                    @endif
+
+                    @if (!blank($voucher) && !empty($selectedVoucher))
+                        <a href="#" wire:click="removeVoucher">
+                            <span wire:loading.class="d-none" wire:target="removeVoucher"><i class="icon-close"></i> Hapus Voucher</span>
+                            <div wire:loading wire:target="removeVoucher">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </a>
+
+                    @endif
                     <form action="#">
                         <div class="row">
                             <div class="col-lg-6">
@@ -76,7 +96,7 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div wire:loading wire:target="courierId">
-                                            <x-css-spinner class="fa-spin" />
+                                            <i class="fa fa-spinner fa-spin"></i>
                                         </div>
                                         <select class="form-control select-custom" wire:model="courierService"
                                             wire:loading.attr="hidden" wire:target="courierId"
@@ -110,7 +130,11 @@
                                             @foreach ($cart->items as $item)
                                                 <tr>
                                                     <td>{{ $item->name }}</td>
-                                                    <td class="text-center">{{ "$item->price_label x$item->quantity" }}
+                                                    <td class="text-center">
+                                                        @if ($item->normal_price !== $item->price)
+                                                            <span class="old-price">{{ $item->normal_price_label }}</span>
+                                                        @endif
+                                                        {{ "$item->price_label x$item->quantity" }}
                                                     </td>
                                                     <td>{{ $item->total_price_label }}</td>
                                                 </tr>
@@ -127,17 +151,30 @@
                                                 <td colspan="3" class="text-left">
                                                     Biaya Kirim:
                                                     <div wire:loading wire:target="courierService" class="pull-right">
-                                                        <x-css-spinner class="fa-spin" />
+                                                        <i class="fa fa-spinner fa-spin"></i>
                                                     </div>
                                                     <span class="pull-right" wire:loading.attr="hidden"
                                                         wire:target="courierService">{{ $shipping_cost_label }}</span>
                                                 </td>
                                             </tr>
+                                            @if (!empty($discountVoucher))
+                                                <tr>
+                                                    <td colspan="3" class="text-left">
+                                                        Diskon Voucher:
+                                                        <span class="pull-right old-price" wire:loading.class="d-none" wire:target="applyVoucher">
+                                                            {{ format_rupiah($discountVoucher) }}
+                                                        </span>
+                                                        <span class="pull-right" wire:loading wire:target="applyVoucher">
+                                                            <i class="fa fa-spinner fa-spin"></i>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            @endif
                                             <tr class="summary-total">
                                                 <td>Total:</td>
                                                 <td colspan="2">
                                                     <div wire:loading wire:target="courierService" class="pull-right">
-                                                        <x-css-spinner class="fa-spin" />
+                                                        <i class="fa fa-spinner fa-spin"></i>
                                                     </div>
                                                     <span wire:loading.attr="hidden"
                                                         wire:target="courierService">{{ $grandtotal_label }}</span>
@@ -154,7 +191,7 @@
                                         </div>
 
                                         <div wire:loading wire:target="submit">
-                                            <x-css-spinner class="fa-spin" />
+                                            <i class="fa fa-spinner fa-spin"></i>
                                         </div>
                                     </button>
                                 </div><!-- End .summary -->
