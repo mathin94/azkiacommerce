@@ -44,6 +44,13 @@ Route::middleware(['auth:shop'])->group(function () {
         Route::get('/wishlist', App\Http\Livewire\Account\Wishlist::class)->name('customer.wishlist');
         Route::get('/orders', App\Http\Livewire\Account\OrderList::class)->name('customer.orders');
     });
+
+    Route::get('/partner-locations', App\Http\Livewire\Pages\PartnerLocation::class)->name('partner-location');
+
+    Route::prefix('/web-api')->group(function () {
+        Route::get('/partners', [App\Http\Controllers\API\PartnerController::class, 'index']);
+        Route::get('/subdistricts', [App\Http\Controllers\API\SubdistrictController::class, 'index']);
+    });
 });
 
 Route::middleware(['guest:shop'])->group(function () {

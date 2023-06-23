@@ -78,7 +78,7 @@ class Customer extends Authenticatable
         'is_default_password',
         'created_at',
         'customer_type_id',
-        'customer_type_json',
+        'customer_type',
     ];
 
     protected $casts = [
@@ -86,7 +86,7 @@ class Customer extends Authenticatable
         'is_branch'           => 'boolean',
         'is_default_password' => 'boolean',
         'customer_type'       => 'json',
-        'gender' => GenderEnum::class,
+        'gender'              => GenderEnum::class,
     ];
 
     public function wishlists()
@@ -128,7 +128,7 @@ class Customer extends Authenticatable
 
     protected function fullMainAddress(): Attribute
     {
-        return Attribute::make(get: fn () => $this->mainAddress->full_address);
+        return Attribute::make(get: fn () => $this->mainAddress?->full_address);
     }
 
     public function customerType()

@@ -40,6 +40,7 @@
     <script src="{{ asset('build/assets/js/main.js') }}"></script>
     <script src="{{ asset('build/assets/js/demos/demo-5.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js"></script>
+    @vite('resources/js/app.js')
     @stack('scripts')
 
     <script type="text/javascript">
