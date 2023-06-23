@@ -38,4 +38,31 @@ class SiteSettings extends Settings
     {
         return "$this->site_name - $this->site_slogan";
     }
+
+    public function favicon()
+    {
+        if (blank($this->site_favicon)) {
+            return null;
+        }
+
+        return asset("storage/$this->site_favicon");
+    }
+
+    public function mainLogo()
+    {
+        if (blank($this->site_logo)) {
+            return null;
+        }
+
+        return asset("storage/$this->site_logo");
+    }
+
+    public function mobileLogo()
+    {
+        if (blank($this->site_logo_mobile)) {
+            return null;
+        }
+
+        return asset("storage/$this->site_logo_mobile");
+    }
 }

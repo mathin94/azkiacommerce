@@ -247,3 +247,27 @@ $star-off-color: #CCCCCC;
 		color: $star-on-color;
 	}
 }
+
+/* Styles for desktop */
+.desktop-logo {
+    display: block !important; /* Show the desktop logo */
+}
+
+.mobile-logo {
+    display: none !important; /* Show the mobile logo */
+}
+
+/* Styles for mobile */
+@media (max-width: 767px) {
+    .desktop-logo {
+        display: none !important; /* Hide the desktop logo */
+    }
+
+    .mobile-logo {
+        display: block !important; /* Show the mobile logo */
+    }
+
+    .navbar-container {
+        padding: 1.3rem !important;
+    }
+}

@@ -50,9 +50,8 @@
                 </div>
             </div><!-- End .container -->
         </div><!-- End .header-top -->
-
         <div class="header-middle sticky-header">
-            <div class="container">
+            <div class="container navbar-container">
                 <div class="header-left">
                     <button class="mobile-menu-toggler">
                         <span class="sr-only">Toggle mobile menu</span>
@@ -60,8 +59,8 @@
                     </button>
 
                     <a href="/" class="logo">
-                        <img src="/build/assets/images/logo-color.png"
-                            alt="{{ config('app.name') }}" width="80" height="20">
+                        <img src="{{ site()->mainLogo() }}" alt="{{ site()->siteTitle() }}" width="80" height="20" class="desktop-logo">
+                        <img src="{{ site()->mobileLogo() }}" alt="{{ site()->siteTitle() }}" width="70" height="15" class="mobile-logo">
                     </a>
 
                     <nav class="main-nav">

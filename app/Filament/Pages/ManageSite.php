@@ -29,13 +29,38 @@ class ManageSite extends SettingsPage
                             Forms\Components\Textarea::make('site_description')
                                 ->label('Deskripsi Website (Akan di munculkan di footer)')
                                 ->required(),
+                        ])
+                        ->columns(2),
+                    Forms\Components\Section::make('Pengaturan Logo Website')
+                        ->schema([
                             Forms\Components\FileUpload::make('site_logo')
                                 ->label('Logo Utama')
                                 ->directory('images')
                                 ->visibility('public')
+                                ->panelAspectRatio('2:1')
+                                ->imagePreviewHeight(80)
+                                ->image()
+                                ->required(),
+                            Forms\Components\FileUpload::make('site_logo_mobile')
+                                ->label('Logo Mobile')
+                                ->directory('images')
+                                ->imagePreviewHeight(80)
+                                ->panelAspectRatio('2:1')
+                                ->visibility('public')
+                                ->image()
+                                ->required(),
+                            Forms\Components\FileUpload::make('site_favicon')
+                                ->label('Icon Website')
+                                ->directory('images')
+                                ->panelAspectRatio('1:1')
+                                ->visibility('public')
+                                ->image()
+                                ->extraAttributes([
+                                    'class' => 'bg-white'
+                                ])
                                 ->required(),
                         ])
-                        ->columns(2),
+                        ->columns(3),
                     Forms\Components\Section::make('Social Media')
                         ->schema([
                             Forms\Components\TextInput::make('facebook_link')
