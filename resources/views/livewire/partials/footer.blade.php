@@ -7,7 +7,7 @@
                         <div class="widget widget-about">
                             <img src="/build/assets/images/logo-color.png" class="footer-logo"
                                 alt="Footer Logo" width="82" height="25">
-                            <p>azkiahijab.co.id adalah website toko online resmi dari Azkia Hijab </p>
+                            <p>{{ site()->site_description }} </p>
 
                         </div><!-- End .widget about-widget -->
                     </div><!-- End .col-sm-12 col-lg-3 -->
@@ -46,25 +46,28 @@
 
         <div class="footer-bottom">
             <div class="container">
-                <p class="footer-copyright">Copyright © 2023 Azkia Hijab. All Rights Reserved.</p>
+                <p class="footer-copyright">Copyright © 2023 {{ site()->site_name }}. All Rights Reserved.</p>
                 <!-- End .footer-copyright -->
-                <ul class="footer-menu">
+                {{-- <ul class="footer-menu">
                     <li><a href="#">Terms Of Use</a></li>
                     <li><a href="#">Privacy Policy</a></li>
-                </ul><!-- End .footer-menu -->
+                </ul><!-- End .footer-menu --> --}}
 
                 <div class="social-icons social-icons-color">
                     <span class="social-label">Social Media</span>
-                    <a href="https://www.facebook.com/azkiahijabofficial" class="social-icon social-facebook"
-                        title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
-                    <a href="https://wa.me/+62895808855575/?text=Halo%20admin%20*Azkia%20Hijab*"
-                        class="social-icon social-whatsapp" title="Whatsapp" target="_blank"><i
-                            class="icon-whatsapp"></i></a>
-                    <a href="https://instagram.com/azkia_hijab_official?igshid=3aa196ry4uo"
-                        class="social-icon social-instagram" title="Instagram" target="_blank"><i
-                            class="icon-instagram"></i></a>
-                    <a href="azkiahijabofficial@gmail.com" class="social-icon social-email" title="Email"
-                        target="_blank"><i class="icon-email"></i></a>
+                    <a href="{{ site()->facebook_link }}" class="social-icon social-facebook"
+                        title="Facebook" target="_blank">
+                        <x-bi-facebook />
+                    </a>
+                    <a href="{{ site()->whatsapp_link }}"
+                        class="social-icon social-whatsapp" title="Whatsapp" target="_blank">
+                        <x-bi-whatsapp />
+                    </a>
+                    <a href="{{ site()->instagram_link }}"
+                        class="social-icon social-instagram" title="Instagram" target="_blank"><x-bi-instagram /></a>
+                    <a href="{{ site()->instagram_link }}" class="social-icon social-tiktok" title="TikTok" target="_blank">
+                        <x-bi-tiktok />
+                    </a>
                 </div><!-- End .soial-icons -->
             </div><!-- End .container -->
         </div><!-- End .footer-bottom -->

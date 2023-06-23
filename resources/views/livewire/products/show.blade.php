@@ -153,19 +153,18 @@
                                     <a href="#" data-sharer="facebook"
                                         data-title="Beli {{ $product->name }} di {{ config('app.name') }}"
                                         data-url="{{ $product->public_url }}" class="social-icon"
-                                        title="Facebook"><i class="icon-facebook-f"></i></a>
+                                        title="Facebook"><x-bi-facebook /></a>
                                     <a href="#" data-sharer="twitter"
                                         data-title="Beli {{ $product->name }} di {{ config('app.name') }}"
-                                        data-url="{{ $product->public_url }}" class="social-icon" title="Twitter"><i
-                                            class="icon-twitter"></i></a>
+                                        data-url="{{ $product->public_url }}" class="social-icon" title="Twitter"><x-bi-twitter /></a>
                                     <a href="#" data-sharer="instagram"
                                         data-title="Beli {{ $product->name }} di {{ config('app.name') }}"
                                         data-url="{{ $product->public_url }}" class="social-icon"
-                                        title="Instagram"><i class="icon-instagram"></i></a>
+                                        title="Instagram"><x-bi-instagram /></a>
                                     <a href="#" data-sharer="pinterest"
                                         data-title="Beli {{ $product->name }} di {{ config('app.name') }}"
                                         data-url="{{ $product->public_url }}" class="social-icon"
-                                        title="Pinterest"><i class="icon-pinterest"></i></a>
+                                        title="Pinterest"><x-bi-pinterest /></a>
                                 </div>
                             </div><!-- End .product-details-footer -->
                         </div><!-- End .product-details -->

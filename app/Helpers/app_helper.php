@@ -31,3 +31,10 @@ if (!function_exists('series_to_filename')) {
             ->toString();
     }
 }
+
+if (!function_exists('site')) {
+    function site()
+    {
+        return app(App\Settings\SiteSettings::class);
+    }
+}
