@@ -18,6 +18,8 @@
 @push('styles')
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <style>.popup-partner { font-size: 13px !important; }</style>
 @endpush
 
 @push('scripts')
@@ -40,6 +42,14 @@
         // Adding layer to the map
         map.addLayer(layer);
 
+        const popupContent = function (partner) {
+            return `<b>${partner.store_name || partner.name}</b>
+                <hr style="margin:0;line-height:0" /> <br />
+                <b>Telp/Hp: </b> ${partner.phone} <br />
+                ${partner.email ? `<b>Email: </b> ${partner.email} <br />` : ''}
+                ${partner.address ? `<b>Alamat: </b> ${partner.address}` : ''}`
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             axios.get('/web-api/partners').then(response => {
                 const distributor = response.data.distributor
@@ -58,13 +68,9 @@
                     });
 
                     marker.addTo(map)
-                    .bindPopup(`
-                        <b>${partner.store_name || partner.name}</b>
-                        <hr style="margin:0;line-height:0" /> <br />
-                        <b>Telp/Hp: </b> ${partner.phone} <br />
-                        ${partner.email ? `<b>Email: </b> ${partner.email} <br />` : ''}
-                        ${partner.address ? `<b>Alamat: </b> ${partner.address}` : ''}
-                    `);
+                    .bindPopup(popupContent(partner), {
+                        className: "popup-partner",
+                    });
                 });
 
                 agen.forEach(partner => {
@@ -80,13 +86,10 @@
                     });
 
                     marker.addTo(map)
-                        .bindPopup(`
-                            <b>${partner.store_name || partner.name}</b>
-                            <hr style="margin:0;line-height:0" /> <br />
-                            <b>Telp/Hp: </b> ${partner.phone} <br />
-                            ${partner.email ? `<b>Email: </b> ${partner.email} <br />` : ''}
-                            ${partner.address ? `<b>Alamat: </b> ${partner.address}` : ''}
-                        `);
+                        .bindPopup(popupContent(partner), {
+                            keepInView: true,
+                            className: 'popup-partner',
+                        });
                 });
             })
         })
