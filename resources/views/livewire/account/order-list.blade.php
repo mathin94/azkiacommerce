@@ -196,15 +196,21 @@
                                     Dibatalkan.
                                 </td>
                                 <td class="text-right">
-                                    <button class="btn btn-primary"
-                                        wire:click="showPayment({{ $order->id }})">Upload Bukti Pembayaran</button>
+                                    <button class="btn btn-primary" wire:loading.attr="disabled" wire:click="showPayment({{ $order->id }})">
+                                        <div wire:loading.class="d-none" wire:target="showPayment({{ $order->id }})">
+                                            Upload Bukti Pembayaran
+                                        </div>
+                                        <div wire:loading wire:target="showPayment({{ $order->id }})">
+                                            <i class="fa fa-spinner fa-spin"></i>
+                                        </div>
+                                    </button>
                                 </td>
                             </tr>
                         @else
                             <tr>
                                 @if (!$order->trackable)
                                     <td class="align-top" colspan="2">
-                                        @if ($order->status->value === App\Enums\OrderStatus::WaitingConfirmation)
+                                        @if ($order->statusWaitingConfirmation())
                                         <i>Menunggu konfirmasi admin</i>
                                         @endif
                                     </td>
@@ -213,31 +219,35 @@
                                     colspan="3"
                                 @endif>
                                     @if ($order->trackable)
-                                        <button class="btn btn-success mr-2" wire:click="openCompleteDialog({{ $order->id }})">
+                                        <button class="btn btn-success mr-2" wire:loading.attr="disabled" wire:click="openCompleteDialog({{ $order->id }})">
                                             <div wire:loading.class="d-none" wire:target="openCompleteDialog({{ $order->id }})">Selesaikan Pesanan</div>
                                             <div wire:loading wire:target="openCompleteDialog({{ $order->id }})">
-                                                <x-css-spinner class="fa-spin" />
+                                                <i class="fa fa-spinner fa-spin"></i>
                                             </div>
                                         </button>
-                                        <button class="btn btn-info mr-2"  wire:click="trackingPackage({{ $order->id }})">
+                                        <button class="btn btn-info mr-2" wire:loading.attr="disabled" wire:click="trackingPackage({{ $order->id }})">
                                             <div wire:loading.class="d-none" wire:target="trackingPackage({{ $order->id }})">Lacak Paket</div>
                                             <div wire:loading wire:target="trackingPackage({{ $order->id }})">
-                                                <x-css-spinner class="fa-spin" />
+                                                <i class="fa fa-spinner fa-spin"></i>
                                             </div>
                                         </button>
                                     @endif
 
                                     @if ($order->statusCompleted())
-                                        <button class="btn btn-success mr-2" wire:click="openReviewModal({{ $order->id }})">
+                                        <button class="btn btn-success mr-2" wire:loading.attr="disabled" wire:click="openReviewModal({{ $order->id }})">
                                             <div wire:loading.class="d-none" wire:target="openReviewModal({{ $order->id }})">Ulas Pesanan</div>
                                             <div wire:loading wire:target="openReviewModal({{ $order->id }})">
-                                                <x-css-spinner class="fa-spin" />
+                                                <i class="fa fa-spinner fa-spin"></i>
                                             </div>
                                         </button>
                                     @endif
 
-                                    <button class="btn btn-outline-dark" wire:click="show({{ $order->id }})">Lihat
-                                        Detail</button>
+                                    <button class="btn btn-outline-dark" wire:loading.attr="disabled" wire:click="show({{ $order->id }})">
+                                        <div wire:loading.class="d-none" wire:target="show({{ $order->id }})">Lihat Detail</div>
+                                        <div wire:loading wire:target="show({{ $order->id }})">
+                                            <i class="fa fa-spinner fa-spin"></i>
+                                        </div>
+                                    </button>
                                 </td>
                             </tr>
                         @endif
@@ -264,7 +274,7 @@
                     </span>
 
                     <div wire:loading wire:target="cancelOrder">
-                        <x-css-spinner class="fa-spin" />
+                        <i class="fa fa-spinner fa-spin"></i>
                     </div>
                 </button>
                 <button type="button" class="btn btn-outline-dark" id="cancel-cancel"

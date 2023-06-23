@@ -17,15 +17,24 @@
                         <li><a href="#">Menu</a>
                             <ul>
                                 <li><a href="/contact-us">Kontak Kami</a></li>
-                                <li>
-                                    <a href="{{ route('customer.wishlist') }}">
-                                        <i class="icon-heart-o"></i> Wishlist
-                                        <span class="wishlist-count">
-                                            {{ $wishlist_count }}
-                                        </span>
-                                    </a>
-                                </li>
+
                                 @if (auth()->guard('shop')->check())
+                                    <li>
+                                        <a href="{{ route('customer.wishlist') }}">
+                                            <i class="icon-heart-o"></i> Wishlist
+                                            <span class="wishlist-count">
+                                                {{ $wishlist_count }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('customer.orders') }}">
+                                            <i class="icon-shopping-cart"></i> Pesanan Saya
+                                            <span class="wishlist-count">
+                                                {{ $wishlist_count }}
+                                            </span>
+                                        </a>
+                                    </li>
                                     <li>
                                         <a href="{{ route('customer.dashboard') }}"><i class="icon-user"></i> Akun
                                             Saya</a>
