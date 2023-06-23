@@ -3,8 +3,8 @@
 namespace App\Http\Livewire\Account;
 
 use App\Enums\GenderEnum;
-use App\Services\UpdateCustomerService;
 use App\Http\Livewire\BaseComponent;
+use App\Services\Shop\UpdateCustomerService;
 
 class CustomerProfile extends BaseComponent
 {
@@ -39,6 +39,15 @@ class CustomerProfile extends BaseComponent
                         <div class=\"white-popup\">
                             <h5>Update Profil Sukses !</h5>
                             <p>Profil anda berhasil di perbarui</p>
+                        </div>
+                    "
+            ]);
+        } else {
+            $this->emit('showAlert', [
+                "alert" => "
+                        <div class=\"white-popup\">
+                            <h5>Update Profil Gagal !</h5>
+                            <p>Profil anda gagal di perbarui</p>
                         </div>
                     "
             ]);
