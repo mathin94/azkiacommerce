@@ -19,7 +19,7 @@
                                         No. Invoice
                                     </div>
                                     <div class="col-md-8 text-right">
-                                        @if ($detail->is_canceled)
+                                        @if ($detail->statusCanceled())
                                             <s>{{ $detail->number }}</s>
                                         @else
                                             <a href="#">{{ $detail->number }}</a>

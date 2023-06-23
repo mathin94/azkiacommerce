@@ -129,7 +129,7 @@
                                 {{ $order->date_format_id }}
                             </td>
                             <td class="text-right">
-                                @if ($order->is_canceled)
+                                @if ($order->statusCanceled())
                                     <s>
                                         <x-heroicon-o-hashtag style="max-width: 15px;" />{{ $order->number }}
                                     </s>
@@ -227,7 +227,7 @@
                                         </button>
                                     @endif
 
-                                    @if ($order->is_completed)
+                                    @if ($order->statusCompleted())
                                         <button class="btn btn-success mr-2" wire:click="openReviewModal({{ $order->id }})">
                                             <div wire:loading.class="d-none" wire:target="openReviewModal({{ $order->id }})">Ulas Pesanan</div>
                                             <div wire:loading wire:target="openReviewModal({{ $order->id }})">

@@ -79,7 +79,7 @@
                                 </div><!-- End .product-price -->
                                 <div class="ratings-container">
                                     <div class="ratings">
-                                        <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->
+                                        <div class="ratings-val" style="width: {{ $item->rating_percentage }}%;"></div><!-- End .ratings-val -->
                                     </div><!-- End .ratings -->
                                     <span class="ratings-text">( {{ $item->review_count }} Ulasan )</span>
                                 </div><!-- End .rating-container -->

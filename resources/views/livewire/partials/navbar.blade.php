@@ -60,7 +60,7 @@
                     </button>
 
                     <a href="/" class="logo">
-                        <img src="https://backoffice.azkiahijab.co.id/images/logo-color.png"
+                        <img src="/build/assets/images/logo-color.png"
                             alt="{{ config('app.name') }}" width="80" height="20">
                     </a>
 

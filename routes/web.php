@@ -59,3 +59,7 @@ Route::middleware(['guest:shop'])->group(function () {
     Route::get('/password/reset', App\Http\Livewire\ShopResetPassword::class)
         ->name('password.reset');
 });
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/shop/orders/{id}/shipping-label', App\Http\Livewire\ShippingLabel::class)->name('admin.orders.shipping-label');
+});

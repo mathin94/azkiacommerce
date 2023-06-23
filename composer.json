@@ -32,6 +32,7 @@
         "laravel/horizon": "^5.15",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
+        "laraveldaily/laravel-invoices": "^3.1",
         "lucasgiovanny/filament-multiselect-two-sides": "^1.1",
         "mallardduck/blade-lucide-icons": "^1.11",
         "mohamedsabil83/filament-forms-tinyeditor": "^1.7",
@@ -69,7 +70,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/price_helper.php"
+            "app/Helpers/price_helper.php",
+            "app/Helpers/app_helper.php"
         ]
     },
     "autoload-dev": {

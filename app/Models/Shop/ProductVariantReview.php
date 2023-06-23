@@ -18,6 +18,8 @@ class ProductVariantReview extends Model
         'shop_customer_id',
         'rating',
         'review',
+        'product_name',
+        'variant_name',
     ];
 
     public function productVariant()

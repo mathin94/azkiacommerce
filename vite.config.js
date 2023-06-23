@@ -18,6 +18,10 @@ export default defineConfig({
                     src: "node_modules/virtual-select-plugin",
                     dest: "assets",
                 },
+                {
+                    src: "resources/images",
+                    dest: "assets",
+                },
             ],
         }),
         laravel({
