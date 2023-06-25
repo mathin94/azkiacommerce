@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Page;
+use App\Models\Shop\Category;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Menu\Laravel\Html;
 use Spatie\Menu\Laravel\Link;
@@ -14,7 +15,13 @@ class Menu
     {
         return SpatieMenu::new()
             ->link('/', 'Home')
-            ->add(Link::to(route('products.index'), 'Produk'))
+            ->submenu('<a href="' . route('products.index') . '" class="sf-with-ul">Produk</a>', function (SpatieMenu $menu) {
+                $categories = Category::orderBy('name', 'asc')->get();
+
+                foreach ($categories as $item) {
+                    $menu->link($item->public_url, $item->name);
+                }
+            })
             ->add(Link::to('/blogs', 'Blog'))
             ->submenu('<a href="#" class="sf-with-ul">Informasi</a>', function (SpatieMenu $menu) {
                 $pages = Cache::remember(Page::ACTIVE_CACHE_KEY, 24 * 60 * 60, function () {

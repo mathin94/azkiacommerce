@@ -30,7 +30,10 @@ class Home extends Component
 
         $this->featuredProducts = $products->featured()->limit(10)->get();
         $this->onSaleProducts = $products->onSale()->limit(10)->get();
-        $this->topRatedProducts = $products->orderBy('total_score', 'desc')->limit(10)->get();
+        $this->topRatedProducts = $products->where('total_score', '>', 0)
+            ->orderBy('total_score', 'desc')
+            ->limit(10)
+            ->get();
 
         return view('livewire.pages.home')
             ->layout('layouts.frontpage');
