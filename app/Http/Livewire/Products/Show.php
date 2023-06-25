@@ -82,7 +82,7 @@ class Show extends Component
 
     protected function getVariant()
     {
-        if (empty($this->sizeId) && empty($this->colorId)) {
+        if (empty($this->sizeId) || empty($this->colorId)) {
             return null;
         }
 

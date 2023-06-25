@@ -13,26 +13,34 @@ class Menu
 {
     private function mainMenu()
     {
-        return SpatieMenu::new()
-            ->link('/', 'Home')
-            ->submenu('<a href="' . route('products.index') . '" class="sf-with-ul">Produk</a>', function (SpatieMenu $menu) {
-                $categories = Category::orderBy('name', 'asc')->get();
+        $pages = Page::active()->get();
 
-                foreach ($categories as $item) {
-                    $menu->link($item->public_url, $item->name);
-                }
-            })
-            ->add(Link::to('/blogs', 'Blog'))
-            ->submenu('<a href="#" class="sf-with-ul">Informasi</a>', function (SpatieMenu $menu) {
-                $pages = Cache::remember(Page::ACTIVE_CACHE_KEY, 24 * 60 * 60, function () {
-                    return Page::active()->get();
-                });
+        $menu = SpatieMenu::new()
+            ->add(Link::to('/', 'Home')->addClass('pr-2'))
+            ->submenu(
+                Link::to('/products', 'Produk')->addClass('sf-with-ul'),
+                function (SpatieMenu $menu) {
+                    $categories = Category::orderBy('name', 'asc')->get();
 
-                foreach ($pages as $item) {
-                    $menu->link($item->public_url, $item->title);
+                    foreach ($categories as $item) {
+                        $menu->link($item->public_url, $item->name);
+                    }
                 }
-            })
-            ->add(Link::to('/partner-locations', 'Peta Mitra'));
+            )
+            ->add(Link::to('/blogs', 'Blog')->addClass('pr-2'));
+
+        if ($pages->count() > 0) {
+            $menu->submenu(
+                Link::to('#', 'Informasi')->addClass('sf-with-ul'),
+                function (SpatieMenu $menu) use ($pages) {
+                    foreach ($pages as $item) {
+                        $menu->link($item->public_url, $item->title);
+                    }
+                }
+            );
+        }
+
+        return $menu->add(Link::to(route('partner-location'), 'Peta Mitra')->addClass('pr-2'));
     }
 
     public function navbar()
@@ -46,28 +54,5 @@ class Menu
     {
         return $this->mainMenu()
             ->addClass('mobile-menu');
-    }
-
-    public function topbar()
-    {
-        $user = auth()->guard('shop')->user();
-        $wishlist_count = $user->wishlists()
-            ->cacheTags(["user_wishlist_count:$user->id"])
-            ->count();
-        $count = $wishlist_count > 0 ? "( $wishlist_count )" : '';
-        return SpatieMenu::new()
-            ->submenu('<a href="#">Menu</a>', function (SpatieMenu $menu) use ($count) {
-                $menu->add(Link::to('/contact-us', 'Kontak Kami'))
-                    ->add(Link::to('/wishlists', "<i class=\"icon-heart-o\"></i> Wishlist <span class=\"wishlist-count\">$count</span>"));
-
-                if (auth()->guard('shop')->guest()) {
-                    $menu->add(Link::to(route('login'), '<i class="icon-user"></i> Masuk / Daftar'));
-                } else {
-                    $menu->add(Link::to(route('customer.dashboard'), '<i class="icon-user"></i> Akun Saya'));
-                    $menu->add(Html::raw("<a wire:click=\"openModal\" style=\"cursor: pointer\"><i class=\"fa fa-sign-out\" style=\"font-weight: 400;\"></i> Keluar</a>"));
-                }
-            })
-            ->addClass('top-menu pt-1 pb-0')
-            ->wrap('div', ['class' => 'header-right']);
     }
 }
