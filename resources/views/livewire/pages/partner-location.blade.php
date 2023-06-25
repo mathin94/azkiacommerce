@@ -1,6 +1,6 @@
 <div>
     <main class="main">
-        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
             <div class="container">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/">Home</a></li>

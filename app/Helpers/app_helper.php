@@ -38,3 +38,10 @@ if (!function_exists('site')) {
         return app(App\Settings\SiteSettings::class);
     }
 }
+
+if (!function_exists('store')) {
+    function store()
+    {
+        return app(App\Settings\ShopSettings::class);
+    }
+}

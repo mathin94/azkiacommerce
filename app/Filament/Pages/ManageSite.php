@@ -13,6 +13,16 @@ class ManageSite extends SettingsPage
 
     protected static string $settings = SiteSettings::class;
 
+    protected static ?string $navigationGroup = 'Pengaturan';
+
+    protected static ?string $navigationLabel = 'Pengaturan Website';
+
+    protected static ?string $slug = 'manage-website';
+
+    protected static ?string $title = 'Pengaturan Website';
+
+    protected ?string $heading = 'Pengaturan Website';
+
     protected function getFormSchema(): array
     {
         return [

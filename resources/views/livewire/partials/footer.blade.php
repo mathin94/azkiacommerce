@@ -35,7 +35,7 @@
                                     <li><a href="{{ route('cart') }}">Keranjang Belanja</a></li>
                                     <li><a href="{{ route('customer.wishlist') }}">Wishlist</a></li>
                                     <li><a href="{{ route('customer.orders') }}">Daftar Pesanan</a></li>
-                                    <li><a href="#">Bantuan</a></li>
+                                    <li><a href="{{ route('contact-us') }}">Bantuan</a></li>
                                 @endif
                             </ul><!-- End .widget-list -->
                         </div><!-- End .widget -->

@@ -28,6 +28,9 @@ Route::get('/product/{slug}', App\Http\Livewire\Products\Show::class)->name('pro
 # Route Category
 Route::get('/category/{slug}', App\Http\Livewire\Category\Show::class)->name('category.show');
 
+# Route Contact Us
+Route::get('/contact-us', App\Http\Livewire\ContactUs::class)->name('contact-us');
+
 Route::middleware(['auth:shop'])->group(function () {
     # Route Cart
     Route::get('/cart', App\Http\Livewire\CartDetail::class)->name('cart');
