@@ -61,6 +61,7 @@ class SyncCustomer extends Command
             $created_customer->is_active           = $customer->is_active;
             $created_customer->is_branch           = $customer->is_branch;
             $created_customer->is_default_password = $customer->is_default_password;
+            $created_customer->subdistrict_id      = $customer->subdistrict_id;
             $created_customer->created_at          = $customer->created_at;
             $created_customer->customer_type  = [
                 'id'             => $customer->customer_type_id,

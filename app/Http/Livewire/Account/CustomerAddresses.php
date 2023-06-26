@@ -72,7 +72,15 @@ class CustomerAddresses extends BaseComponent
             'is_main'         => $this->isMain,
         ]);
 
+        if ($this->customer->addresses()->count() == 0) {
+            $address->is_main = true;
+        }
+
         $address->save();
+
+        if ($address->is_main) {
+            $this->customer->resource->update(['subdistrict_id', $address->subdistrict_id]);
+        }
 
         $this->resetInputField();
 

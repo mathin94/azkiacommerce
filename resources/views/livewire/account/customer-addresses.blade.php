@@ -1,5 +1,12 @@
 <div>
     <div class="row">
+        @if (session()->has('info'))
+        <div class="col-12">
+            <div class="alert alert-info mb-3">
+                {{ session('info') }}
+            </div>
+        </div>
+        @endif
         <div class="col-6">
             <h5>Daftar Alamat</h5>
         </div>
