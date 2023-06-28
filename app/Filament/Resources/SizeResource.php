@@ -3,38 +3,33 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\Size;
 use Filament\Tables;
-use App\Models\Color;
-use Illuminate\Support\Str;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use Filament\Notifications\Notification;
-use Filament\Pages\Actions\DeleteAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use App\Filament\Resources\ColorResource\Pages;
+use App\Filament\Resources\SizeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\ColorResource\RelationManagers;
+use App\Filament\Resources\SizeResource\RelationManagers;
 
-class ColorResource extends Resource
+class SizeResource extends Resource
 {
-    protected static ?string $model = Color::class;
+    protected static ?string $model = Size::class;
 
-    protected static ?string $navigationIcon = 'carbon-color-palette';
+    protected static ?string $navigationIcon = 'css-size';
 
     protected static ?string $navigationGroup = 'Master Data';
-
-    protected static ?string $modelLabel = 'Warna';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nama')
                     ->required()
-                    ->label('Nama Warna')
-                    ->unique('name')
                     ->reactive()
                     ->lazy()
                     ->afterStateUpdated(function (string $context, $state, callable $set) {
@@ -44,10 +39,8 @@ class ColorResource extends Resource
                     })
                     ->maxLength(30),
                 Forms\Components\TextInput::make('code')
+                    ->label('Kode')
                     ->required()
-                    ->label('Kode Warna')
-                    ->unique('code')
-                    ->disabled()
                     ->maxLength(30),
             ]);
     }
@@ -56,7 +49,7 @@ class ColorResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('code')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('code'),
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable(),
             ])
             ->filters([
@@ -65,12 +58,12 @@ class ColorResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->before(function (Tables\Actions\DeleteAction $action, Color $record) {
+                    ->before(function (Tables\Actions\DeleteAction $action, Size $record) {
                         if ($record->productVariants()->exists()) {
                             Notification::make()
                                 ->warning()
-                                ->title("Tidak dapat menghapus warna $record->name!")
-                                ->body('Warna yang sudah di gunakan oleh produk tidak dapat dihapus.')
+                                ->title("Tidak dapat menghapus size $record->name!")
+                                ->body('Size yang sudah di gunakan oleh produk tidak dapat dihapus.')
                                 ->persistent()
                                 ->duration(5000)
                                 ->send();
@@ -82,12 +75,12 @@ class ColorResource extends Resource
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()
                     ->before(function (Tables\Actions\DeleteBulkAction $action, Collection $records) {
-                        $records->each(function (Color $record) use ($action) {
+                        $records->each(function (Size $record) use ($action) {
                             if ($record->productVariants()->exists()) {
                                 Notification::make()
                                     ->warning()
-                                    ->title("Tidak dapat menghapus warna $record->name!")
-                                    ->body('Warna yang sudah di gunakan oleh produk tidak dapat dihapus. delete masal di batalkan')
+                                    ->title("Tidak dapat menghapus size $record->name!")
+                                    ->body('Size yang sudah di gunakan oleh produk tidak dapat dihapus. delete masal di batalkan')
                                     ->persistent()
                                     ->duration(5000)
                                     ->send();
@@ -96,13 +89,14 @@ class ColorResource extends Resource
                             }
                         });
                     }),
-            ]);
+            ])
+            ->defaultSort('name');
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageColors::route('/'),
+            'index' => Pages\ManageSizes::route('/'),
         ];
     }
 }
