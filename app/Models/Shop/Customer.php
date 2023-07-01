@@ -151,6 +151,11 @@ class Customer extends Authenticatable
         return Attribute::make(get: fn () => $this->customer_type['discount'] ?? '-');
     }
 
+    protected function isMember(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->customer_type_id !== 1);
+    }
+
     /**
      * Boot the model.
      *

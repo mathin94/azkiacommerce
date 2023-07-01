@@ -27,7 +27,7 @@
             </h3>
             <!-- End .product-title -->
             <div class="product-price">
-                @if ($product->activeDiscount)
+                @if ($product->discount_percentage > 0)
                 <span class="old-price">{{ $product->normal_price_label }}</span>
                 @endif
                 <span class="new-price">{{ $product->price_label }}</span>
