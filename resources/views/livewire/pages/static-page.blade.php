@@ -39,7 +39,7 @@
                             </div><!-- End .col -->
 
                             <div class="col-auto">
-                                <a href="/p/kontak-kami" class="btn btn-outline-white"><span>HUBUNGI KAMI</span><i
+                                <a href="{{ route('contact-us') }}" class="btn btn-outline-white"><span>HUBUNGI KAMI</span><i
                                         class="icon-long-arrow-right"></i></a>
                             </div><!-- End .col-auto -->
                         </div><!-- End .row no-gutters -->
