@@ -16,8 +16,14 @@ if (!function_exists('base_price')) {
 }
 
 if (!function_exists('format_rupiah')) {
-    function format_rupiah($price): string
+    function format_rupiah($price, $nosymbol = false): string
     {
-        return 'Rp. ' . number_format($price, 0, ',', '.');
+        $text = number_format($price, 0, ',', '.');
+
+        if ($nosymbol) {
+            return $text;
+        }
+
+        return 'Rp. ' . $text;
     }
 }

@@ -116,4 +116,9 @@ class ProductVariant extends Model
     {
         return Attribute::make(get: fn () => $this->resource->product_outlet_id);
     }
+
+    protected function stock(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->resource->stock);
+    }
 }

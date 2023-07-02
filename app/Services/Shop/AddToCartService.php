@@ -11,10 +11,10 @@ class AddToCartService
     public array $errors = [];
 
     public function __construct(
-        private readonly Cart $cart,
-        private readonly ?Product $product = null,
-        private readonly ProductVariant | int $variant,
-        private readonly int $quantity,
+        private Cart $cart,
+        private ?Product $product = null,
+        private ProductVariant | int $variant,
+        private int $quantity,
     ) {
     }
 

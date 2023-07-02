@@ -36,6 +36,9 @@ Route::middleware(['auth:shop'])->group(function () {
         # Route Cart
         Route::get('/cart', App\Http\Livewire\CartDetail::class)->name('cart');
         Route::get('/cart/checkout', App\Http\Livewire\CartCheckout::class)->name('cart.checkout');
+        Route::get('/cart/instant-order', App\Http\Livewire\Account\InstantOrder::class)
+            ->name('cart.instant-order')
+            ->middleware('customer.type:agen,distributor');
 
         # Route Order Payment
         Route::get('/order/payment/{payment_uuid}', App\Http\Livewire\OrderPayment::class)->name('order.payment');
@@ -60,6 +63,7 @@ Route::middleware(['auth:shop'])->group(function () {
     Route::prefix('/web-api')->group(function () {
         Route::get('/partners', [App\Http\Controllers\API\PartnerController::class, 'index']);
         Route::get('/subdistricts', [App\Http\Controllers\API\SubdistrictController::class, 'index']);
+        Route::get('/products', [App\Http\Controllers\API\ProductController::class, 'index']);
     });
 });
 

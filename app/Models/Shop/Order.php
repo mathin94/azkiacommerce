@@ -53,7 +53,8 @@ class Order extends Model
 
     public function items()
     {
-        return $this->hasMany(OrderItem::class, 'shop_order_id');
+        return $this->hasMany(OrderItem::class, 'shop_order_id')
+            ->orderBy('created_at', 'desc');
     }
 
     public function shipping()

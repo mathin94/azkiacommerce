@@ -64,10 +64,11 @@
                                         href="{{ route('customer.orders') }}">Pesanan
                                         Saya</a>
                                 </li>
+                                @if (auth()->user()->is_agen || auth()->user()->is_distributor)
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Pesan
-                                        Instant</a>
+                                    <a class="nav-link {{ request()->routeIs('cart.instant-order') ? 'active' : '' }}" href="{{ route('cart.instant-order') }}">Pesan Langsung</a>
                                 </li>
+                                @endif
                                 <li class="nav-item">
                                     <a class="nav-link" href="javascript:void(0);" onclick="logout()">Keluar</a>
                                 </li>
