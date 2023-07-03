@@ -150,8 +150,8 @@ class VariantsRelationManager extends RelationManager
                 Tables\Actions\BulkAction::make('download-excel')
                     ->label('Download file excel')
                     ->icon('heroicon-o-download')
-                    ->action(function (Collection $records) {
-                        $fileName = 'UpdateVariant';
+                    ->action(function (Collection $records, RelationManager $livewire) {
+                        $fileName = "Update Variant - {$livewire->ownerRecord->name}";
 
                         return (new ProductVariantTemplateExport($records))->download($fileName . '.xlsx', \Maatwebsite\Excel\Excel::XLSX, [
                             'Content-Type' => 'blob'
