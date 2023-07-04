@@ -46,8 +46,6 @@ class OrderList extends BaseComponent
         $this->orderPayment = $this->getOrder($id);
         $this->reset('bankAccountId');
         $this->emit('open-payment-modal');
-
-        info($this->orderPayment);
     }
 
     public function trackingPackage($id)
@@ -81,7 +79,7 @@ class OrderList extends BaseComponent
 
     public function updatedReviews()
     {
-        info($this->reviews);
+        // TODO: Implement updatedReviews() method.
     }
 
     public function savePayment()

@@ -143,7 +143,7 @@ class CartCheckout extends BaseComponent
             $discount = $voucher->value;
         }
 
-        if ($discount > $voucher->maximum_discount) {
+        if (!is_null($voucher->maximum_discount) && $discount > $voucher->maximum_discount) {
             $discount = $voucher->maximum_discount;
         }
 
@@ -232,8 +232,6 @@ class CartCheckout extends BaseComponent
                     </div>
                 "
             ]);
-
-            info($service->errors);
 
             return;
         }
