@@ -42,6 +42,7 @@
         "pxlrbt/filament-excel": "^1.1",
         "pxlrbt/filament-spotlight": "^0.3.6",
         "ralphjsmit/laravel-filament-seo": "^1.0",
+        "rawilk/laravel-form-components": "^8.1",
         "rennokki/laravel-eloquent-query-cache": "^3.4",
         "saade/filament-laravel-log": "^1.2",
         "shuvroroy/filament-spatie-laravel-backup": "^1.2",

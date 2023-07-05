@@ -12,18 +12,21 @@
     <title wire:loading.remove>{{ $title ? "{$title} - " : null }} {{ app(App\Settings\SiteSettings::class)->siteTitle() }}</title>
     <link rel="shortcut icon" href="{{ site()->favicon() }}" type="image/x-icon">
     @livewireStyles
+    <fc:styles />
     @vite('resources/sass/app.scss')
     @stack('styles')
 </head>
 
 <body>
-    @livewireScripts
-    <livewire:partials.navbar />
+
+
+    <div><livewire:partials.navbar /></div>
     {{ $slot }}
     <livewire:partials.footer />
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
     <x-app-modals />
     <!-- Plugins JS File -->
+
     <script src="{{ asset('build/assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('build/assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('build/assets/js/jquery.hoverIntent.min.js') }}"></script>
@@ -39,6 +42,8 @@
     <script src="{{ asset('build/assets/js/demos/demo-5.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js"></script>
     @vite('resources/js/app.js')
+    @livewireScripts
+    <fc:scripts />
     @stack('scripts')
 
     <script type="text/javascript">
