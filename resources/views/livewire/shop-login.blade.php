@@ -63,8 +63,8 @@
                                     </button>
 
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" wire:model="remember">
-                                        <label class="custom-control-label" for="signin-remember-2">Ingat
+                                        <input type="checkbox" class="custom-control-input" id="signin-remember" name="signin-remember" wire:model="remember">
+                                        <label class="custom-control-label" for="signin-remember">Ingat
                                             Saya</label>
                                     </div><!-- End .custom-checkbox -->
 

@@ -16,8 +16,6 @@
                     <ul class="top-menu pt-1 pb-0">
                         <li><a href="#">Menu</a>
                             <ul>
-                                <li><a href="/contact-us">Kontak Kami</a></li>
-
                                 @if (auth()->guard('shop')->check())
                                     <li>
                                         <a href="{{ route('customer.wishlist') }}">
@@ -31,7 +29,7 @@
                                         <a href="{{ route('customer.orders') }}">
                                             <i class="icon-shopping-cart"></i> Pesanan Saya
                                             <span class="wishlist-count">
-                                                {{ $wishlist_count }}
+                                                {{-- {{ $wishlist_count }} --}}
                                             </span>
                                         </a>
                                     </li>

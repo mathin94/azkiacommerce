@@ -53,7 +53,7 @@
                                 <hr>
                                 <h3 class="product-title">Detail Pengiriman</h3>
                                 <div class="payment mt-2">
-                                    <table class="table">
+                                    <table class="table tracking">
                                         <thead>
                                             <tr>
                                                 <th class="text-nowrap" width="25%">

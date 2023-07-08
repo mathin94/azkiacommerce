@@ -12,7 +12,7 @@
 
             <div class="product-action-vertical">
                 <a href="#" class="btn-product-icon btn-wishlist btn-expandable"
-                    title="Tambahkan Ke Whistlist"><span>tambahkan ke wishlist</span></a>
+                    title="Tambahkan Ke Whistlist" wire:click="addToWishlist"><span>tambahkan ke wishlist</span></a>
             </div>
 
             <div class="product-action ">

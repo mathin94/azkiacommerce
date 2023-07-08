@@ -100,6 +100,11 @@ class Product extends Model implements HasMedia
         return $this->hasMany(ProductVariant::class, 'shop_product_id');
     }
 
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class, 'shop_product_id');
+    }
+
     public function resource()
     {
         return $this->belongsTo(\App\Models\Backoffice\Category::class, 'resource_id');
@@ -325,5 +330,16 @@ class Product extends Model implements HasMedia
         }
 
         return $query->orderBy('name', 'asc');
+    }
+
+    protected function wishlisted(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if (!auth()->guard('shop')->check()) {
+                return false;
+            }
+
+            return $this->wishlists->where('shop_customer_id', auth()->guard('shop')->id())->count();
+        });
     }
 }

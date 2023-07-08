@@ -33,13 +33,6 @@
             </div><!-- End .toolbox -->
 
             <div class="products">
-                <div class="row" >
-                    <div class="col-6 col-md-4 col-lg-4 col-xl-3">
-                        <div class="product product-2" wire:loading wire:target="getProducts">
-                            test
-                        </div>
-                    </div>
-                </div>
                 <div class="row" wire:loading.class="d-none" wire:target="getProducts">
                     @foreach ($products as $item)
                     <div class="col-6 col-md-4 col-lg-4 col-xl-3">
@@ -52,11 +45,7 @@
                                     <img src="{{ $item->main_image_url }}" alt="{{ $item->name }} image" class="product-image">
                                 </a>
 
-                                <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable">
-                                        <span>tambahkan ke wishlist</span>
-                                    </a>
-                                </div><!-- End .product-action -->
+                                <livewire:wishlist-button :product=$item />
 
                                 {{-- <div class="product-action action-icon-top">
                                     <a href="#" class="btn-product btn-cart">

@@ -20,7 +20,9 @@ class Show extends Component
     public function render()
     {
         $products = $this->category->products()
-            ->with(['media', 'activeDiscount'])
+            ->with(['media', 'activeDiscount', 'wishlists' => function ($q) {
+                $q->dontCache()->where('shop_customer_id', auth()->guard('shop')->id());
+            }])
             ->visible()
             ->published()
             ->sortByValue($this->sortBy);

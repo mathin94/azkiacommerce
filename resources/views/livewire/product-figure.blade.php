@@ -8,10 +8,7 @@
                 <img src="{{ $product->main_image_url }}" alt="{{ $product->name }} image" class="product-image">
             </a>
 
-            <div class="product-action-vertical">
-                <a href="#" class="btn-product-icon btn-wishlist btn-expandable">
-                    <span>tambahkan ke wishlist</span></a>
-            </div><!-- End .product-action -->
+            <livewire:wishlist-button :product=$product />
 
             {{-- <div class="product-action action-icon-top">
                 <a href="#" class="btn-product btn-cart">

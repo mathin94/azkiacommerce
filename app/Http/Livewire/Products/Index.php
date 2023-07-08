@@ -35,7 +35,9 @@ class Index extends Component
 
     public function refreshProduct()
     {
-        $products = Product::with(['media', 'activeDiscount'])
+        $products = Product::with(['media', 'activeDiscount', 'wishlists' => function ($q) {
+            $q->dontCache()->where('shop_customer_id', auth()->guard('shop')->id());
+        }])
             ->visible()
             ->published();
 

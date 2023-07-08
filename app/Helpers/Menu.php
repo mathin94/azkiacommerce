@@ -15,7 +15,7 @@ class Menu
     {
         $pages = Page::active()->get();
 
-        $menu = SpatieMenu::new()
+        return SpatieMenu::new()
             ->add(Link::to('/', 'Home')->addClass('pr-2'))
             ->submenu(
                 Link::to('/products', 'Produk')->addClass('sf-with-ul'),
@@ -27,20 +27,18 @@ class Menu
                     }
                 }
             )
-            ->add(Link::to('/blogs', 'Blog')->addClass('pr-2'));
-
-        if ($pages->count() > 0) {
-            $menu->submenu(
+            ->add(Link::to('/blogs', 'Blog')->addClass('pr-2'))
+            ->submenu(
                 Link::to('#', 'Informasi')->addClass('sf-with-ul'),
                 function (SpatieMenu $menu) use ($pages) {
+                    $menu->link(route('contact-us'), 'Hubungi Kami');
+
                     foreach ($pages as $item) {
                         $menu->link($item->public_url, $item->title);
                     }
                 }
-            );
-        }
-
-        return $menu->add(Link::to(route('partner-location'), 'Peta Mitra')->addClass('pr-2'));
+            )
+            ->add(Link::to(route('partner-location'), 'Peta Mitra')->addClass('pr-2'));
     }
 
     public function navbar()
