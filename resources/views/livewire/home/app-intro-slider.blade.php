@@ -16,6 +16,7 @@
                 autoplay: true,
                 loop: true,
                 autoplayTimeout: 5000,
+                responsiveClass: true
             })
         </script>
     @endpush

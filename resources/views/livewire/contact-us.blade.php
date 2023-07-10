@@ -1,15 +1,15 @@
 <div>
     <main class="main">
-        <div class="page-header text-center" style="background-image: url('/build/assets/images/page-header-bg.jpg')">
+        <div class="page-header text-center" style="background-image: url('/build/assets/images/bg-login.jpg')">
             <div class="container">
-                <h1 class="page-title">Kontak Kami</h1>
+                <h1 class="page-title">Hubungi Kami</h1>
             </div><!-- End .container -->
         </div>
         <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
             <div class="container">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Kontak Kami</li>
+                    <li class="breadcrumb-item active" aria-current="page">Hubungi Kami</li>
                 </ol>
             </div><!-- End .container -->
         </nav>

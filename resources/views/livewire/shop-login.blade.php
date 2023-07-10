@@ -9,7 +9,7 @@
     </nav><!-- End .breadcrumb-nav -->
 
     <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17"
-        style="background-image: url('/build/assets/images/backgrounds/login-bg.jpg')">
+        style="background-image: url('/build/assets/images/bg-login.jpg')">
         <div class="container">
             <div class="form-box">
                 <div class="form-tab">
