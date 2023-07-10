@@ -46,6 +46,8 @@
     <fc:scripts />
     @stack('scripts')
 
+    {!! site()->custom_scripts !!}
+
     <script type="text/javascript">
         Livewire.on('showAlert', data => {
             $.magnificPopup.open({

@@ -86,7 +86,15 @@ class ManageSite extends SettingsPage
                                 ->prefixIcon('bi-tiktok')
                                 ->label('Link TikTok'),
                         ])
-                        ->columns(2)
+                        ->columns(2),
+                    Forms\Components\Section::make('Custom Scripts')
+                        ->schema([
+                            Forms\Components\Textarea::make('widget_home_page')
+                                ->label('Widget Home Page'),
+                            Forms\Components\Textarea::make('custom_scripts')
+                                ->label('Custom Scripts (Analytic / Pixel / Dll)'),
+                        ])
+                        ->columns(1),
                 ])
                 ->columnSpan(['lg' => 2]),
         ];

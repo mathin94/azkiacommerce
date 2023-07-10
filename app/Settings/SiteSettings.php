@@ -29,6 +29,10 @@ class SiteSettings extends Settings
 
     public ?string $tiktok_link;
 
+    public ?string $widget_home_page;
+
+    public ?string $custom_scripts;
+
     public static function group(): string
     {
         return 'general';
