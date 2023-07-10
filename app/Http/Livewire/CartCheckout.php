@@ -16,7 +16,7 @@ class CartCheckout extends BaseComponent
         $courierId,
         $courierServices = [],
         $shipping_cost = 0,
-        $shipping_cost_label,
+        $shipping_cost_label = 'Layanan Pengiriman Belum Dipilih',
         $courierService,
         $grandtotal = 0,
         $grandtotal_label,
@@ -36,6 +36,8 @@ class CartCheckout extends BaseComponent
     public function selectAddress($id)
     {
         $this->shippingAddress = $this->customer->addresses->find($id);
+
+        $this->reset(['shipping_cost', 'courierService', 'courierId', 'shipping_cost_label']);
 
         $this->emit('close-address-modal');
     }
