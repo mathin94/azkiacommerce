@@ -11,6 +11,8 @@ class ContactUs extends Component
     public function render()
     {
         return view('livewire.contact-us')
-            ->layout('layouts.frontpage');
+            ->layout('layouts.frontpage', [
+                'title' => 'Hubungi Kami'
+            ]);
     }
 }

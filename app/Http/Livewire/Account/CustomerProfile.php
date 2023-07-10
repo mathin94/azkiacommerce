@@ -57,6 +57,8 @@ class CustomerProfile extends BaseComponent
     public function render()
     {
         return view('livewire.account.customer-profile')
-            ->layout('layouts.dashboard');
+            ->layout('layouts.dashboard', [
+                'title' => 'Profil Pengguna'
+            ]);
     }
 }

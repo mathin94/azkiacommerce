@@ -72,8 +72,16 @@ class Index extends Component
     {
         $products = $this->refreshProduct();
 
+        $title = 'Produk';
+
+        if ($this->search) {
+            $title = "Hasil Pencarian : {$this->search}";
+        }
+
         return view('livewire.products.index', [
             'products' => $products->paginate(10)
-        ])->layout('layouts.frontpage');
+        ])->layout('layouts.frontpage', [
+            'title' => $title
+        ]);
     }
 }

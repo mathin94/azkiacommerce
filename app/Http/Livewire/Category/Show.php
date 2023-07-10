@@ -30,6 +30,8 @@ class Show extends Component
         return view('livewire.category.show', [
             'products' => $products->paginate(10)
         ])
-            ->layout('layouts.frontpage');
+            ->layout('layouts.frontpage', [
+                'title' => "Kategori {$this->category->name}"
+            ]);
     }
 }

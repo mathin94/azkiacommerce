@@ -221,6 +221,8 @@ class Show extends Component
     public function render()
     {
         return view('livewire.products.show')
-            ->layout('layouts.frontpage');
+            ->layout('layouts.frontpage', [
+                'title' => $this->product->name
+            ]);
     }
 }
