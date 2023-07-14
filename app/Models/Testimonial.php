@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Cache;
-use Rennokki\QueryCache\Traits\QueryCacheable;
 use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Rennokki\QueryCache\Traits\QueryCacheable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Testimonial extends Model implements HasMedia
 {
@@ -60,6 +61,18 @@ class Testimonial extends Model implements HasMedia
     protected $fillable = [
         'name', 'title', 'comment', 'active'
     ];
+
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $url = $this->getFirstMediaUrl('testimonial');
+
+            if (empty($url))
+                $url = asset('/build/assets/images/no-avatar.jpg');
+
+            return $url;
+        });
+    }
 
     public static function boot()
     {

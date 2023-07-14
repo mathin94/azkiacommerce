@@ -102,7 +102,7 @@ class Post extends Model implements HasMedia
             $url = $this->getFirstMediaUrl(self::MEDIA_COLLECTION);
 
             if (empty($url))
-                $url = secure_url('/build/assets/images/no-image.png');
+                $url = asset('/build/assets/images/no-thumbnail-medium.png');
 
             return $url;
         });
