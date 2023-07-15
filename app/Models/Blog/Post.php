@@ -88,7 +88,8 @@ class Post extends Model implements HasMedia
 
     public function comments()
     {
-        return $this->morphMany(\App\Models\Comment::class, 'commentable')->orderBy('created_at', 'desc');
+        return $this->morphMany(\App\Models\Comment::class, 'commentable')
+            ->orderBy('created_at', 'desc');
     }
 
     protected function commentCountLabel(): Attribute
