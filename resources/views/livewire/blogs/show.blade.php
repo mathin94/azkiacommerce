@@ -54,19 +54,24 @@
                                     </div><!-- End .entry-tags -->
                                 </div><!-- End .col -->
 
-                                <div class="col-md-auto mt-2 mt-md-0">
-                                    <div class="social-icons social-icons-color">
-                                        <span class="social-label">Share this post:</span>
-                                        <a href="#" class="social-icon social-facebook" title="Facebook"
-                                            target="_blank"><i class="icon-facebook-f"></i></a>
-                                        <a href="#" class="social-icon social-twitter" title="Twitter"
-                                            target="_blank"><i class="icon-twitter"></i></a>
-                                        <a href="#" class="social-icon social-pinterest" title="Pinterest"
-                                            target="_blank"><i class="icon-pinterest"></i></a>
-                                        <a href="#" class="social-icon social-linkedin" title="Linkedin"
-                                            target="_blank"><i class="icon-linkedin"></i></a>
-                                    </div><!-- End .soial-icons -->
-                                </div><!-- End .col-auto -->
+                                <div class="social-icons social-icons-sm">
+                                    <span class="social-label">Bagikan:</span>
+                                    <a href="#" data-sharer="facebook"
+                                        data-title="Beli {{ $post->title }} di {{ config('app.name') }}"
+                                        data-url="{{ $post->public_url }}" class="social-icon"
+                                        title="Facebook"><x-bi-facebook /></a>
+                                    <a href="#" data-sharer="twitter"
+                                        data-title="Beli {{ $post->title }} di {{ config('app.name') }}"
+                                        data-url="{{ $post->public_url }}" class="social-icon" title="Twitter"><x-bi-twitter /></a>
+                                    <a href="#" data-sharer="instagram"
+                                        data-title="Beli {{ $post->title }} di {{ config('app.name') }}"
+                                        data-url="{{ $post->public_url }}" class="social-icon"
+                                        title="Instagram"><x-bi-instagram /></a>
+                                    <a href="#" data-sharer="pinterest"
+                                        data-title="Beli {{ $post->title }} di {{ config('app.name') }}"
+                                        data-url="{{ $post->public_url }}" class="social-icon"
+                                        title="Pinterest"><x-bi-pinterest /></a>
+                                </div>
                             </div>
                         </div><!-- End .entry-body -->
                     </article><!-- End .entry -->
@@ -97,69 +102,61 @@
                                     <div class="comment">
                                         <figure class="comment-media">
                                             <a href="#">
-                                                <img src="assets/images/blog/comments/1.jpg" alt="User name">
+                                                <img src="/build/assets/images/no-avatar.jpg" alt="{{ $item->customer->name }}">
                                             </a>
                                         </figure>
 
                                         <div class="comment-body">
-                                            <a href="#" class="comment-reply">Reply</a>
                                             <div class="comment-user">
-                                                <h4><a href="#">Jimmy Pearson</a></h4>
-                                                <span class="comment-date">November 9, 2018 at 2:19 pm</span>
+                                                <h4><a href="#">{{ $item->customer->name }}</a></h4>
+                                                <span class="comment-date">{{ $item->created_at->format('d F Y H:i') }}</span>
                                             </div><!-- End .comment-user -->
 
                                             <div class="comment-content">
-                                                <p>Sed pretium, ligula sollicitudin laoreet viverra, tortor libero
-                                                    sodales
-                                                    leo, eget blandit nunc tortor eu nibh. Nullam mollis. Ut justo.
-                                                    Suspendisse potenti. </p>
+                                                <p>{{ $item->comment }}</p>
                                             </div><!-- End .comment-content -->
                                         </div><!-- End .comment-body -->
                                     </div><!-- End .comment -->
-                                    <ul>
-                                        <li>
-                                            <div class="comment">
-                                                <figure class="comment-media">
-                                                    <a href="#">
-                                                        <img src="assets/images/blog/comments/2.jpg" alt="User name">
-                                                    </a>
-                                                </figure>
-
-                                                <div class="comment-body">
-                                                    <a href="#" class="comment-reply">Reply</a>
-                                                    <div class="comment-user">
-                                                        <h4><a href="#">Lena Knight</a></h4>
-                                                        <span class="comment-date">November 9, 2018 at 2:19 pm</span>
-                                                    </div><!-- End .comment-user -->
-
-                                                    <div class="comment-content">
-                                                        <p>Morbi interdum mollis sapien. Sed ac risus.</p>
-                                                    </div><!-- End .comment-content -->
-                                                </div><!-- End .comment-body -->
-                                            </div><!-- End .comment -->
-                                        </li>
-                                    </ul>
                                 </li>
                             @endforeach
                         </ul>
                     </div><!-- End .comments -->
+                    @if (auth()->guard('shop')->check())
                     <div class="reply">
                         <div class="heading">
                             <h3 class="title">Tuliskan Komentar</h3><!-- End .title -->
                             <p class="title-desc">Nama yang muncul akan sesuai dengan nama user login anda.</p>
                         </div><!-- End .heading -->
 
-                        <form action="#">
+                        <form action="#" wire:submit.prevent="postComment">
                             <label for="reply-message" class="sr-only">Komentar</label>
-                            <textarea name="reply-message" id="reply-message" cols="30" rows="4" class="form-control" required
-                                placeholder="Komentar *"></textarea>
+                            <textarea name="reply-message"
+                                wire:model="newComment"
+                                wire:loading.attr="disabled"
+                                id="reply-message"
+                                cols="30" rows="4"
+                                class="form-control" required
+                                placeholder="Komentar *">
+                            </textarea>
 
-                            <button type="submit" class="btn btn-outline-primary-2">
-                                <span>POSTING KOMENTAR</span>
-                                <i class="icon-long-arrow-right"></i>
+                            <button wire:click="postComment" wire:loading.attr="disabled" class="btn btn-outline-primary-2">
+                                <div wire:loading.class="d-none" wire:target="postComment">
+                                    <span>POSTING KOMENTAR</span>
+                                    <i class="icon-long-arrow-right"></i>
+                                </div>
+                                <div wire:loading wire:target="postComment">
+                                    <i class="fa fa-spinner fa-spin"></i>
+                                </div>
                             </button>
                         </form>
                     </div><!-- End .reply -->
+                    @else
+                    <div class="reply">
+                        <div class="heading">
+                            <p class="title-desc">Anda harus login untuk menuliskan komentar.</p>
+                        </div><!-- End .heading -->
+                    </div><!-- End .reply -->
+                    @endif
                 </div><!-- End .col-lg-9 -->
 
                 <aside class="col-lg-3">

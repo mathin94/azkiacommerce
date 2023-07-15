@@ -7,6 +7,7 @@ use Filament\Tables;
 use App\Enums\PostStatus;
 use App\Models\Blog\Post;
 use Filament\Resources\Form;
+use App\Models\Blog\Category;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use RalphJSmit\Filament\SEO\SEO;
@@ -16,7 +17,7 @@ use App\Filament\Resources\Blog\PostResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\Blog\PostResource\RelationManagers;
-use App\Models\Blog\Category;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class PostResource extends Resource
 {
@@ -53,7 +54,7 @@ class PostResource extends Resource
                                     ->required()
                                     ->unique(Post::class, 'slug', ignoreRecord: true),
 
-                                Forms\Components\MarkdownEditor::make('content')
+                                TinyEditor::make('content')
                                     ->label('Konten')
                                     ->required()
                                     ->columnSpan('full'),

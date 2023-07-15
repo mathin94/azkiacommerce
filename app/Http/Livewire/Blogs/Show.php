@@ -12,7 +12,7 @@ class Show extends Component
     public Post | null $post;
     public Post | null $next_post;
     public Post | null $prev_post;
-    public $categories;
+    public $categories, $comments, $newComment;
 
     public function incrementView()
     {
@@ -32,35 +32,47 @@ class Show extends Component
         }
     }
 
+    public function postComment()
+    {
+        $this->validate([
+            'newComment' => 'required',
+        ]);
+
+        $this->post->comments()->create([
+            'shop_customer_id' => auth()->guard('shop')->id(),
+            'comment' => $this->newComment,
+        ]);
+
+        $this->reset('newComment');
+
+        $this->post->refresh();
+    }
+
     public function mount()
     {
         $slug           = request()->route('slug');
         $cache_key      = Post::CACHE_PREFIX . $slug;
-        $next_cache_key = $cache_key . '::next';
-        $prev_cache_key = $cache_key . '::prev';
 
-        $post = Cache::remember($cache_key, Post::DEFAULT_CACHE_TTL, function () use ($slug) {
-            return Post::with(['media', 'author', 'comments', 'category', 'tags'])
-                ->published()
-                ->whereSlug($slug)
-                ->first();
-        });
+        $post = Post::with([
+            'media',
+            'author',
+            'category',
+            'tags',
+            'comments.customer',
+        ])
+            ->published()
+            ->whereSlug($slug)
+            ->first();
 
         $this->post = $post;
 
         abort_if(empty($this->post), 404);
 
-        $this->next_post = Cache::remember($next_cache_key, Post::DEFAULT_CACHE_TTL, function () use ($post) {
-            return $post->nextPost();
-        });
+        $this->next_post = $post->nextPost();
 
-        $this->prev_post = Cache::remember($prev_cache_key, Post::DEFAULT_CACHE_TTL, function () use ($post) {
-            return $post->prevPost();
-        });
+        $this->prev_post = $post->prevPost();
 
-        $this->categories = Cache::remember('', 60 * 60 * 24, function () {
-            return Category::whereActive(true)->get();
-        });
+        $this->categories = Category::whereActive(true)->get();
 
         $this->incrementView();
     }

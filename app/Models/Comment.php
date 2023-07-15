@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Shop\Customer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,7 +10,7 @@ use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Comment extends Model
 {
-    use HasFactory, QueryCacheable;
+    use HasFactory;
 
     /**
      * Specify the amount of time to cache queries.
@@ -52,10 +53,26 @@ class Comment extends Model
 
     protected $table = 'comments';
 
-    protected $guards = [];
+    protected $fillable = [
+        'approved', 'comment', 'shop_customer_id', 'user_id'
+    ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'shop_customer_id');
+    }
 
     public function commentable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->approved = false;
+        });
     }
 }
