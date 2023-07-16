@@ -45,3 +45,10 @@ if (!function_exists('store')) {
         return app(App\Settings\ShopSettings::class);
     }
 }
+
+if (!function_exists('soon')) {
+    function soon()
+    {
+        return app(App\Settings\ComingSoon::class);
+    }
+}

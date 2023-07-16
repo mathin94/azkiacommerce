@@ -19,24 +19,29 @@
                     <div class="toolbox-sort">
                         <label for="sortby">Urutkan:</label>
                         <div class="select-custom">
-                            <select wire:model="sortBy" class="form-control">
-                                <option value="created_at">Terbaru</option>
-                                <option value="top_rated">Paling Populer</option>
-                                <option value="name_asc">Nama (A-Z)</option>
-                                <option value="name_desc">Nama (Z-A)</option>
-                                <option value="lowest_price">Harga Terendah</option>
-                                <option value="highest_price">Harga Tertinggi</option>
-                            </select>
+                            <x-select
+                                name="sortBy"
+                                wire:model.lazy="sortBy"
+                                :options="[
+                                    'created_at' => 'Terbaru',
+                                    'top_rated' => 'Paling Populer',
+                                    'name_asc' => 'Nama (A-Z)',
+                                    'name_desc' => 'Nama (Z-A)',
+                                    'lowest_price' => 'Harga Terendah',
+                                    'highest_price' => 'Harga Tertinggi',
+                                ]"
+                                class="form-control"
+                            />
                         </div>
                     </div><!-- End .toolbox-sort -->
                 </div><!-- End .toolbox-right -->
             </div><!-- End .toolbox -->
 
             <div class="products">
-                <div class="row" wire:loading.class="d-none" wire:target="getProducts">
+                <div class="row">
                     @foreach ($products as $item)
                     <div class="col-6 col-md-4 col-lg-4 col-xl-3">
-                        <div class="product product-2">
+                        <div class="product product-{{ $item->id }}">
                             <figure class="product-media">
                                 @if ($item->discount_percentage > 0)
                                 <span class="product-label label-sale">Diskon {{ $item->discount_percentage }}%</span>

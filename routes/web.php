@@ -31,6 +31,12 @@ Route::get('/category/{slug}', App\Http\Livewire\Category\Show::class)->name('ca
 # Route Contact Us
 Route::get('/contact-us', App\Http\Livewire\ContactUs::class)->name('contact-us');
 
+# Coming Soon
+Route::get(soon()->link_slug, App\Http\Livewire\ComingSoonPage::class)->name('comingsoon');
+
+# FAQ
+Route::get('/faqs', App\Http\Livewire\FAQPage::class)->name('faqs');
+
 Route::middleware(['auth:shop'])->group(function () {
     Route::middleware('customer.valid.address')->group(function () {
         # Route Cart

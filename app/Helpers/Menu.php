@@ -15,6 +15,8 @@ class Menu
     {
         $pages = Page::active()->get();
 
+
+
         return SpatieMenu::new()
             ->add(Link::to('/', 'Home')->addClass('pr-2'))
             ->submenu(
@@ -32,6 +34,10 @@ class Menu
                 Link::to('#', 'Informasi')->addClass('sf-with-ul'),
                 function (SpatieMenu $menu) use ($pages) {
                     $menu->link(route('contact-us'), 'Hubungi Kami');
+                    $menu->link(route('faqs'), 'FAQ');
+                    if (soon()->active) {
+                        $menu->link(route('comingsoon'), soon()->link_title);
+                    }
 
                     foreach ($pages as $item) {
                         $menu->link($item->public_url, $item->title);
