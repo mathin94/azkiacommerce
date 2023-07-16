@@ -148,24 +148,12 @@
                                     <a href="#">{{ $product->category->name }}</a>
                                 </div><!-- End .product-cat -->
 
-                                <div class="social-icons social-icons-sm">
-                                    <span class="social-label">Bagikan:</span>
-                                    <a href="#" data-sharer="facebook"
-                                        data-title="Beli {{ $product->name }} di {{ config('app.name') }}"
-                                        data-url="{{ $product->public_url }}" class="social-icon"
-                                        title="Facebook"><x-bi-facebook /></a>
-                                    <a href="#" data-sharer="twitter"
-                                        data-title="Beli {{ $product->name }} di {{ config('app.name') }}"
-                                        data-url="{{ $product->public_url }}" class="social-icon" title="Twitter"><x-bi-twitter /></a>
-                                    <a href="#" data-sharer="instagram"
-                                        data-title="Beli {{ $product->name }} di {{ config('app.name') }}"
-                                        data-url="{{ $product->public_url }}" class="social-icon"
-                                        title="Instagram"><x-bi-instagram /></a>
-                                    <a href="#" data-sharer="pinterest"
-                                        data-title="Beli {{ $product->name }} di {{ config('app.name') }}"
-                                        data-url="{{ $product->public_url }}" class="social-icon"
-                                        title="Pinterest"><x-bi-pinterest /></a>
-                                </div>
+                                <livewire:sharer-cta
+                                    :title="'Beli' . $product->name"
+                                    :url="$product->public_url"
+                                    class='social-icons social-icons-sm'
+                                    label='Bagikan'
+                                />
                             </div><!-- End .product-details-footer -->
                         </div><!-- End .product-details -->
                     </div><!-- End .col-md-6 -->
