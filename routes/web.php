@@ -32,7 +32,10 @@ Route::get('/category/{slug}', App\Http\Livewire\Category\Show::class)->name('ca
 Route::get('/contact-us', App\Http\Livewire\ContactUs::class)->name('contact-us');
 
 # Coming Soon
-Route::get(soon()->link_slug, App\Http\Livewire\ComingSoonPage::class)->name('comingsoon');
+try {
+    Route::get(soon()->link_slug, App\Http\Livewire\ComingSoonPage::class)->name('comingsoon');
+} catch (\Throwable $th) {
+}
 
 # FAQ
 Route::get('/faqs', App\Http\Livewire\FAQPage::class)->name('faqs');
