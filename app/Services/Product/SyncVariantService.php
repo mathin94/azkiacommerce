@@ -24,17 +24,14 @@ class SyncVariantService
 
     public function handle()
     {
-        foreach ($this->product->resource->products()->get() as $variant) {
-            $this->product->variants()->dontCache()->updateOrCreate(
-                ['resource_id' => $variant->id],
-                [
-                    'barcode'     => $variant->barcode,
-                    'code_name'   => $variant->code_name,
-                    'name'        => $variant->name,
-                    'weight'      => $variant->weight,
-                    'price'       => $variant->price,
-                ]
-            );
+        foreach ($this->product->resource->products as $variant) {
+            $productVariant = $this->product->variants()->firstOrNew(['resource_id' => $variant->id]);
+            $productVariant->barcode   = $variant->barcode;
+            $productVariant->code_name = $variant->code_name;
+            $productVariant->name      = $variant->name;
+            $productVariant->weight    = $variant->weight;
+            $productVariant->price     = $variant->price;
+            $productVariant->save();
         }
     }
 }

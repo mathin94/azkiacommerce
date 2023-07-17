@@ -1,7 +1,7 @@
 <div>
     <div class="container recent-arrivals">
         <div class="heading heading-flex align-items-center mb-3">
-            <h2 class="title title-lg">Produk Terbaru</h2><!-- End .title -->
+            <h3 class="title text-center mb-3">Produk Terbaru</h3>
         </div><!-- End .heading -->
 
         <div class="content">

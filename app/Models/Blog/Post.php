@@ -88,7 +88,15 @@ class Post extends Model implements HasMedia
 
     public function comments()
     {
-        return $this->morphMany(\App\Models\Comment::class, 'commentable');
+        return $this->morphMany(\App\Models\Comment::class, 'commentable')
+            ->orderBy('created_at', 'desc');
+    }
+
+    protected function commentCountLabel(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->comments->count() . ' Komentar';
+        });
     }
 
     protected function publicUrl(): Attribute
@@ -102,7 +110,7 @@ class Post extends Model implements HasMedia
             $url = $this->getFirstMediaUrl(self::MEDIA_COLLECTION);
 
             if (empty($url))
-                $url = secure_url('/build/assets/images/no-image.png');
+                $url = asset('/build/assets/images/no-thumbnail-medium.png');
 
             return $url;
         });

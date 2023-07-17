@@ -2,13 +2,12 @@
 
 namespace App\Models\Shop;
 
-use App\Enums\OrderStatus;
-use App\Models\Backoffice\Address;
-use App\Models\Backoffice\Sales;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Enums\OrderStatus;
+use App\Models\Backoffice\Sales;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Order extends Model
 {
@@ -54,7 +53,8 @@ class Order extends Model
 
     public function items()
     {
-        return $this->hasMany(OrderItem::class, 'shop_order_id');
+        return $this->hasMany(OrderItem::class, 'shop_order_id')
+            ->orderBy('created_at', 'desc');
     }
 
     public function shipping()
@@ -158,8 +158,8 @@ class Order extends Model
     {
         if (empty($this->canceled_at)) {
             $this->update([
-                'status' => OrderStatus::Canceled,
-                'canceled_at' => now()
+                'status'      => OrderStatus::Canceled,
+                'canceled_at' => now(),
             ]);
 
             return true;
@@ -170,22 +170,16 @@ class Order extends Model
 
     protected function customerCancelable(): Attribute
     {
-        return Attribute::make(get: function () {
-            return $this->status->value === OrderStatus::WaitingPayment;
-        });
+        return Attribute::make(fn () => $this->statusWaitingPayment());
     }
 
     protected function adminCancelable(): Attribute
     {
         return Attribute::make(get: function () {
-            return $this->status->value === OrderStatus::WaitingPayment || $this->status->value === OrderStatus::WaitingConfirmation;
-        });
-    }
-
-    protected function isCanceled(): Attribute
-    {
-        return Attribute::make(get: function () {
-            return $this->status->value === OrderStatus::Canceled;
+            return in_array($this->status->value, [
+                OrderStatus::WaitingPayment,
+                OrderStatus::WaitingConfirmation,
+            ]);
         });
     }
 
@@ -258,12 +252,22 @@ class Order extends Model
     protected function trackable(): Attribute
     {
         return Attribute::make(get: function () {
-            return !blank($this->shipping?->receipt_number) && $this->status->value === OrderStatus::PackageSent;
+            return !blank($this->shipping?->receipt_number) && $this->statusPackageSent();
         });
     }
 
-    protected function isCompleted(): Attribute
+
+    public function __call($methodName, $arguments)
     {
-        return Attribute::make(fn () => $this->status->value === OrderStatus::Completed);
+        if (strpos($methodName, 'status') === 0) {
+            $statusName = substr($methodName, 6);
+
+            if (in_array($statusName, OrderStatus::getKeys())) {
+                // Check if the status name matches the current status
+                return $this->status->key === $statusName;
+            }
+        }
+
+        return parent::__call($methodName, $arguments);
     }
 }

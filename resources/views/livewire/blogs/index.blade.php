@@ -26,31 +26,30 @@
              <div class="entry-container" data-layout="fitRows">
                  @foreach ($posts as $item)
                      <div class="entry-item lifestyle shopping col-sm-6 col-lg-4">
-                         <article class="entry entry-mask">
-                             <figure class="entry-media">
-                                 <a href="{{ route('blogs.show', $item->slug) }}">
-                                     <img src="{{ $item->image_url }}" alt="{{ $item->title }} image"
-                                         style="height: 350px;">
-                                 </a>
-                             </figure><!-- End .entry-media -->
+                        <article class="entry entry-grid">
+                            <figure class="entry-media">
+                                <a href="{{ $item->public_url }}">
+                                    <img src="{{ $item->image_url }}" alt="{{ $item->title }} desc">
+                                </a>
+                            </figure><!-- End .entry-media -->
 
-                             <div class="entry-body">
-                                 <div class="entry-meta">
-                                     <a href="#">{{ $item->published_at->format('d M, Y') }}</a>
-                                     <span class="meta-separator">|</span>
-                                     <a href="#">{{ $item->comments->count() }} Komentar</a>
-                                 </div><!-- End .entry-meta -->
+                            <div class="entry-body text-center">
+                                <div class="entry-meta">
+                                    <a href="#">{{ $item->published_at->format('d M, Y') }}</a>, {{ $item->comment_count_label }}
+                                </div><!-- End .entry-meta -->
 
-                                 <h2 class="entry-title">
-                                     <a href="{{ route('blogs.show', $item->slug) }}">{{ $item->title }}.</a>
-                                 </h2><!-- End .entry-title -->
+                                <h2 class="entry-title">
+                                    <a href="{{ $item->public_url }}">{{ $item->title }}</a>
+                                </h2><!-- End .entry-title -->
 
-                                 <div class="entry-cats">
-                                     <a
-                                         href="{{ route('blogs.index', ['category' => $item->category?->slug]) }}">{{ $item->category?->name }}</a>,
-                                 </div><!-- End .entry-cats -->
-                             </div><!-- End .entry-body -->
-                         </article><!-- End .entry -->
+                                <div class="entry-content">
+                                    <p>
+                                        {!! \Str::of($item->content)->limit(100) !!}
+                                    </p>
+                                    <a href="{{ $item->public_url }}" class="read-more">Baca Selengkapnya</a>
+                                </div><!-- End .entry-content -->
+                            </div><!-- End .entry-body -->
+                        </article>
                      </div><!-- End .entry-item -->
                  @endforeach
              </div><!-- End .entry-container -->

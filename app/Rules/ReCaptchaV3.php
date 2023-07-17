@@ -22,7 +22,6 @@ class ReCaptchaV3 implements ValidationRule
 
         if (!$response->ok() || !$response->json()['success']) {
             $fail('The google recaptcha is required.');
-            info($response->json());
         }
     }
 }

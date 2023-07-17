@@ -57,6 +57,10 @@ class Color extends Model
         'code', 'name', 'hexcode'
     ];
 
+    protected $hidden = [
+        'deleted_at'
+    ];
+
     public function productVariants()
     {
         return $this->hasMany(ProductVariant::class);

@@ -33,6 +33,15 @@ class RecalculateCartDiscountService
                     $cartItem->save();
                 });
 
+            $cart->items
+                ->whereNotIn('shop_product_variant_id', $product_variant_ids)
+                ->each(function ($cartItem) {
+                    $cartItem->price       = $cartItem->normal_price;
+                    $cartItem->total_price = $cartItem->price * $cartItem->quantity;
+                    $cartItem->discount    = $cartItem->price < $cartItem->normal_price ? $this->discount->discount_percentage : 0;
+                    $cartItem->save();
+                });
+
             $cart->recalculate();
         });
     }
@@ -40,6 +49,10 @@ class RecalculateCartDiscountService
     private function calculatePrice($cartItem)
     {
         if (!$this->discount->is_active) {
+            return $cartItem->normal_price;
+        }
+
+        if (!$this->discount->with_membership_price) {
             return $cartItem->normal_price;
         }
 

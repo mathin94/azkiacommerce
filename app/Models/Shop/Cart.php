@@ -36,7 +36,8 @@ class Cart extends Model
 
     public function items()
     {
-        return $this->hasMany(CartItem::class, 'shop_cart_id');
+        return $this->hasMany(CartItem::class, 'shop_cart_id')
+            ->orderBy('created_at', 'desc');
     }
 
     public function customer()

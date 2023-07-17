@@ -32,6 +32,8 @@ class UpdateCustomerService
         $this->customer->phone  = $phone;
         $this->customer->gender = $gender;
         $this->customer->save();
+
+        return true;
     }
 
     private function updateCustomerProfileAPI(

@@ -11,6 +11,9 @@
 @import 'font-awesome/css/font-awesome.css';
 @import 'virtual-select-plugin/dist/virtual-select.min.css';
 @import "skeleton-screen-css";
+@import "filepond/dist/filepond.min.css";
+@import "flatpickr/dist/flatpickr.min.css";
+@import "quill/dist/quill.snow.css";
 
 .white-popup {
   position: relative;
@@ -246,4 +249,48 @@ $star-off-color: #CCCCCC;
 	&:not(:checked) > label:hover ~ label:before {
 		color: $star-on-color;
 	}
+}
+
+/* Styles for desktop */
+.desktop-logo {
+    display: block !important; /* Show the desktop logo */
+}
+
+.mobile-logo {
+    display: none !important; /* Show the mobile logo */
+}
+
+/* Styles for mobile */
+@media (max-width: 767px) {
+    .desktop-logo {
+        display: none !important; /* Hide the desktop logo */
+    }
+
+    .mobile-logo {
+        display: block !important; /* Show the mobile logo */
+    }
+
+    .navbar-container {
+        padding: 1.3rem !important;
+    }
+}
+
+.vscomp-toggle-button {
+    height: 40px;
+}
+
+.input-group-text {
+    font-size: 1.3rem;
+    max-height: 40px;
+}
+
+.filepond--root {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+        sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    font-size: 1.5rem;
+}
+
+.tracking td {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }

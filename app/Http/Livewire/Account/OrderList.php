@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Account;
 
 use App\Enums\OrderStatus;
 use App\Http\Livewire\BaseComponent;
+use Livewire\Component;
 use App\Jobs\RecalculateProductRatingJob;
 use App\Models\BankAccount;
 use App\Models\Shop\Order;
@@ -12,11 +13,11 @@ use App\Services\Shop\CancelOrderService;
 use App\Services\Shop\UploadPaymentProofService;
 use Livewire\WithFileUploads;
 
-class OrderList extends BaseComponent
+class OrderList extends Component
 {
     use WithFileUploads;
 
-    public $tab, $detail, $orderPayment, $bankAccounts, $selectedBankAccount, $manifests;
+    public $customer, $tab, $detail, $orderPayment, $bankAccounts, $selectedBankAccount, $manifests;
 
     public $bankAccountId, $file, $toCompleteId, $reviews = [];
 
@@ -24,6 +25,8 @@ class OrderList extends BaseComponent
 
     public function mount()
     {
+        $this->customer = auth()->guard('shop')->user();
+
         $this->bankAccounts = cache()->remember('all_bank_account', 24 * 60 * 60, function () {
             return BankAccount::with('bank')->get();
         });
@@ -44,10 +47,8 @@ class OrderList extends BaseComponent
     public function showPayment($id)
     {
         $this->orderPayment = $this->getOrder($id);
-        $this->reset('bankAccountId');
+        $this->reset(['bankAccountId', 'file']);
         $this->emit('open-payment-modal');
-
-        info($this->orderPayment);
     }
 
     public function trackingPackage($id)
@@ -81,8 +82,9 @@ class OrderList extends BaseComponent
 
     public function updatedReviews()
     {
-        info($this->reviews);
+        // TODO: Implement updatedReviews() method.
     }
+
 
     public function savePayment()
     {
@@ -256,6 +258,8 @@ class OrderList extends BaseComponent
 
         return view('livewire.account.order-list', [
             'orders' => $orders->latest()->paginate(10)
-        ])->layout('layouts.dashboard');
+        ])->layout('layouts.dashboard', [
+            'title' => 'Daftar Pesanan'
+        ]);
     }
 }

@@ -1,5 +1,5 @@
 <div class="container">
-    <ul class="nav nav-pills nav-big nav-border-anim justify-content-center mb-2 mb-md-3" role="tablist">
+    <ul class="nav nav-pills justify-content-center mb-3" role="tablist">
         <li class="nav-item">
             <a class="nav-link active" id="products-featured-link" data-toggle="tab" href="#products-featured-tab"
                 role="tab" aria-controls="products-featured-tab" aria-selected="true">Produk Unggulan</a>

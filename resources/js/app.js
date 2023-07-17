@@ -1,11 +1,25 @@
 import Alpine from "alpinejs";
-import AlpineFloatingUI from "@awcodes/alpine-floating-ui";
-import NotificationsAlpinePlugin from "../../vendor/filament/notifications/dist/module.esm";
-import "./bootstrap";
+import flatpickr from "flatpickr";
+import Quill from "quill";
+import * as FilePond from "filepond";
+import { createPopper } from "@popperjs/core";
+import focus from "@alpinejs/focus";
+import './bootstrap'
+// Import the plugin code
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 
-Alpine.plugin(AlpineFloatingUI);
-Alpine.plugin(NotificationsAlpinePlugin);
+// Import the plugin styles
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 
+Alpine.plugin(focus);
+
+window.flatpickr = flatpickr;
+window.FilePond = FilePond;
+window.Quill = Quill;
+window.createPopper = createPopper;
 window.Alpine = Alpine;
 
-Alpine.start();
+window.Alpine.start();
+
+// Register the plugin
+FilePond.registerPlugin(FilePondPluginImagePreview);

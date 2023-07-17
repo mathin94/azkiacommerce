@@ -15,17 +15,23 @@ class ProductSlider extends Component
 
     public function mount()
     {
-        $this->featuredProducts = Product::with(['media', 'activeDiscount'])
+        $this->featuredProducts = Product::with(['media', 'activeDiscount', 'wishlists' => function ($q) {
+            $q->dontCache()->where('shop_customer_id', auth()->guard('shop')->id());
+        }])
             ->published()
             ->visible()
             ->featured()
             ->limit(10)->get();
-        $this->onSaleProducts = Product::with(['media', 'activeDiscount'])
+        $this->onSaleProducts = Product::with(['media', 'activeDiscount', 'wishlists' => function ($q) {
+            $q->dontCache()->where('shop_customer_id', auth()->guard('shop')->id());
+        }])
             ->published()
             ->visible()
             ->onSale()
             ->limit(10)->get();
-        $this->topRatedProducts = Product::with(['media', 'activeDiscount'])
+        $this->topRatedProducts = Product::with(['media', 'activeDiscount', 'wishlists' => function ($q) {
+            $q->dontCache()->where('shop_customer_id', auth()->guard('shop')->id());
+        }])
             ->published()
             ->visible()
             ->orderBy('total_score', 'desc')->limit(10)->get();

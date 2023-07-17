@@ -3,12 +3,10 @@
 namespace App\Http\Livewire\Products;
 
 use App\Enums\CartStatus;
-use App\Helpers\AutoNumber;
-use App\Models\Shop\Cart;
 use App\Models\Shop\Product;
-use App\Models\Shop\ProductVariantReview;
 use App\Models\Shop\Wishlist;
-use Filament\Notifications\Notification;
+use App\Services\Shop\AddToCartService;
+use App\Services\Shop\ProductVariantPriceService;
 use Illuminate\Support\Arr;
 use Livewire\Component;
 
@@ -18,12 +16,15 @@ class Show extends Component
 
     public $quantity = 1, $variant, $sizeId, $colorId, $price, $weight, $normalPrice;
 
-    protected $customer;
+    protected $customer, $cart;
 
     public function __construct()
     {
         if (auth()->guard('shop')->check()) {
             $this->customer = auth()->guard('shop')->user();
+            $this->customer->load('cart');
+
+            $this->cart = $this->customer->cart;
         }
     }
 
@@ -82,7 +83,7 @@ class Show extends Component
 
     protected function getVariant()
     {
-        if (empty($this->sizeId) && empty($this->colorId)) {
+        if (empty($this->sizeId) || empty($this->colorId)) {
             return null;
         }
 
@@ -92,9 +93,14 @@ class Show extends Component
             ->where('size_id', $this->sizeId)
             ->first();
 
+        $service = new ProductVariantPriceService($this->customer, $variant);
+        $service->execute();
+
+        $prices = $service->prices;
+
         if ($variant) {
-            $this->normalPrice = format_rupiah($variant->resource->getFinalPrice($this->quantity));
-            $this->price       = format_rupiah($variant->resource->getFinalPrice($this->quantity, $this->getDiscountVariant($variant)));
+            $this->normalPrice = format_rupiah($prices['normal_price']);
+            $this->price       = format_rupiah($prices['final_price']);
             $this->weight      = $variant->weight . ' gram';
 
             $this->emit('variantChanged', [
@@ -171,71 +177,52 @@ class Show extends Component
             return;
         }
 
-        $cart = $this->customer->cart()->firstOrNew(['status' => CartStatus::Draft]);
-        $cart->save();
+        $cart = $this->cart;
 
-        $cartItem                 = $cart->items()->firstOrNew(['shop_product_variant_id' => $this->variant->id]);
-        $cartItem->quantity       = (int) $cartItem->quantity + $this->quantity;
-
-        if ($cartItem->quantity <= $this->variant->resource->stock) {
-            $discount = $this->getDiscountVariant($this->variant) ?? 0;
-
-            $cartItem->name           = $this->variant->name;
-            $cartItem->alternate_name = $this->variant->alternate_name;
-            $cartItem->normal_price   = $this->variant->resource->getFinalPrice();
-            $cartItem->price          = $this->variant->resource->getFinalPrice(1, $discount);
-            $cartItem->weight         = $this->variant->weight;
-            $cartItem->discount       = $discount;
-            $cartItem->save();
-
-            $cart->recalculate();
+        if (empty($this->cart)) {
+            $cart = $this->customer->cart()->firstOrNew(['status' => CartStatus::Draft]);
             $cart->save();
+        }
+
+        $service = new AddToCartService(
+            cart: $cart,
+            product: $this->product,
+            variant: $this->variant,
+            quantity: $this->quantity
+        );
+
+        if (!$service->execute()) {
+            $alert = "<div class=\"white-popup\">";
+
+            foreach ($service->errors as $error) {
+                $alert .= "<p>{$error}</p>";
+            }
+
+            $alert .= "</div>";
 
             $this->emit('showAlert', [
-                "alert" => "
-                        <div class=\"white-popup\">
-                            <p>Sukses Menambahkan Produk ke keranjang</p>
-                        </div>
-                    "
+                "alert" => $alert
             ]);
 
-            $this->emit('refreshComponent');
-        } else {
-            $this->emit('showAlert', [
-                "alert" => "
-                        <div class=\"white-popup\">
-                            <p>Stok tidak mencukupi, stok tersedia saat ini: {$this->variant->resource->stock}</p>
-                        </div>
-                    "
-            ]);
-        }
-    }
-
-    private function getDiscountVariant($variant)
-    {
-        $discount = $this->product->activeDiscount;
-
-        if (!$discount) {
-            return 0;
+            return;
         }
 
-        $discount_variant = $discount->discountVariants()->where('shop_product_variant_id', $variant->id)
-            ->first();
+        $this->emit('showAlert', [
+            "alert" => "
+                    <div class=\"white-popup\">
+                        <p>Sukses Menambahkan Produk ke keranjang</p>
+                    </div>
+                "
+        ]);
 
-        if (!$discount_variant) {
-            return 0;
-        }
-
-        if (!blank($discount->max_quantity) && $this->quantity > $discount->max_quantity) {
-            return 0;
-        }
-
-        return $discount->discount_percentage;
+        $this->emit('refreshComponent');
     }
 
     public function render()
     {
         return view('livewire.products.show')
-            ->layout('layouts.frontpage');
+            ->layout('layouts.frontpage', [
+                'title' => $this->product->name
+            ]);
     }
 }

@@ -16,16 +16,23 @@
                     <ul class="top-menu pt-1 pb-0">
                         <li><a href="#">Menu</a>
                             <ul>
-                                <li><a href="/contact-us">Kontak Kami</a></li>
-                                <li>
-                                    <a href="{{ route('customer.wishlist') }}">
-                                        <i class="icon-heart-o"></i> Wishlist
-                                        <span class="wishlist-count">
-                                            {{ $wishlist_count }}
-                                        </span>
-                                    </a>
-                                </li>
                                 @if (auth()->guard('shop')->check())
+                                    <li>
+                                        <a href="{{ route('customer.wishlist') }}">
+                                            <i class="icon-heart-o"></i> Wishlist
+                                            <span class="wishlist-count">
+                                                {{ $wishlist_count }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('customer.orders') }}">
+                                            <i class="icon-shopping-cart"></i> Pesanan Saya
+                                            <span class="wishlist-count">
+                                                {{-- {{ $wishlist_count }} --}}
+                                            </span>
+                                        </a>
+                                    </li>
                                     <li>
                                         <a href="{{ route('customer.dashboard') }}"><i class="icon-user"></i> Akun
                                             Saya</a>
@@ -50,9 +57,8 @@
                 </div>
             </div><!-- End .container -->
         </div><!-- End .header-top -->
-
         <div class="header-middle sticky-header">
-            <div class="container">
+            <div class="container navbar-container">
                 <div class="header-left">
                     <button class="mobile-menu-toggler">
                         <span class="sr-only">Toggle mobile menu</span>
@@ -60,8 +66,8 @@
                     </button>
 
                     <a href="/" class="logo">
-                        <img src="https://backoffice.azkiahijab.co.id/images/logo-color.png"
-                            alt="{{ config('app.name') }}" width="80" height="20">
+                        <img src="{{ site()->mainLogo() }}" alt="{{ site()->siteTitle() }}" width="80" height="20" class="desktop-logo">
+                        <img src="{{ site()->mobileLogo() }}" alt="{{ site()->siteTitle() }}" width="70" height="15" class="mobile-logo">
                     </a>
 
                     <nav class="main-nav">

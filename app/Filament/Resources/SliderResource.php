@@ -24,7 +24,7 @@ class SliderResource extends Resource
 
     protected static ?string $navigationIcon = 'carbon-carousel-horizontal';
 
-    protected static ?string $navigationGroup = 'Pengaturan Website';
+    protected static ?string $navigationGroup = 'Pengaturan';
 
     public static function form(Form $form): Form
     {

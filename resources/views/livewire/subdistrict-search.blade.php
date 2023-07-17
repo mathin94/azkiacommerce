@@ -6,7 +6,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             let searchSubdistrict = (searchValue, virtualSelect) => {
-                axios.get('/api/subdistricts?search=' + searchValue).then((response) => {
+                axios.get('/web-api/subdistricts?search=' + searchValue).then((response) => {
 
                     let options = []
 

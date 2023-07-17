@@ -75,4 +75,14 @@ class Category extends Model implements HasMedia
     {
         return $this->hasMany(Product::class, 'shop_product_category_id');
     }
+
+    protected function catalogImageUrl(): Attribute
+    {
+        return Attribute::make(get: fn () => blank($this->catalog_image) ? null : asset('storage/' . $this->catalog_image));
+    }
+
+    protected function bannerImageUrl(): Attribute
+    {
+        return Attribute::make(get: fn () => blank($this->banner_image) ? null : asset('storage/' . $this->banner_image));
+    }
 }

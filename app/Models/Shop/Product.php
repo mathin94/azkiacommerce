@@ -100,6 +100,11 @@ class Product extends Model implements HasMedia
         return $this->hasMany(ProductVariant::class, 'shop_product_id');
     }
 
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class, 'shop_product_id');
+    }
+
     public function resource()
     {
         return $this->belongsTo(\App\Models\Backoffice\Category::class, 'resource_id');
@@ -140,8 +145,8 @@ class Product extends Model implements HasMedia
     protected function prices(): Attribute
     {
         return Attribute::make(get: function () {
-            $min_price = base_price($this->variants?->min('price'), $this->discount_with_membership);
-            $max_price = base_price($this->variants?->max('price'), $this->discount_with_membership);
+            $min_price = base_price($this->variants?->min('price'));
+            $max_price = base_price($this->variants?->max('price'));
 
             if ($min_price && $max_price) {
                 return collect([$min_price, $max_price])->unique()->toArray();
@@ -152,11 +157,15 @@ class Product extends Model implements HasMedia
     protected function discountPercentage(): Attribute
     {
         return Attribute::make(get: function () {
-            if (!$this->activeDiscount) {
-                return 0;
-            }
+            if (!empty($this->activeDiscount)) {
+                if (auth()->guard('shop')->check()) {
+                    if (auth()->guard('shop')->user()->is_member && !$this->discount_with_membership) {
+                        return 0;
+                    }
+                }
 
-            return $this->activeDiscount->discount_percentage;
+                return $this->activeDiscount->discount_percentage;
+            }
         });
     }
 
@@ -164,7 +173,7 @@ class Product extends Model implements HasMedia
     {
         return Attribute::make(get: function () {
             if (!$this->activeDiscount) {
-                return true;
+                return false;
             }
 
             return $this->activeDiscount->with_membership_price;
@@ -175,9 +184,13 @@ class Product extends Model implements HasMedia
     {
         return Attribute::make(get: function () {
             $prices = [];
+            $valid_discount = $this->discount_with_membership;
 
-            foreach ($this->prices as $key => $value) {
-                $price = $value - ($value * ($this->discount_percentage / 100));
+            foreach ($this->prices as $key => $price) {
+                if ($valid_discount) {
+                    $price = $price - ($price * ($this->discount_percentage / 100));
+                }
+
                 $prices[] = format_rupiah($price);
             }
 
@@ -317,5 +330,16 @@ class Product extends Model implements HasMedia
         }
 
         return $query->orderBy('name', 'asc');
+    }
+
+    protected function wishlisted(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if (!auth()->guard('shop')->check()) {
+                return false;
+            }
+
+            return $this->wishlists->where('shop_customer_id', auth()->guard('shop')->id())->count();
+        });
     }
 }

@@ -10,8 +10,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title wire:loading.remove>{{ $title ? "{$title} - " : null }} {{ config('app.brand') }}</title>
-
+    <link rel="shortcut icon" href="{{ site()->favicon() }}" type="image/x-icon">
     @livewireStyles
+    <fc:styles />
     @vite(['resources/sass/app.scss'])
 
     <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/css/star-rating.min.css" media="all"
@@ -25,8 +26,7 @@
 </head>
 
 <body>
-    @livewireScripts
-    <livewire:partials.navbar />
+    <div><livewire:partials.navbar /></div>
     <main class="main">
         <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
             <div class="container">
@@ -64,10 +64,11 @@
                                         href="{{ route('customer.orders') }}">Pesanan
                                         Saya</a>
                                 </li>
+                                @if (auth()->user()->is_agen || auth()->user()->is_distributor)
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Pesan
-                                        Instant</a>
+                                    <a class="nav-link {{ request()->routeIs('cart.instant-order') ? 'active' : '' }}" href="{{ route('cart.instant-order') }}">Pesan Langsung</a>
                                 </li>
+                                @endif
                                 <li class="nav-item">
                                     <a class="nav-link" href="javascript:void(0);" onclick="logout()">Keluar</a>
                                 </li>
@@ -88,6 +89,8 @@
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
     <x-app-modals />
     <!-- Plugins JS File -->
+    @livewireScripts
+    <fc:scripts />
     <script src="{{ asset('build/assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('build/assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('build/assets/js/jquery.hoverIntent.min.js') }}"></script>

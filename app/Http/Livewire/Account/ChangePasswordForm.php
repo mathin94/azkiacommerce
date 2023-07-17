@@ -20,7 +20,6 @@ class ChangePasswordForm extends BaseComponent
 
         if (!password_verify($this->currentPassword, $this->customer->password)) {
             $this->addError('currentPassword', 'Password anda salah');
-            info('salah');
             return;
         }
 

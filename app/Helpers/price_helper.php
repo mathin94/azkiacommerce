@@ -1,9 +1,9 @@
 <?php
 
 if (!function_exists('base_price')) {
-    function base_price(float | int $price, bool $with_membership_price = true): float | int
+    function base_price(float | int $price): float | int
     {
-        if (auth()->guard('shop')->check() && $with_membership_price) {
+        if (auth()->guard('shop')->check()) {
             $discount = auth()->guard('shop')->user()->discount_percentage;
 
             if ($discount) {
@@ -16,8 +16,14 @@ if (!function_exists('base_price')) {
 }
 
 if (!function_exists('format_rupiah')) {
-    function format_rupiah($price): string
+    function format_rupiah($price, $nosymbol = false): string
     {
-        return 'Rp. ' . number_format($price, 0, ',', '.');
+        $text = number_format($price, 0, ',', '.');
+
+        if ($nosymbol) {
+            return $text;
+        }
+
+        return 'Rp. ' . $text;
     }
 }

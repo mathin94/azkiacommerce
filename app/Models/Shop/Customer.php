@@ -4,14 +4,15 @@ namespace App\Models\Shop;
 
 use App\Enums\CartStatus;
 use App\Enums\GenderEnum;
+use Illuminate\Support\Str;
+use App\Models\Backoffice\CustomerType;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Models\Backoffice\Address as ShippingAddress;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Notifications\Notifiable;
-use Rennokki\QueryCache\Traits\QueryCacheable;
-use App\Models\Backoffice\Address as ShippingAddress;
-use App\Models\Backoffice\CustomerType;
 
 class Customer extends Authenticatable
 {
@@ -78,7 +79,7 @@ class Customer extends Authenticatable
         'is_default_password',
         'created_at',
         'customer_type_id',
-        'customer_type_json',
+        'customer_type',
     ];
 
     protected $casts = [
@@ -86,7 +87,7 @@ class Customer extends Authenticatable
         'is_branch'           => 'boolean',
         'is_default_password' => 'boolean',
         'customer_type'       => 'json',
-        'gender' => GenderEnum::class,
+        'gender'              => GenderEnum::class,
     ];
 
     public function wishlists()
@@ -128,7 +129,7 @@ class Customer extends Authenticatable
 
     protected function fullMainAddress(): Attribute
     {
-        return Attribute::make(get: fn () => $this->mainAddress->full_address);
+        return Attribute::make(get: fn () => $this->mainAddress?->full_address);
     }
 
     public function customerType()
@@ -149,6 +150,32 @@ class Customer extends Authenticatable
     protected function discountPercentage(): Attribute
     {
         return Attribute::make(get: fn () => $this->customer_type['discount'] ?? '-');
+    }
+
+    protected function isMember(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->customer_type_id !== 1);
+    }
+
+    protected function isAgen(): Attribute
+    {
+        return Attribute::make(get: fn () => Str::contains(strtolower($this->customer_type_name), 'agen'));
+    }
+
+    protected function isDistributor(): Attribute
+    {
+        return Attribute::make(get: fn () => Str::contains(strtolower($this->customer_type_name), 'distributor'));
+    }
+
+    public function createCart(): Cart
+    {
+        $cart = $this->carts()->firstOrNew([
+            'status' => CartStatus::Draft,
+        ]);
+
+        $cart->save();
+
+        return $cart->refresh();
     }
 
     /**

@@ -9,6 +9,8 @@ class PartnerLocation extends Component
     public function render()
     {
         return view('livewire.pages.partner-location')
-            ->layout('layouts.frontpage');
+            ->layout('layouts.frontpage', [
+                'title' => 'Peta Lokasi Mitra'
+            ]);
     }
 }

@@ -29,6 +29,8 @@ class Wishlist extends BaseComponent
         return view('livewire.account.wishlist', [
             'wishlists' => $wishlists
         ])
-            ->layout('layouts.dashboard');
+            ->layout('layouts.dashboard', [
+                'title' => 'Wishlist'
+            ]);
     }
 }

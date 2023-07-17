@@ -247,6 +247,12 @@ class OrderResource extends Resource
                                 ->placeholder('Masukkan nomor resi')
                                 ->required(),
                         ]),
+                    Tables\Actions\Action::make('shipping-label')
+                        ->label('Cetak Label Pengiriman')
+                        ->icon('fas-truck')
+                        ->url(fn (Order $record) => route('admin.orders.shipping-label', $record->id), true)
+                        ->hidden(fn (Order $record) => !$record->statusPaid()),
+
                     Tables\Actions\ViewAction::make('tracking')
                         ->label('Lacak Paket')
                         ->modalHeading('Lacak Paket')

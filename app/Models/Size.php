@@ -57,6 +57,10 @@ class Size extends Model
         'code', 'name'
     ];
 
+    protected $hidden = [
+        'deleted_at'
+    ];
+
     public function productVariants()
     {
         return $this->hasMany(ProductVariant::class);

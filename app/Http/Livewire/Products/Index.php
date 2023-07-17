@@ -35,7 +35,9 @@ class Index extends Component
 
     public function refreshProduct()
     {
-        $products = Product::with(['media', 'activeDiscount'])
+        $products = Product::with(['media', 'activeDiscount', 'wishlists' => function ($q) {
+            $q->dontCache()->where('shop_customer_id', auth()->guard('shop')->id());
+        }])
             ->visible()
             ->published();
 
@@ -70,8 +72,16 @@ class Index extends Component
     {
         $products = $this->refreshProduct();
 
+        $title = 'Produk';
+
+        if ($this->search) {
+            $title = "Hasil Pencarian : {$this->search}";
+        }
+
         return view('livewire.products.index', [
             'products' => $products->paginate(10)
-        ])->layout('layouts.frontpage');
+        ])->layout('layouts.frontpage', [
+            'title' => $title
+        ]);
     }
 }

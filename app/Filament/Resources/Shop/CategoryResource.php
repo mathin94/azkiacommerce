@@ -45,9 +45,11 @@ class CategoryResource extends Resource
                 Forms\Components\FileUpload::make('banner_image')
                     ->label('Gambar Banner')
                     ->image()
+                    ->directory('uploads/images/categories')
                     ->columnSpan('full'),
                 Forms\Components\FileUpload::make('catalog_image')
                     ->label('Gambar Katalog')
+                    ->directory('uploads/images/categories')
                     ->image()
                     ->columnSpan('full'),
             ]);

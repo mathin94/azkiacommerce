@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\Backoffice\Courier;
 use Livewire\Component;
 
 class CartDetail extends Component

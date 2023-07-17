@@ -3,8 +3,8 @@
 namespace App\Http\Livewire\Account;
 
 use App\Enums\GenderEnum;
-use App\Services\UpdateCustomerService;
 use App\Http\Livewire\BaseComponent;
+use App\Services\Shop\UpdateCustomerService;
 
 class CustomerProfile extends BaseComponent
 {
@@ -42,12 +42,23 @@ class CustomerProfile extends BaseComponent
                         </div>
                     "
             ]);
+        } else {
+            $this->emit('showAlert', [
+                "alert" => "
+                        <div class=\"white-popup\">
+                            <h5>Update Profil Gagal !</h5>
+                            <p>Profil anda gagal di perbarui</p>
+                        </div>
+                    "
+            ]);
         }
     }
 
     public function render()
     {
         return view('livewire.account.customer-profile')
-            ->layout('layouts.dashboard');
+            ->layout('layouts.dashboard', [
+                'title' => 'Profil Pengguna'
+            ]);
     }
 }

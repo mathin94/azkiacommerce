@@ -20,7 +20,7 @@ class TestimonialResource extends Resource
 
     protected static ?string $navigationIcon = 'uni-comment-dots-thin';
 
-    protected static ?string $navigationGroup = 'Pengaturan Website';
+    protected static ?string $navigationGroup = 'Pengaturan';
 
     public static function form(Form $form): Form
     {
