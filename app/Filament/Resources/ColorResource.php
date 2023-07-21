@@ -35,9 +35,6 @@ class ColorResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->label('Nama Warna')
-                    ->unique(callback: function (Unique $query, callable $get) {
-                        return $query->whereNull('deleted_at');
-                    }, ignoreRecord: true)
                     ->reactive()
                     ->lazy()
                     ->afterStateUpdated(function (string $context, $state, callable $set) {

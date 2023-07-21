@@ -33,9 +33,6 @@ class SizeResource extends Resource
                     ->label('Nama')
                     ->required()
                     ->reactive()
-                    ->unique(callback: function (Unique $query, callable $get) {
-                        return $query->whereNull('deleted_at');
-                    }, ignoreRecord: true)
                     ->afterStateUpdated(function (string $context, $state, callable $set) {
                         if ($context === 'create') {
                             $set('code', Str::slug($state));
