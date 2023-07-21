@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\SizeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SizeResource\RelationManagers;
+use Illuminate\Validation\Rules\Unique;
 
 class SizeResource extends Resource
 {
@@ -32,7 +33,9 @@ class SizeResource extends Resource
                     ->label('Nama')
                     ->required()
                     ->reactive()
-                    ->unique(ignorable: fn ($record) => $record)
+                    ->unique(callback: function (Unique $query, callable $get) {
+                        return $query->whereNull('deleted_at');
+                    }, ignoreRecord: true)
                     ->afterStateUpdated(function (string $context, $state, callable $set) {
                         if ($context === 'create') {
                             $set('code', Str::slug($state));

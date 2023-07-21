@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
+use Illuminate\Validation\Rules\Unique;
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions\DeleteAction;
 use Illuminate\Database\Eloquent\Builder;
@@ -34,7 +35,9 @@ class ColorResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->label('Nama Warna')
-                    ->unique(ignorable: fn ($record) => $record)
+                    ->unique(callback: function (Unique $query, callable $get) {
+                        return $query->whereNull('deleted_at');
+                    }, ignoreRecord: true)
                     ->reactive()
                     ->lazy()
                     ->afterStateUpdated(function (string $context, $state, callable $set) {
