@@ -34,7 +34,7 @@ class ColorResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->label('Nama Warna')
-                    ->unique('name')
+                    ->unique(ignorable: fn ($record) => $record)
                     ->reactive()
                     ->lazy()
                     ->afterStateUpdated(function (string $context, $state, callable $set) {
@@ -46,7 +46,6 @@ class ColorResource extends Resource
                 Forms\Components\TextInput::make('code')
                     ->required()
                     ->label('Kode Warna')
-                    ->unique('code')
                     ->disabled()
                     ->maxLength(30),
             ]);

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\Size;
 use Filament\Tables;
+use Illuminate\Support\Str;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
@@ -31,7 +32,7 @@ class SizeResource extends Resource
                     ->label('Nama')
                     ->required()
                     ->reactive()
-                    ->lazy()
+                    ->unique(ignorable: fn ($record) => $record)
                     ->afterStateUpdated(function (string $context, $state, callable $set) {
                         if ($context === 'create') {
                             $set('code', Str::slug($state));
@@ -41,6 +42,7 @@ class SizeResource extends Resource
                 Forms\Components\TextInput::make('code')
                     ->label('Kode')
                     ->required()
+                    ->disabled()
                     ->maxLength(30),
             ]);
     }
