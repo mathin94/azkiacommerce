@@ -41,7 +41,7 @@
                 <div class="row">
                     @foreach ($products as $item)
                     <div class="col-6 col-md-4 col-lg-4 col-xl-3">
-                        <div class="product product-{{ $item->id }}">
+                        <div class="product product-1">
                             <figure class="product-media">
                                 @if ($item->discount_percentage > 0)
                                 <span class="product-label label-sale">Diskon {{ $item->discount_percentage }}%</span>
