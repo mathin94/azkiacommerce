@@ -79,7 +79,7 @@ class Index extends Component
         }
 
         return view('livewire.products.index', [
-            'products' => $products->paginate(10)
+            'products' => $products->paginate(12)
         ])->layout('layouts.frontpage', [
             'title' => $title
         ]);

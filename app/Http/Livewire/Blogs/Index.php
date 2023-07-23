@@ -59,7 +59,7 @@ class Index extends Component
         }
 
         return view('livewire.blogs.index', [
-            'posts' => $posts->paginate(6)
+            'posts' => $posts->paginate(12)
         ])
             ->layout('layouts.frontpage', [
                 'title' => 'Blog'
