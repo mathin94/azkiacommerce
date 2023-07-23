@@ -131,7 +131,7 @@
                         <form action="#" wire:submit.prevent="postComment">
                             <label for="reply-message" class="sr-only">Komentar</label>
                             <textarea name="reply-message"
-                                wire:model="newComment"
+                                wire:model.lazy="newComment"
                                 wire:loading.attr="disabled"
                                 id="reply-message"
                                 cols="30" rows="4"
