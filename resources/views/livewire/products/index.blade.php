@@ -50,7 +50,7 @@
                                     <img src="{{ $item->main_image_url }}" alt="{{ $item->name }} image" class="product-image">
                                 </a>
 
-                                <livewire:wishlist-button :product=$item />
+                                <livewire:wishlist-button :product=$item :key="'item-'.$item->id"/>
 
                                 {{-- <div class="product-action action-icon-top">
                                     <a href="#" class="btn-product btn-cart">

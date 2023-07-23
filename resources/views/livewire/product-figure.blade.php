@@ -12,7 +12,7 @@
                 <div class="deal-countdown offer-countdown" data-until="{{ $product->discount_remaining_seconds_label }}"></div>
             @endif
 
-            <livewire:wishlist-button :product=$product />
+            <livewire:wishlist-button :product=$product :key="'item-'.$product->id"/>
 
             {{-- <div class="product-action action-icon-top">
                 <a href="#" class="btn-product btn-cart">

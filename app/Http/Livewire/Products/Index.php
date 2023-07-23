@@ -22,7 +22,7 @@ class Index extends Component
 
     protected $queryString = ['search', 'sortBy'];
 
-    protected $listeners = ['filterUpdated', 'refreshProduct'];
+    protected $listeners = ['filterUpdated'];
 
     public function filterUpdated($selectedCategories, $selectedSizes, $colorId, $minimumPrice, $maximumPrice)
     {
@@ -33,7 +33,7 @@ class Index extends Component
         $this->maximumPrice       = $maximumPrice;
     }
 
-    public function refreshProduct()
+    public function render()
     {
         $products = Product::with(['media', 'activeDiscount', 'wishlists' => function ($q) {
             $q->dontCache()->where('shop_customer_id', auth()->guard('shop')->id());
@@ -65,12 +65,7 @@ class Index extends Component
             $products->maxPrice($this->maximumPrice);
         }
 
-        return $products->sortByValue($this->sortBy);
-    }
-
-    public function render()
-    {
-        $products = $this->refreshProduct();
+        $products = $products->sortByValue($this->sortBy);
 
         $title = 'Produk';
 
