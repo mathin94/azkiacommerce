@@ -28,7 +28,7 @@ class ProductFilter extends Component
 
     public function mount()
     {
-        $this->sizes      = Size::has('productVariants')->get();
+        $this->sizes      = Size::has('productVariants')->orderBy('index', 'asc')->get();
         $this->colors     = Color::has('productVariants')->get();
         $this->categories = Category::orderBy('name', 'asc')->get();
     }

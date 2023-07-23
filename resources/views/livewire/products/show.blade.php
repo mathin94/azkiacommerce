@@ -100,11 +100,11 @@
                                 <label for="size">Ukuran:</label> <br />
 
                                 <div class="btn-group-toggle" data-toggle="buttons">
-                                    @foreach ($sizes as $key => $value)
-                                        <button wire:click="setSize({{ $key }})"
-                                            class="btn btn-outline-dark selectable position-relative {{ $sizeId === $key ? 'active' : '' }}">
+                                    @foreach ($sizes as $size)
+                                        <button wire:click="setSize({{ $size->id }})"
+                                            class="btn btn-outline-dark selectable position-relative {{ $sizeId === $size->id ? 'active' : '' }}">
                                             <input type="radio">
-                                            {{ $value }}
+                                            {{ $size->name }}
                                         </button>
                                     @endforeach
                                 </div>
