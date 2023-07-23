@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "@awcodes/alpine-floating-ui": "^3.5.0",
+        "@sentry/browser": "^7.40.0",
         "@ttskch/select2-bootstrap4-theme": "^1.5.2",
         "alpinejs": "^3.12.3",
         "filepond": "^4.30.4",

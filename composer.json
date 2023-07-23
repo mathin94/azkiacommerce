@@ -45,6 +45,7 @@
         "rawilk/laravel-form-components": "^8.1",
         "rennokki/laravel-eloquent-query-cache": "^3.4",
         "saade/filament-laravel-log": "^1.2",
+        "sentry/sentry-laravel": "^3.6",
         "shuvroroy/filament-spatie-laravel-backup": "^1.2",
         "spatie/laravel-activitylog": "^4.7",
         "spatie/laravel-menu": "^4.1",
