@@ -9,6 +9,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="{{ site()->site_name }}">
+    <meta property="og:title" content="{{ $title ? "{$title} - " : null }} {{ app(App\Settings\SiteSettings::class)->siteTitle() }}">
+    <meta name="twitter:title" content="{{ $title ? "{$title} - " : null }} {{ app(App\Settings\SiteSettings::class)->siteTitle() }}">
+    @stack('meta')
+
     <title wire:loading.remove>{{ $title ? "{$title} - " : null }} {{ app(App\Settings\SiteSettings::class)->siteTitle() }}</title>
     <link rel="shortcut icon" href="{{ site()->favicon() }}" type="image/x-icon">
     @livewireStyles

@@ -193,3 +193,22 @@
         </div><!-- End .container -->
     </div>
 </main>
+
+@push('meta')
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="{{ \Str::limit(strip_tags($post->content), 150) }}">
+    {{-- <meta name="keywords" content="keyword1, keyword2, keyword3"> --}}
+
+    <!-- Open Graph Meta Tags (for social sharing) -->
+    <meta property="og:description" content="Add your Open Graph description here.">
+    <meta property="og:image" content="{{ $post->image_url }}">
+    <meta property="og:url" content="{{ $post->public_url }}">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card Meta Tags (for Twitter sharing) -->
+    {{-- <meta name="twitter:card" content="summary_large_image"> --}}
+    <meta name="twitter:description" content="{{ \Str::limit(strip_tags($post->content), 150) }}">
+    <meta name="twitter:image" content="{{ $post->image_url }}">
+    {{-- <meta name="twitter:site" content="@YourTwitterHandle">
+    <meta name="twitter:creator" content="@YourTwitterHandle"> --}}
+@endpush
