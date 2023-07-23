@@ -1,5 +1,5 @@
 <div>
-    @if ($products)
+    @if ($products->count() > 0)
     <div class="container recent-arrivals">
         <div class="heading heading-flex align-items-center mb-3">
             <h3 class="title text-center mb-3">FLASH SALE</h3>
