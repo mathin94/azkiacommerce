@@ -46,7 +46,9 @@ class PageResource extends Resource
 
                                 Forms\Components\TextInput::make('slug')
                                     ->required()
-                                    ->unique(Page::class, 'slug', ignoreRecord: true),
+                                    ->unique(callback: function (Unique $rule) {
+                                        return $rule->where('deleted_at', null);
+                                    }, ignoreRecord: true),
 
                                 TinyEditor::make('content')
                                     ->label('Konten')

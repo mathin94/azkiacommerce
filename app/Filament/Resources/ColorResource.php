@@ -37,6 +37,9 @@ class ColorResource extends Resource
                     ->label('Nama Warna')
                     ->reactive()
                     ->lazy()
+                    ->unique(callback: function (Unique $rule) {
+                        return $rule->where('deleted_at', null);
+                    }, ignoreRecord: true)
                     ->afterStateUpdated(function (string $context, $state, callable $set) {
                         if ($context === 'create') {
                             $set('code', Str::slug($state));

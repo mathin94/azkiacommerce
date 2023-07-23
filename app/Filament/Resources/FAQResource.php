@@ -12,6 +12,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\Rules\Unique;
 
 class FAQResource extends Resource
 {
@@ -32,7 +33,9 @@ class FAQResource extends Resource
                 Forms\Components\TextInput::make('index')
                     ->label('Urutan')
                     ->numeric()
-                    ->unique()
+                    ->unique(callback: function (Unique $rule) {
+                        return $rule->where('deleted_at', null);
+                    }, ignoreRecord: true)
                     ->required(),
                 Forms\Components\TextInput::make('question')
                     ->label('Pertanyaan')

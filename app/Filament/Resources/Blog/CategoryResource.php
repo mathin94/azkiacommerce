@@ -47,7 +47,9 @@ class CategoryResource extends Resource
                 Forms\Components\TextInput::make('slug')
                     ->disabled()
                     ->required()
-                    ->unique(Category::class, 'slug', ignoreRecord: true),
+                    ->unique(callback: function (Unique $rule) {
+                        return $rule->where('deleted_at', null);
+                    }, ignoreRecord: true),
 
                 Forms\Components\MarkdownEditor::make('description')
                     ->label('Deskripsi')

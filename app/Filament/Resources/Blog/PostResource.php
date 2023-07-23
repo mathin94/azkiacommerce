@@ -52,7 +52,9 @@ class PostResource extends Resource
                                 Forms\Components\TextInput::make('slug')
                                     ->disabled()
                                     ->required()
-                                    ->unique(Post::class, 'slug', ignoreRecord: true),
+                                    ->unique(callback: function (Unique $rule) {
+                                        return $rule->where('deleted_at', null);
+                                    }, ignoreRecord: true),
 
                                 TinyEditor::make('content')
                                     ->label('Konten')

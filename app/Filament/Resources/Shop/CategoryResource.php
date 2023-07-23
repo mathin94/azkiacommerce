@@ -40,7 +40,9 @@ class CategoryResource extends Resource
                     }),
                 Forms\Components\TextInput::make('slug')
                     ->required()
-                    ->unique(ignorable: fn ($record) => $record)
+                    ->unique(callback: function (Unique $rule) {
+                        return $rule->where('deleted_at', null);
+                    }, ignoreRecord: true)
                     ->disabled(),
                 Forms\Components\FileUpload::make('banner_image')
                     ->label('Gambar Banner')
