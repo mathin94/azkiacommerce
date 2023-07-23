@@ -29,10 +29,19 @@ class SizeResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('index')
+                    ->label('Urutan')
+                    ->numeric()
+                    ->unique(callback: function (Unique $rule) {
+                        $rule->where('deleted_at', null);
+                    })
+                    ->helperText('Size di produk akan di urutkan dari nomor urut terkecil.')
+                    ->required(),
+
                 Forms\Components\TextInput::make('name')
                     ->label('Nama')
                     ->required()
-                    ->reactive()
+                    ->lazy()
                     ->unique(callback: function (Unique $rule) {
                         return $rule->where('deleted_at', null);
                     }, ignoreRecord: true)
@@ -44,8 +53,8 @@ class SizeResource extends Resource
                     ->maxLength(30),
                 Forms\Components\TextInput::make('code')
                     ->label('Kode')
-                    ->required()
                     ->disabled()
+                    ->hidden()
                     ->maxLength(30),
             ]);
     }
@@ -54,7 +63,8 @@ class SizeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('code'),
+                Tables\Columns\TextColumn::make('index')->sortable(),
+                Tables\Columns\TextColumn::make('code')->hidden(true),
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable(),
             ])
             ->filters([
@@ -95,7 +105,7 @@ class SizeResource extends Resource
                         });
                     }),
             ])
-            ->defaultSort('name');
+            ->defaultSort('index');
     }
 
     public static function getPages(): array

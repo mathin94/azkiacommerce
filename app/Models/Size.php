@@ -54,7 +54,7 @@ class Size extends Model
     public const ALL_CACHE_KEY = 'sizes::all';
 
     protected $fillable = [
-        'code', 'name'
+        'code', 'name', 'index'
     ];
 
     protected $hidden = [
