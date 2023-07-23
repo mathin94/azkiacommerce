@@ -12,7 +12,19 @@
                         </div><!-- End .widget about-widget -->
                     </div><!-- End .col-sm-12 col-lg-3 -->
 
-                    <div class="col-sm-4 col-lg-2 offset-md-2">
+                    <div class="col-sm-4 col-lg-2">
+                        <div class="widget">
+                            <h4 class="widget-title">Kategori</h4><!-- End .widget-title -->
+
+                            <ul class="widget-list">
+                                @foreach ($categories as $category)
+                                <li><a href="{{ $category->public_url }}">{{ $category->name }}</a></li>
+                                @endforeach
+                            </ul><!-- End .widget-list -->
+                        </div><!-- End .widget -->
+                    </div><!-- End .col-sm-4 col-lg-3 -->
+
+                    <div class="col-sm-4 col-lg-2">
                         <div class="widget">
                             <h4 class="widget-title">Informasi</h4><!-- End .widget-title -->
 

@@ -4,16 +4,16 @@ namespace App\Http\Livewire\Partials;
 
 use App\Models\Page;
 use Livewire\Component;
+use App\Models\Shop\Category;
 
 class Footer extends Component
 {
-    public $pages;
+    public $pages, $categories;
 
     public function mount()
     {
-        $this->pages = cache()->remember(Page::ACTIVE_CACHE_KEY, 24 * 60 * 60, function () {
-            return Page::active()->get();
-        });
+        $this->categories = Category::orderBy('name', 'asc')->get();
+        $this->pages = Page::active()->get();
     }
 
     public function render()

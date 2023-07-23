@@ -20,6 +20,7 @@ class ProductVariantReview extends Model
         'review',
         'product_name',
         'variant_name',
+        'created_at',
     ];
 
     public function productVariant()
