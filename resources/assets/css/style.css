@@ -1646,7 +1646,13 @@ blockquote.text-white cite span {
         max-width: 50px;
     }
 }
-@media screen and (max-width: 991px) {
+@media screen and (max-width: 998px) {
+    .hide-on-mobile {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1px) {
     .top-menu:not(.top-link-menu) {
         display: flex;
         align-items: center;

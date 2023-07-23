@@ -227,34 +227,34 @@ $(document).ready(function () {
                     : $this.data("format"),
                 newLabels = !$this.data("labels-short")
                     ? [
-                          "Years",
-                          "Months",
-                          "Weeks",
-                          "Days",
-                          "Hours",
-                          "Minutes",
-                          "Seconds",
+                          "Tahun",
+                          "Bulan",
+                          "Minggu",
+                          "Hari",
+                          "Jam",
+                          "Menit",
+                          "Detik",
                       ]
                     : [
-                          "Years",
-                          "Months",
-                          "Weeks",
-                          "Days",
-                          "Hours",
-                          "Mins",
-                          "Secs",
+                          "Tahun",
+                          "Bulan",
+                          "Minggu",
+                          "Hari",
+                          "Jam",
+                          "Menit",
+                          "Detik",
                       ],
                 newLabels1 = !$this.data("labels-short")
                     ? [
-                          "Year",
-                          "Month",
-                          "Week",
-                          "Day",
-                          "Hour",
-                          "Minute",
-                          "Second",
+                          "Tahun",
+                          "Bulan",
+                          "Minggu",
+                          "Hari",
+                          "Jam",
+                          "Menit",
+                          "Detik",
                       ]
-                    : ["Year", "Month", "Week", "Day", "Hour", "Min", "Sec"];
+                    : ["Year", "Month", "Week", "Hari", "Jam", "Men", "Det"];
 
             var newDate;
 
@@ -264,7 +264,9 @@ $(document).ready(function () {
                     newDate = new Date(
                         untilDateArr[0],
                         untilDateArr[1] - 1,
-                        untilDateArr[2]
+                        untilDateArr[2],
+                        untilDateArr[3],
+                        untilDateArr[4],
                     );
             } else {
                 newDate = untilDate;
@@ -284,6 +286,42 @@ $(document).ready(function () {
 
         // Pause
         // $('.product-countdown').countdown('pause');
+
+        $('.daily-deal-countdown').each(function () {
+			var $this = $(this),
+				untilDate = $this.data('until'),
+				compact = $this.data('compact');
+
+			$this.countdown({
+			    until: untilDate, // this is relative date +10h +5m vs..
+			    format: 'HMS',
+			    padZeroes: true,
+			    labels: ['tahun', 'bulan', 'minggu', 'hari', 'jam', 'menit', 'detik'],
+			    labels1: ['tahun', 'bulan', 'minggu', 'hari', 'jam', 'menit', 'detik']
+			});
+		});
+
+		// Pause
+		// $('.daily-deal-countdown').countdown('pause');
+
+
+		// Offer countdown
+		$('.offer-countdown').each(function () {
+			var $this = $(this),
+				untilDate = $this.data('until'),
+				compact = $this.data('compact');
+
+			$this.countdown({
+			    until: untilDate, // this is relative date +10h +5m vs..
+			    format: 'DHMS',
+			    padZeroes: true,
+			    labels: ['tahun', 'bulan', 'minggu', 'hari', 'jam', 'menit', 'detik'],
+			    labels1: ['tahun', 'bulan', 'minggu', 'hari', 'jam', 'menit', 'detik']
+			});
+		});
+
+		// Pause
+		// $('.offer-countdown').countdown('pause');
     }
 
     // Quantity Input - Cart page - Product Details pages

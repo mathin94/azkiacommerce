@@ -8,12 +8,18 @@
                 <img src="{{ $product->main_image_url }}" alt="{{ $product->name }} image" class="product-image">
             </a>
 
+            @if ($product->is_active_flash_sale)
+                <div class="deal-countdown offer-countdown" data-until="{{ $product->discount_remaining_seconds_label }}"></div>
+            @endif
+
             <livewire:wishlist-button :product=$product />
 
             {{-- <div class="product-action action-icon-top">
                 <a href="#" class="btn-product btn-cart">
                     <span>Tambahkan Ke Keranjang</span></a>
             </div><!-- End .product-action --> --}}
+
+
         </figure>
 
         <div class="product-body">

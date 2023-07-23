@@ -294,3 +294,65 @@ $star-off-color: #CCCCCC;
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
+
+.deal-countdown {
+    margin-bottom: 0;
+    max-width: 270px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    bottom: 2rem; }
+    .deal-countdown .countdown-show3 .countdown-section {
+      width: calc(33.33% - 16px); }
+    .deal-countdown .countdown-show4 .countdown-section {
+      width: calc(25% - 16px); }
+    .deal-countdown .countdown-section {
+      position: relative;
+      font-weight: 400;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 1.2rem 0 2.5rem;
+      margin-left: .8rem;
+      margin-right: .8rem;
+      background-color: rgba(204, 102, 102, 0.85);
+      border-radius: .3rem;
+      border: none; }
+      .deal-countdown .countdown-section:not(:last-child):after {
+        color: #333333;
+        content: ':';
+        display: inline-block;
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 1;
+        position: absolute;
+        left: 100%;
+        margin-left: 6px;
+        margin-top: -1px;
+        top: 50%;
+        transform: translateY(-50%);
+        -ms-transform: translateY(-50%); }
+    .deal-countdown .countdown-period {
+      position: absolute;
+      left: 0;
+      right: 0;
+      text-align: center;
+      bottom: 1.5rem;
+      display: block;
+      font-weight: 400;
+      color: #fff;
+      text-transform: lowercase;
+      width: 100%;
+      padding-left: 0;
+      padding-right: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+    .deal-countdown .countdown-amount {
+      display: inline-block;
+      color: #fff;
+      font-weight: 500;
+      font-size: 1.8rem;
+      line-height: 1;
+      letter-spacing: -.03em;
+      margin-bottom: .4rem; }

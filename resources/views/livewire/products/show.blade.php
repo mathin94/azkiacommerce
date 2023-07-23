@@ -66,6 +66,10 @@
                                 <x-css-spinner-alt wire:loading class="ml-1 fa-spin" wire:target="setSize,setColor" />
                             </div><!-- End .product-price -->
 
+                            @if ($product->activeDiscount?->is_flash_sale)
+                                <div class="product-countdown" data-until="{{ $product->activeDiscount?->inactive_at->format('Y, m, d, H, i') }}"></div>
+                            @endif
+
                             <div class="product-content">
                                 {!! \Str::of($product->seo->description)->limit(150) !!}
 

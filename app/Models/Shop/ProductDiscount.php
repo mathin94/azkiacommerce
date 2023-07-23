@@ -67,4 +67,19 @@ class ProductDiscount extends Model
             }
         );
     }
+
+    protected function isFlashSale(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->discount_type == DiscountType::FlashSale());
+    }
+
+    protected function remainingSeconds(): Attribute
+    {
+        // dont use arrow function
+        return Attribute::make(
+            get: function () {
+                return now()->diffInSeconds($this->inactive_at);
+            }
+        );
+    }
 }

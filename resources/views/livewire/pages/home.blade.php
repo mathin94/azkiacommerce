@@ -5,6 +5,8 @@
 
     <livewire:home.app-ads-slider />
 
+    <livewire:home.flash-sale-product />
+
     <livewire:home.product-slider />
 
     <div class="mb-3 mb-xl-2"></div><!-- End .mb-3 -->

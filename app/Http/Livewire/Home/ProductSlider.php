@@ -34,6 +34,7 @@ class ProductSlider extends Component
         }])
             ->published()
             ->visible()
+            ->where('order_count', '>', 0)
             ->orderBy('total_score', 'desc')->limit(10)->get();
     }
 

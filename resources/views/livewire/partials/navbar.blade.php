@@ -17,7 +17,7 @@
                         <li><a href="#">Menu</a>
                             <ul>
                                 @if (auth()->guard('shop')->check())
-                                    <li>
+                                    <li class="hide-on-mobile">
                                         <a href="{{ route('customer.wishlist') }}">
                                             <i class="icon-heart-o"></i> Wishlist
                                             <span class="wishlist-count">

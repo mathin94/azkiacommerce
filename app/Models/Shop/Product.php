@@ -2,6 +2,7 @@
 
 namespace App\Models\Shop;
 
+use App\Enums\DiscountType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -259,7 +260,16 @@ class Product extends Model implements HasMedia
 
     public function scopeOnSale($query)
     {
-        return $query->has('activeDiscount');
+        return $query->whereHas('activeDiscount', function ($q) {
+            $q->where('discount_type', DiscountType::NormalDiscount());
+        });
+    }
+
+    public function scopeFlashSale($query)
+    {
+        return $query->whereHas('activeDiscount', function ($q) {
+            $q->where('discount_type', DiscountType::FlashSale());
+        });
     }
 
     public function scopeByCategories($query, $categoryIds)
@@ -340,6 +350,26 @@ class Product extends Model implements HasMedia
             }
 
             return $this->wishlists->where('shop_customer_id', auth()->guard('shop')->id())->count();
+        });
+    }
+
+    protected function discountRemainingSecondsLabel(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if (empty($this->activeDiscount))
+                return;
+
+            return "+{$this->activeDiscount->remaining_seconds}s";
+        });
+    }
+
+    protected function isActiveFlashSale(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if (empty($this->activeDiscount))
+                return false;
+
+            return $this->activeDiscount->is_flash_sale;
         });
     }
 }
