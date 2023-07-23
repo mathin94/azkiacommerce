@@ -15,8 +15,6 @@ class Menu
     {
         $pages = Page::active()->get();
 
-
-
         return SpatieMenu::new()
             ->add(Link::to('/', 'Home')->addClass('pr-2'))
             ->submenu(

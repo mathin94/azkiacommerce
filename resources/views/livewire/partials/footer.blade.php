@@ -29,6 +29,9 @@
                             <h4 class="widget-title">Informasi</h4><!-- End .widget-title -->
 
                             <ul class="widget-list">
+                                <li><a href="{{ route('faqs') }}">FAQ</a></li>
+                                <li><a href="{{ route('partner-location') }}">Peta Mitra</a></li>
+                                <li><a href="{{ route('comingsoon') }}">{{ soon()->link_title }}</a></li>
                                 @foreach ($pages as $page)
                                 <li><a href="{{ $page->public_url }}">{{ $page->title }}</a></li>
                                 @endforeach
@@ -43,12 +46,11 @@
                             <ul class="widget-list">
                                 @if (auth()->guard('shop')->guest())
                                     <li><a href="{{ route('login') }}">Login</a></li>
-                                @else
-                                    <li><a href="{{ route('cart') }}">Keranjang Belanja</a></li>
-                                    <li><a href="{{ route('customer.wishlist') }}">Wishlist</a></li>
-                                    <li><a href="{{ route('customer.orders') }}">Daftar Pesanan</a></li>
-                                    <li><a href="{{ route('contact-us') }}">Bantuan</a></li>
                                 @endif
+                                <li><a href="{{ route('cart') }}">Keranjang Belanja</a></li>
+                                <li><a href="{{ route('customer.wishlist') }}">Wishlist</a></li>
+                                <li><a href="{{ route('customer.orders') }}">Daftar Pesanan</a></li>
+                                <li><a href="{{ route('contact-us') }}">Bantuan</a></li>
                             </ul><!-- End .widget-list -->
                         </div><!-- End .widget -->
                     </div><!-- End .col-sm-64 col-lg-3 -->
