@@ -1,4 +1,4 @@
-<div class="blog-posts pt-7 pb-7" style="background-color: #fafafa;">
+<div class="blog-posts pt-7 pb-7">
     <div class="container">
        <h2 class="title-lg text-center mb-3 mb-md-4">Blog</h2><!-- End .title-lg text-center -->
 

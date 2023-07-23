@@ -93,6 +93,14 @@ class Show extends Component
             ->where('size_id', $this->sizeId)
             ->first();
 
+        if (empty($variant)) {
+            $this->stock = 0;
+            $this->stockLabel = 'Stok tidak tersedia';
+            $this->variant = null;
+
+            return;
+        }
+
         $service = new ProductVariantPriceService($this->customer, $variant);
         $service->execute();
 

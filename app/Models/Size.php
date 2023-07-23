@@ -65,4 +65,13 @@ class Size extends Model
     {
         return $this->hasMany(ProductVariant::class);
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->code = \Str::slug($model->name);
+        });
+    }
 }
