@@ -13,24 +13,24 @@
             <div class="container">
                 <h2 class="title text-center mb-3">FAQ</h2>
 
-                @foreach ($faqs as $item)
-                <div class="accordion accordion-rounded" id="accordion-2">
+                <div class="accordion accordion-rounded" id="accordion-faq">
+                    @foreach ($faqs as $item)
                     <div class="card card-box card-sm bg-light">
-                        <div class="card-header" id="heading2-{{ $item->index }}">
+                        <div class="card-header" id="heading-{{ $item->index }}">
                             <h2 class="card-title">
-                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse2-{{ $item->index }}" aria-expanded="false" aria-controls="collapse2-{{ $item->index }}">
+                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-{{ $item->index }}" aria-expanded="false" aria-controls="collapse-{{ $item->index }}">
                                     {{ $item->question }}
                                 </a>
                             </h2>
                         </div><!-- End .card-header -->
-                        <div id="collapse2-{{ $item->index }}" class="collapse" aria-labelledby="heading2-{{ $item->index }}" data-parent="#accordion-2">
+                        <div id="collapse-{{ $item->index }}" class="collapse" aria-labelledby="heading-{{ $item->index }}" data-parent="#accordion-faq">
                             <div class="card-body">
                                 {{ $item->answer }}
                             </div><!-- End .card-body -->
                         </div><!-- End .collapse -->
                     </div><!-- End .card -->
+                    @endforeach
                 </div>
-                @endforeach
             </div>
         </div>
 
