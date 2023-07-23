@@ -33,7 +33,7 @@ class Index extends Component
         $this->maximumPrice       = $maximumPrice;
     }
 
-    public function render()
+    public function getProducts()
     {
         $products = Product::with(['media', 'activeDiscount', 'wishlists' => function ($q) {
             $q->dontCache()->where('shop_customer_id', auth()->guard('shop')->id());
@@ -65,7 +65,12 @@ class Index extends Component
             $products->maxPrice($this->maximumPrice);
         }
 
-        $products = $products->sortByValue($this->sortBy);
+        return $products->sortByValue($this->sortBy);
+    }
+
+    public function render()
+    {
+        $products = $this->getProducts();
 
         $title = 'Produk';
 
