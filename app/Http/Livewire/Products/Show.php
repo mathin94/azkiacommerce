@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Products;
 use App\Enums\CartStatus;
 use App\Models\Shop\Product;
 use App\Models\Shop\Wishlist;
+use App\Models\Size;
 use App\Services\Shop\AddToCartService;
 use App\Services\Shop\ProductVariantPriceService;
 use Illuminate\Support\Arr;
@@ -130,7 +131,7 @@ class Show extends Component
             'category',
             'activeDiscount.discountVariants',
             'variants.color',
-            'variants.size',
+            'variants',
             'variants.resource',
             'seo', 'reviews'
         ])
@@ -143,16 +144,14 @@ class Show extends Component
         $colors = $product->variants
             ->pluck('color.name', 'color_id')
             ->toArray();
-        $sizes  = $product->variants
-            ->pluck('size.name', 'size_id')
-            ->toArray();
+        $size_ids  = $product->variants->pluck('size_id')->toArray();
+        $this->sizes = Size::whereIn('id', $size_ids)->orderBy('index', 'asc')->get();
 
         $this->product     = $product;
         $this->normalPrice = $product->normal_price_label;
         $this->price       = $product->price_label;
         $this->weight      = $product->weight_label;
         $this->colors      = Arr::where($colors, fn ($val) => !is_null($val));
-        $this->sizes       = Arr::where($sizes, fn ($val)  => !is_null($val));
 
         if ($this->customer) {
             $this->liked = $this->customer->wishlists()->dontCache()->whereShopProductId($this->product->id)->count() > 0;
