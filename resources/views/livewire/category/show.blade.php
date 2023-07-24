@@ -36,7 +36,32 @@
                 </div>
 
                 <div class="products">
-                    <div class="row" wire:loading.class="d-none" wire:target="getProducts">
+                    <div class="row">
+                        @for ($i = 0; $i < 12; $i++)
+                        <div class="col-6 col-md-4 col-lg-4 col-xl-3">
+                            <div class="product product-1" wire:loading>
+                                <figure class="product-media ssc-square" style="height: 277px;">
+                                </figure>
+
+                                <div class="product-body">
+                                    <div class="product-cat">
+                                        <span class="ssc-line" style="max-width: 70px;"></span>
+                                    </div><!-- End .product-cat -->
+                                    <h3 class="product-title"><span class="ssc-line" style="max-width: 150px;"></span>
+                                    </h3>
+                                    <!-- End .product-title -->
+                                    <div class="product-price">
+                                        <span class="ssc-line" style="max-width: 80px;"></span>
+                                    </div><!-- End .product-price -->
+                                    <div class="ratings-container">
+                                        <span class="ssc-line" style="max-width: 100px;"></span>
+                                    </div><!-- End .rating-container -->
+                                </div>
+                            </div>
+                        </div>
+                        @endfor
+                    </div>
+                    <div class="row" wire:loading.class="d-none"></div>
                         @foreach ($products as $item)
                         <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                             <div class="product product-2">
@@ -48,7 +73,7 @@
                                         <img src="{{ $item->main_image_url }}" alt="{{ $item->name }} image" class="product-image">
                                     </a>
 
-                                    <livewire:wishlist-button :product=$item :key="'item-'.$product->id" />
+                                    <livewire:wishlist-button :product=$item :key="'item-'.$item->id" />
 
                                     {{-- <div class="product-action action-icon-top">
                                         <a href="#" class="btn-product btn-cart">

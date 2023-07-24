@@ -2,17 +2,18 @@
 
 namespace App\Filament\Resources\Blog;
 
-use App\Filament\Resources\Blog\CategoryResource\Pages;
-use App\Filament\Resources\Blog\CategoryResource\RelationManagers;
-use App\Models\Blog\Category;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Resources\Form;
+use App\Models\Blog\Category;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
+use Illuminate\Validation\Rules\Unique;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Notifications\Notification;
+use App\Filament\Resources\Blog\CategoryResource\Pages;
+use App\Filament\Resources\Blog\CategoryResource\RelationManagers;
 
 class CategoryResource extends Resource
 {

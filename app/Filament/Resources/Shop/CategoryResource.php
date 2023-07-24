@@ -2,17 +2,18 @@
 
 namespace App\Filament\Resources\Shop;
 
+use Filament\Forms;
+use Filament\Tables;
+use Filament\Resources\Form;
+use App\Models\Shop\Category;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rules\Unique;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\Shop\CategoryResource\Pages;
 use App\Filament\Resources\Shop\CategoryResource\RelationManagers;
-use App\Models\Shop\Category;
-use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
-use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CategoryResource extends Resource
 {
