@@ -68,7 +68,7 @@ class ProductFilter extends Component
             'maximumPrice',
         ]);
 
-        $this->emit('refreshProduct');
+        $this->emit('filterUpdated', $this->selectedCategories, $this->selectedSizes, $this->colorId, $this->minimumPrice, $this->maximumPrice);
     }
 
     public function render()

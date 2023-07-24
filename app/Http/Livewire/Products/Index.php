@@ -22,7 +22,7 @@ class Index extends Component
 
     protected $queryString = ['search', 'sortBy'];
 
-    protected $listeners = ['filterUpdated'];
+    protected $listeners = ['filterUpdated', 'refreshProducts' => 'getProducts'];
 
     public function filterUpdated($selectedCategories, $selectedSizes, $colorId, $minimumPrice, $maximumPrice)
     {
