@@ -12,6 +12,7 @@ use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use RalphJSmit\Filament\SEO\SEO;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rules\Unique;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\Blog\PostResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;

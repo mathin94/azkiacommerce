@@ -149,7 +149,7 @@
                             <div class="product-details-footer">
                                 <div class="product-cat">
                                     <span>Kategori Produk:</span>
-                                    <a href="#">{{ $product->category->name }}</a>
+                                    <a href="{{ $product->category->public_url }}">{{ $product->category->name }}</a>
                                 </div><!-- End .product-cat -->
 
                                 <livewire:sharer-cta
