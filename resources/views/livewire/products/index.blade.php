@@ -39,7 +39,7 @@
 
             <div class="products">
                 <div class="row">
-                    @for ($i = 0; $i < 4; $i++)
+                    @for ($i = 0; $i < 12; $i++)
                     <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                         <div class="product product-1" wire:loading>
                             <figure class="product-media ssc-square" style="height: 277px;">
@@ -108,7 +108,7 @@
                     @endforeach
                 </div><!-- End .row -->
 
-                <div class="load-more-container text-center">
+                <div class="load-more-container text-center" wire:loading.class="d-none">
                     {!! $products->links() !!}
                 </div><!-- End .load-more-container -->
             </div>
