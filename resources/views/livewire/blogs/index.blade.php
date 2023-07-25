@@ -25,8 +25,8 @@
 
              <div class="entry-container" data-layout="fitRows">
                  @foreach ($posts as $item)
-                     <div class="entry-item lifestyle shopping col-sm-6 col-lg-4">
-                        <article class="entry entry-grid">
+                     <div class="entry-item col-sm-6 col-lg-4 mb-2" style="height: auto;">
+                        <article class="entry entry-grid text-center">
                             <figure class="entry-media">
                                 <a href="{{ $item->public_url }}">
                                     <img src="{{ $item->image_url }}" alt="{{ $item->title }} desc">
@@ -39,12 +39,12 @@
                                 </div><!-- End .entry-meta -->
 
                                 <h2 class="entry-title">
-                                    <a href="{{ $item->public_url }}">{{ $item->title }}</a>
+                                    <a href="{{ $item->public_url }}">{{ \Str::of($item->title)->limit(25) }}</a>
                                 </h2><!-- End .entry-title -->
 
                                 <div class="entry-content">
                                     <p>
-                                        {!! \Str::of($item->content)->limit(100) !!}
+                                        {!! \Str::of($item->content)->limit(80) !!}
                                     </p>
                                     <a href="{{ $item->public_url }}" class="read-more">Baca Selengkapnya</a>
                                 </div><!-- End .entry-content -->
