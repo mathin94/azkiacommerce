@@ -25,7 +25,7 @@
 
              <div class="entry-container" data-layout="fitRows">
                  @foreach ($posts as $item)
-                     <div class="entry-item col-sm-6 col-lg-4 mb-2" style="height: auto;">
+                     <div class="entry-item col-sm-6 col-lg-4 mb-2" style="margin-top: 25px;">
                         <article class="entry entry-grid text-center" style="height: 500px;">
                             <figure class="entry-media">
                                 <a href="{{ $item->public_url }}">
