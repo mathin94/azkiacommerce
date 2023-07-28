@@ -372,4 +372,13 @@ class Product extends Model implements HasMedia
             return $this->activeDiscount->is_flash_sale;
         });
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($model) {
+            $model->variants()->delete();
+        });
+    }
 }
