@@ -10,14 +10,15 @@ use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use RalphJSmit\Filament\SEO\SEO;
 use Livewire\TemporaryUploadedFile;
+use Illuminate\Validation\Rules\Unique;
 use App\Jobs\RecalculateCategoryStatJob;
 use App\Services\Backoffice\CategoryService;
 use CoringaWc\FilamentInputLoading\TextInput;
 use App\Filament\Resources\Shop\ProductResource\Pages;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use App\Filament\Resources\Shop\ProductResource\RelationManagers\VariantsRelationManager;
-use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 
 class ProductResource extends Resource implements HasShieldPermissions
 {
