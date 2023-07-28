@@ -30,7 +30,7 @@ class RecalculateProductRating
             return false;
         }
 
-        $rating_count   = $reviews->count();
+        $rating_count   = $reviews->count() > 0 ? $reviews->count() : 1;
         $rating_total   = $reviews->sum('rating');
         $rating_average = $rating_total / $rating_count;
 
