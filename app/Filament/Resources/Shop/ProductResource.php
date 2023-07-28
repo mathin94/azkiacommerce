@@ -84,7 +84,9 @@ class ProductResource extends Resource implements HasShieldPermissions
                                 Forms\Components\TextInput::make('slug')
                                     ->disabled()
                                     ->required()
-                                    ->unique(Product::class, 'slug', ignoreRecord: true),
+                                    ->unique(callback: function (Unique $rule) {
+                                        return $rule->where('deleted_at', null);
+                                    }, ignoreRecord: true),
 
                                 TinyEditor::make('description')
                                     ->label(__('Deskripsi Produk'))
