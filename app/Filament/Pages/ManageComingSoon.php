@@ -2,12 +2,15 @@
 
 namespace App\Filament\Pages;
 
-use App\Settings\ComingSoon;
 use Filament\Forms;
+use App\Settings\ComingSoon;
 use Filament\Pages\SettingsPage;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class ManageComingSoon extends SettingsPage
 {
+    use HasPageShield;
+
     protected static ?string $navigationIcon = 'heroicon-o-cog';
 
     protected static ?string $navigationGroup = 'Pengaturan';

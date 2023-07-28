@@ -16,10 +16,11 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\PageResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PageResource\RelationManagers;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
-class PageResource extends Resource
+class PageResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Page::class;
 
@@ -124,6 +125,17 @@ class PageResource extends Resource
             'index' => Pages\ListPages::route('/'),
             'create' => Pages\CreatePage::route('/create'),
             'edit' => Pages\EditPage::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
         ];
     }
 }

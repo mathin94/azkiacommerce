@@ -17,8 +17,9 @@ use App\Filament\Resources\Shop\ProductResource\Pages;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use App\Filament\Resources\Shop\ProductResource\RelationManagers\VariantsRelationManager;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 
-class ProductResource extends Resource
+class ProductResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Product::class;
 
@@ -229,6 +230,18 @@ class ProductResource extends Resource
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any'
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\FAQResource\Pages;
 use App\Filament\Resources\FAQResource\RelationManagers;
 use App\Models\FAQ;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Validation\Rules\Unique;
 
-class FAQResource extends Resource
+class FAQResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = FAQ::class;
 
@@ -78,6 +79,18 @@ class FAQResource extends Resource
     {
         return [
             'index' => Pages\ManageFAQS::route('/'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
         ];
     }
 }

@@ -17,8 +17,9 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\ColorResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ColorResource\RelationManagers;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 
-class ColorResource extends Resource
+class ColorResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Color::class;
 
@@ -105,6 +106,18 @@ class ColorResource extends Resource
     {
         return [
             'index' => Pages\ManageColors::route('/'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any'
         ];
     }
 }

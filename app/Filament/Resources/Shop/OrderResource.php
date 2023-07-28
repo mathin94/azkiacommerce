@@ -19,12 +19,13 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Services\Admin\CancelOrderService;
 use App\Services\Admin\SendPackageService;
 use App\Services\Admin\ConfirmOrderService;
+use App\Services\RajaOngkir\TrackWaybillService;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\Shop\OrderResource\Pages;
 use App\Filament\Resources\Shop\OrderResource\RelationManagers;
-use App\Services\RajaOngkir\TrackWaybillService;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 
-class OrderResource extends Resource
+class OrderResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Order::class;
 
@@ -307,5 +308,14 @@ class OrderResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return static::getModel()::with(['customer', 'payment', 'shipping.courier'])->orderBy('status', 'desc');
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'update',
+        ];
     }
 }

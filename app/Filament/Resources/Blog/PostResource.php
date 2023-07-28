@@ -18,9 +18,10 @@ use App\Filament\Resources\Blog\PostResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\Blog\PostResource\RelationManagers;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
-class PostResource extends Resource
+class PostResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Post::class;
 
@@ -238,5 +239,17 @@ class PostResource extends Resource
         }
 
         return $details;
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+        ];
     }
 }

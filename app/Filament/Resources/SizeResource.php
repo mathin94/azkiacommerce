@@ -9,15 +9,16 @@ use Illuminate\Support\Str;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
+use Illuminate\Validation\Rules\Unique;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\SizeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SizeResource\RelationManagers;
-use Illuminate\Validation\Rules\Unique;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 
-class SizeResource extends Resource
+class SizeResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Size::class;
 
@@ -112,6 +113,18 @@ class SizeResource extends Resource
     {
         return [
             'index' => Pages\ManageSizes::route('/'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any'
         ];
     }
 }

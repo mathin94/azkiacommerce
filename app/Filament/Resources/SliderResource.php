@@ -2,23 +2,24 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\SliderType;
-use App\Filament\Resources\SliderResource\Pages;
-use App\Filament\Resources\SliderResource\RelationManagers;
-use App\Models\Slider;
 use Filament\Forms;
+use Filament\Tables;
+use App\Models\Slider;
+use App\Enums\SliderType;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
-use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\SliderResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\SliderResource\RelationManagers;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 
-class SliderResource extends Resource
+class SliderResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Slider::class;
 
@@ -118,6 +119,18 @@ class SliderResource extends Resource
             'index' => Pages\ListSliders::route('/'),
             'create' => Pages\CreateSlider::route('/create'),
             'edit' => Pages\EditSlider::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
         ];
     }
 }

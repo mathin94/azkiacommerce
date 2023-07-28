@@ -6,6 +6,7 @@ use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Filament\Navigation\NavigationGroup;
+use BezhanSalleh\FilamentShield\Facades\FilamentShield;
 
 class AppServiceProvider extends ServiceProvider
 {

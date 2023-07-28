@@ -8,6 +8,7 @@ use App\Jobs\RecalculateCategoryStatJob;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\Shop\ProductResource;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class CreateProduct extends CreateRecord
 {
