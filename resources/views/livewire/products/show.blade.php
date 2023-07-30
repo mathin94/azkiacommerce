@@ -138,10 +138,12 @@
                                             @endif
                                         </span>
                                     </a>
-                                    <a href="#" class="btn-product btn-message" title="Order via Whatsapp">
-                                        <span>
+                                    <a href="javascript:void(0);" wire:click="orderWhatsapp" class="btn-product btn-message" id="btn-order-wa" title="Order via Whatsapp">
+                                        <span wire:loading.class="d-none" wire:target="orderWhatsapp">
                                             <i class="icon-whatsapp"></i> Order via Whatsapp
                                         </span>
+
+                                        <x-css-spinner-alt wire:loading class="ml-5 fa-spin" wire:target="orderWhatsapp" />
                                     </a>
                                 </div><!-- End .details-action-wrapper -->
                             </div><!-- End .product-details-action -->
@@ -275,6 +277,10 @@
             if (data.image !== null) {
                 $("#product-zoom-gallery").find(`a[data-image='${data.image}']`).click();
             }
+        })
+
+        Livewire.on('openWhatsappLink', data => {
+            window.open(data.url, '_blank');
         })
     </script>
 @endpush
