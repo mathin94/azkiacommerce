@@ -40,7 +40,7 @@
 
                     <div class="entry-content">
                         <p>
-                            {!! \Str::of($item->content)->limit(100) !!}
+                            {!! \Str::of(strip_tags($item->content))->limit(100) !!}
                         </p>
                         <a href="{{ $item->public_url }}" class="read-more">Baca Selengkapnya</a>
                     </div><!-- End .entry-content -->
