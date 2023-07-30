@@ -1,5 +1,9 @@
 <div>
-    <footer class="footer footer-2">
+    <div class="white-popup d-none" id="alert-popup">
+        <h5 id="alert-title"></h5>
+        <div id="alert-body"></div>
+    </div>
+    <footer class="footer-dark footer-2">
         <div class="footer-middle">
             <div class="container">
                 <div class="row">
@@ -8,7 +12,20 @@
                             <img src="/build/assets/images/logo-color.png" class="footer-logo"
                                 alt="Footer Logo" width="82" height="25">
                             <p>{{ site()->site_description }} </p>
-
+                            <div class="widget-about-info">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-4">
+                                        <span class="widget-about-title">Ada Pertanyaan? Hubungi Kami Disini</span>
+                                        <a href="tel:{{ store()->phone }}">{{ store()->phone }}</a>
+                                    </div><!-- End .col-sm-6 -->
+                                    {{-- <div class="col-sm-6 col-md-8">
+                                        <span class="widget-about-title">Jasa Pengiriman</span>
+                                        <figure class="footer-payments">
+                                            <img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
+                                        </figure><!-- End .footer-payments -->
+                                    </div><!-- End .col-sm-6 --> --}}
+                                </div><!-- End .row -->
+                            </div>
                         </div><!-- End .widget about-widget -->
                     </div><!-- End .col-sm-12 col-lg-3 -->
 

@@ -28,6 +28,10 @@
 
     <div><livewire:partials.navbar /></div>
     {{ $slot }}
+    <div class="white-popup d-none" id="alert-popup">
+        <h5 id="alert-title"></h5>
+        <div id="alert-body"></div>
+    </div>
     <livewire:partials.footer />
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
     <x-app-modals />
