@@ -130,7 +130,9 @@ class Login extends Component implements HasForms
             ]
         );
 
-        $user->syncRoles([$_role['name']]);
+        $role = Role::updateOrCreate(['name' => $_role['name']], ['name' => $_role['name']]);
+
+        $user->syncRoles($role);
 
         $this->user_id = $user->id;
 
