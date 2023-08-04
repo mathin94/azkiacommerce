@@ -260,6 +260,11 @@ class CartCheckout extends BaseComponent
             return redirect('/');
         }
 
+        if (is_null($this->customer->mainAddress)) {
+            return redirect()->route('customer.addresses')
+                ->with('warning', 'Anda belum memiliki alamat utama, silahkan tambah alamat agar anda dapat melakukan transaksi');
+        }
+
         $this->cart = $this->customer->cart;
         $this->couriers = cache()->remember('supported_couriers', 24 * 60 * 60, function () {
             return Courier::supported()->get();
