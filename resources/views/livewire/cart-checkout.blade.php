@@ -95,8 +95,8 @@
                                         </select>
                                     </div>
                                     <div class="col-lg-6">
-                                        <div wire:loading wire:target="courierId">
-                                            <i class="fa fa-spinner fa-spin"></i>
+                                        <div wire:loading.class="d-block" class="d-none" wire:target="courierId">
+                                            <span class="ssc-square" style="max-width: 277px; max-height: 40px;"></span>
                                         </div>
                                         <select class="form-control select-custom" wire:model="courierService"
                                             wire:loading.attr="hidden" wire:target="courierId"
@@ -150,9 +150,7 @@
                                             <tr>
                                                 <td colspan="3" class="text-left">
                                                     Biaya Kirim:
-                                                    <div wire:loading wire:target="courierService" class="pull-right">
-                                                        <i class="fa fa-spinner fa-spin"></i>
-                                                    </div>
+                                                    <span wire:loading.class="d-block" wire:target="courierService" class="ssc-line pull-right d-none" style="max-width: 70px;"></span>
                                                     <span class="pull-right" wire:loading.attr="hidden"
                                                         wire:target="courierService">{{ $shipping_cost_label }}</span>
                                                 </td>
@@ -164,18 +162,14 @@
                                                         <span class="pull-right old-price" wire:loading.class="d-none" wire:target="applyVoucher">
                                                             {{ format_rupiah($discountVoucher) }}
                                                         </span>
-                                                        <span class="pull-right" wire:loading wire:target="applyVoucher">
-                                                            <i class="fa fa-spinner fa-spin"></i>
-                                                        </span>
+                                                        <span wire:loading.class="d-block" wire:target="applyVoucher" class="ssc-line pull-right d-none" style="max-width: 70px;"></span>
                                                     </td>
                                                 </tr>
                                             @endif
                                             <tr class="summary-total">
                                                 <td>Total:</td>
                                                 <td colspan="2">
-                                                    <div wire:loading wire:target="courierService" class="pull-right">
-                                                        <i class="fa fa-spinner fa-spin"></i>
-                                                    </div>
+                                                    <span wire:loading.class="d-block" wire:target="courierService" class="ssc-line pull-right d-none" style="max-width: 90px;"></span>
                                                     <span wire:loading.attr="hidden"
                                                         wire:target="courierService">{{ $grandtotal_label }}</span>
                                                 </td>

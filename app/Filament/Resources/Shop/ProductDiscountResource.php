@@ -14,15 +14,16 @@ use Filament\Forms\Components\Card;
 use App\Models\Shop\ProductDiscount;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
+use Illuminate\Database\Eloquent\Model;
+use App\Jobs\RecalculateCartDiscountJob;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\Shop\ProductDiscountResource\Pages;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use App\Filament\Resources\Shop\ProductDiscountResource\RelationManagers;
-use App\Jobs\RecalculateCartDiscountJob;
-use Illuminate\Database\Eloquent\Model;
 use LucasGiovanny\FilamentMultiselectTwoSides\Forms\Components\Fields\MultiselectTwoSides;
 
-class ProductDiscountResource extends Resource
+class ProductDiscountResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = ProductDiscount::class;
 
@@ -147,6 +148,17 @@ class ProductDiscountResource extends Resource
             'index' => Pages\ListProductDiscounts::route('/'),
             'create' => Pages\CreateProductDiscount::route('/create'),
             'edit' => Pages\EditProductDiscount::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
         ];
     }
 }

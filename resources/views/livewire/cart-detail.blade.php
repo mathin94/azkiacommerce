@@ -95,9 +95,17 @@
                                     </tr><!-- End .summary-total -->
                                 </tbody>
                             </table><!-- End .table table-summary -->
-                            <a href="{{ route('cart.checkout') }}"
-                                class="btn btn-outline-primary-2 btn-order btn-block">LANJUT
-                                KE PEMBAYARAN</a>
+                            <button type="button" wire:click="checkout"
+                                class="btn btn-outline-primary-2 btn-order btn-block"
+                                wire:loading.attr="disabled" wire:target="checkout">
+                                <div wire:target="checkout" wire:loading.class="d-none">
+                                    <span >Lanjut Pembayaran</span>
+                                </div>
+
+                                <div wire:loading wire:target="checkout">
+                                    <i class="fa fa-spinner fa-spin"></i>
+                                </div>
+                            </button>
                         </div><!-- End .summary -->
                     </aside><!-- End .col-lg-3 -->
                 </div><!-- End .row -->

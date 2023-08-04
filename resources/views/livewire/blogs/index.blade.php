@@ -25,15 +25,15 @@
 
              <div class="entry-container" data-layout="fitRows">
                  @foreach ($posts as $item)
-                     <div class="entry-item lifestyle shopping col-sm-6 col-lg-4">
-                        <article class="entry entry-grid">
+                     <div class="entry-item col-sm-6 col-lg-4 mb-2" style="margin-top: 25px;">
+                        <article class="entry entry-grid text-center" style="height: 500px;">
                             <figure class="entry-media">
                                 <a href="{{ $item->public_url }}">
                                     <img src="{{ $item->image_url }}" alt="{{ $item->title }} desc">
                                 </a>
                             </figure><!-- End .entry-media -->
 
-                            <div class="entry-body text-center">
+                            <div class="entry-body text-center p-1">
                                 <div class="entry-meta">
                                     <a href="#">{{ $item->published_at->format('d M, Y') }}</a>, {{ $item->comment_count_label }}
                                 </div><!-- End .entry-meta -->
@@ -42,9 +42,9 @@
                                     <a href="{{ $item->public_url }}">{{ $item->title }}</a>
                                 </h2><!-- End .entry-title -->
 
-                                <div class="entry-content">
+                                <div class="entry-content mb-1">
                                     <p>
-                                        {!! \Str::of($item->content)->limit(100) !!}
+                                        {!! \Str::of(strip_tags($item->content))->limit(100) !!}
                                     </p>
                                     <a href="{{ $item->public_url }}" class="read-more">Baca Selengkapnya</a>
                                 </div><!-- End .entry-content -->

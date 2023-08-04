@@ -623,7 +623,7 @@ hr {
 @media screen and (min-width: 1200px) {
     .intro-slider-container,
     .intro-slide {
-        height: 700px;
+        height: 768px;
     }
 
     .intro-content.text-right {
@@ -662,7 +662,7 @@ hr {
 @media screen and (min-width: 1800px) {
     .intro-slider-container,
     .intro-slide {
-        height: 980px;
+        height: 1080px;
         width: 100%;
     }
 

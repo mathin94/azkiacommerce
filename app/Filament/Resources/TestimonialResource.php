@@ -13,8 +13,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TestimonialResource\Pages;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\TestimonialResource\RelationManagers;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 
-class TestimonialResource extends Resource
+class TestimonialResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Testimonial::class;
 
@@ -80,6 +81,17 @@ class TestimonialResource extends Resource
     {
         return [
             'index' => Pages\ManageTestimonials::route('/'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
         ];
     }
 }

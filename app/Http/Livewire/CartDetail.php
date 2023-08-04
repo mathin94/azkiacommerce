@@ -70,6 +70,26 @@ class CartDetail extends Component
         }
     }
 
+    public function checkout()
+    {
+        if (is_null($this->user->mainAddress)) {
+            $address_link = route('customer.addresses');
+            $this->emit('showAlert', [
+                "alert" => "
+                    <div class=\"white-popup\">
+                        <h5>Tidak dapat checkout !</h5>
+                        <p>Anda belum mempunyai alamat pengiriman, harap mengisi alamat pengiriman agar dapat checkout</p>
+                        <p><a href=\"$address_link\">Klik Disini Untuk Mengisi Alamat</a></p>
+                    </div>
+                "
+            ]);
+
+            return;
+        }
+
+        return redirect()->route('cart.checkout');
+    }
+
     public function render()
     {
         return view('livewire.cart-detail')

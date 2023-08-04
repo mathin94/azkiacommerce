@@ -2,13 +2,16 @@
 
 namespace App\Filament\Pages;
 
-use App\Settings\SiteSettings;
-use CoringaWc\FilamentInputLoading\TextInput;
 use Filament\Forms;
+use App\Settings\SiteSettings;
 use Filament\Pages\SettingsPage;
+use CoringaWc\FilamentInputLoading\TextInput;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class ManageSite extends SettingsPage
 {
+    use HasPageShield;
+
     protected static ?string $navigationIcon = 'heroicon-o-cog';
 
     protected static string $settings = SiteSettings::class;

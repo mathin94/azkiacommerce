@@ -7,6 +7,14 @@
             </div>
         </div>
         @endif
+
+        @if (session()->has('warning'))
+        <div class="col-12">
+            <div class="alert alert-warning mb-3">
+                {{ session('warning') }}
+            </div>
+        </div>
+        @endif
         <div class="col-6">
             <h5>Daftar Alamat</h5>
         </div>

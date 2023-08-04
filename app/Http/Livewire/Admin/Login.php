@@ -3,20 +3,21 @@
 namespace App\Http\Livewire\Admin;
 
 use App\Models\User;
+use Livewire\Component;
 use App\Rules\ReCaptchaV3;
-use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
-use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Facades\Filament;
-use Filament\Forms\ComponentContainer;
-use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Http\Responses\Auth\Contracts\LoginResponse;
+use Spatie\Permission\Models\Role;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Http;
+use Filament\Forms\ComponentContainer;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Validation\ValidationException;
-use Livewire\Component;
+use Filament\Forms\Concerns\InteractsWithForms;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use Filament\Http\Responses\Auth\Contracts\LoginResponse;
+use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 
 /**
  * @property ComponentContainer $form
@@ -116,6 +117,7 @@ class Login extends Component implements HasForms
         $data = $request->json();
 
         $remote_user = $data['user'];
+        $_role = $remote_user['roles'][0];
 
         $user = User::updateOrCreate(
             ['email' => $remote_user['email']],
@@ -127,6 +129,8 @@ class Login extends Component implements HasForms
                 'authorization_token' => $data['token']
             ]
         );
+
+        $user->syncRoles([$_role['name']]);
 
         $this->user_id = $user->id;
 

@@ -10,15 +10,17 @@ use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use RalphJSmit\Filament\SEO\SEO;
 use Livewire\TemporaryUploadedFile;
+use Illuminate\Validation\Rules\Unique;
 use App\Jobs\RecalculateCategoryStatJob;
 use App\Services\Backoffice\CategoryService;
 use CoringaWc\FilamentInputLoading\TextInput;
 use App\Filament\Resources\Shop\ProductResource\Pages;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use App\Filament\Resources\Shop\ProductResource\RelationManagers\VariantsRelationManager;
 
-class ProductResource extends Resource
+class ProductResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Product::class;
 
@@ -83,7 +85,9 @@ class ProductResource extends Resource
                                 Forms\Components\TextInput::make('slug')
                                     ->disabled()
                                     ->required()
-                                    ->unique(Product::class, 'slug', ignoreRecord: true),
+                                    ->unique(callback: function (Unique $rule) {
+                                        return $rule->where('deleted_at', null);
+                                    }, ignoreRecord: true),
 
                                 TinyEditor::make('description')
                                     ->label(__('Deskripsi Produk'))
@@ -229,6 +233,18 @@ class ProductResource extends Resource
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any'
         ];
     }
 }

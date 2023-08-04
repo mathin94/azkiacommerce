@@ -42,6 +42,8 @@
                                     </li>
                                 </ul>
                             </div>
+
+                            <livewire:upload-payment :order=$order />
                         </div><!-- End .col-lg-9 -->
                         <aside class="col-lg-6">
                             <div class="summary">

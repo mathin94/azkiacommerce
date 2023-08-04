@@ -2,21 +2,22 @@
 
 namespace App\Filament\Resources\Shop;
 
-use App\Enums\ValueType;
-use App\Enums\VoucherType;
-use App\Filament\Resources\Shop\VoucherResource\Pages;
-use App\Filament\Resources\Shop\VoucherResource\RelationManagers;
-use App\Models\Shop\Voucher;
 use Closure;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use App\Enums\ValueType;
+use App\Enums\VoucherType;
+use App\Models\Shop\Voucher;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\Shop\VoucherResource\Pages;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
+use App\Filament\Resources\Shop\VoucherResource\RelationManagers;
 
-class VoucherResource extends Resource
+class VoucherResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Voucher::class;
 
@@ -133,6 +134,18 @@ class VoucherResource extends Resource
     {
         return [
             'index' => Pages\ManageVouchers::route('/'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any'
         ];
     }
 }

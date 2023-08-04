@@ -13,9 +13,10 @@ use Illuminate\Validation\Rules\Unique;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\Shop\CategoryResource\Pages;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use App\Filament\Resources\Shop\CategoryResource\RelationManagers;
 
-class CategoryResource extends Resource
+class CategoryResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Category::class;
 
@@ -95,6 +96,17 @@ class CategoryResource extends Resource
     {
         return [
             'index' => Pages\ManageCategories::route('/'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
         ];
     }
 }

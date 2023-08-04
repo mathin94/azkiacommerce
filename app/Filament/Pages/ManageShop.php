@@ -2,12 +2,15 @@
 
 namespace App\Filament\Pages;
 
-use App\Settings\ShopSettings;
 use Filament\Forms;
+use App\Settings\ShopSettings;
 use Filament\Pages\SettingsPage;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class ManageShop extends SettingsPage
 {
+    use HasPageShield;
+
     protected static ?string $navigationIcon = 'bi-shop';
 
     protected static ?string $navigationGroup = 'Pengaturan';

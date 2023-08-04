@@ -225,6 +225,29 @@ class Show extends Component
         $this->emit('refreshComponent');
     }
 
+    public function orderWhatsapp()
+    {
+        if (!$this->variant) {
+            $this->emit('showAlert', [
+                "alert" => "
+                        <div class=\"white-popup\">
+                            <p>Anda belum memilih varian produk</p>
+                        </div>
+                    "
+            ]);
+
+            return;
+        }
+
+        $name = $this->variant->name;
+
+        $text = "Assalamu'alaikum. Halo saya ingin membeli produk $name apakah masih tersedia?";
+
+        $url = "https://wa.me/+62895808855575/?text=$text";
+
+        $this->emit('openWhatsappLink', ['url' => $url]);
+    }
+
     public function render()
     {
         return view('livewire.products.show')
