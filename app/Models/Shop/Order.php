@@ -135,6 +135,23 @@ class Order extends Model
         });
     }
 
+    protected function statusPaid(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return !in_array($this->status->value, [
+                OrderStatus::WaitingPayment,
+                OrderStatus::Canceled,
+            ]);
+        });
+    }
+
+    protected function statusWaitingPayment(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->status->value === OrderStatus::WaitingPayment;
+        });
+    }
+
     protected function dateFormatId(): Attribute
     {
         return Attribute::make(get: fn () => $this->created_at->locale('id')->isoFormat('DD MMMM YYYY, HH:mm [WIB]'));
@@ -170,7 +187,7 @@ class Order extends Model
 
     protected function customerCancelable(): Attribute
     {
-        return Attribute::make(fn () => $this->statusWaitingPayment());
+        return Attribute::make(fn () => $this->status === OrderStatus::WaitingPayment);
     }
 
     protected function adminCancelable(): Attribute

@@ -67,13 +67,15 @@ class OrderItem extends Model
         return Attribute::make(get: function () {
             $variant = $this->productVariant;
 
-            $variant_image = $variant->media?->getUrl();
+            $variant_image = $variant?->media?->getUrl();
 
             if ($variant_image) {
                 return $variant_image;
             }
 
-            return $this->productVariant->product->main_image_url;
+            $image = $this->productVariant?->product?->main_image_url;
+
+            return $image ?? asset('/build/assets/images/no-thumbnail-medium.png');
         });
     }
 
