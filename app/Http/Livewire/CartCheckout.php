@@ -176,10 +176,8 @@ class CartCheckout extends BaseComponent
         }
     }
 
-    public function submit()
+    private function validateSubmit()
     {
-        $dropshipParam = [];
-
         if ($this->isDropship) {
             if (empty($this->dropshipperName) || empty($this->dropshipperPhone)) {
                 $this->emit('showAlert', [
@@ -193,11 +191,6 @@ class CartCheckout extends BaseComponent
 
                 return;
             }
-
-            $dropshipParam = [
-                'dropshipper_name' => $this->dropshipperName,
-                'dropshipper_phone' => $this->dropshipperPhone
-            ];
         }
 
         if (!$this->courierId && empty($this->courierService)) {
@@ -211,6 +204,85 @@ class CartCheckout extends BaseComponent
             ]);
 
             return;
+        }
+
+        return true;
+    }
+
+    public function orderWhatsapp()
+    {
+        $dropshipParam = [];
+
+        if (!$this->validateSubmit()) {
+            return;
+        }
+
+        if ($this->isDropship) {
+            $dropshipParam = [
+                'dropshipper_name' => $this->dropshipperName,
+                'dropshipper_phone' => $this->dropshipperPhone
+            ];
+        }
+
+        $service = new CreateOrderService(
+            customer: $this->customer,
+            shippingAddress: $this->shippingAddress,
+            courier_id: $this->courierId,
+            courierServices: $this->courierServices,
+            selectedService: $this->courierService,
+            dropship: $dropshipParam,
+            cart: $this->cart,
+            discountVoucher: $this->discountVoucher,
+            selectedVoucher: $this->selectedVoucher
+        );
+
+        if (!$service->perform()) {
+            $this->emit('showAlert', [
+                "alert" => "
+                    <div class=\"white-popup\">
+                        <h5>Terjadi Kesalahan !</h5>
+                        <p>Silahkan refresh browser anda dan coba lagi</p>
+                    </div>
+                "
+            ]);
+
+            return;
+        }
+
+        $order = $service->order;
+        $shipping = $order->shipping;
+
+        $text = "Halo kak admin Azkia Hijab, saya mau order produk berikut dong %0a%0a";
+        $text .= "Subtotal : *$order->subtotal_label %0a";
+        $text .= "Ongkos Kirim : *$order->shipping_cost_label %0a";
+        $text .= "Diskon : *$order->discount_voucher_label %0a";
+        $text .= "Total : *$order->final_price_label %0a";
+        $text .= "------------------------------ %0a %0a";
+        $text .= "*Nama Penerima*%0a";
+        $text .= "$shipping->recipient_name ($shipping->recipient_phone) %0a %0a";
+        $text .= "*Alamat Pengiriman*%0a";
+        $text .= "$shipping->full_address %0a%0a";
+        $text .= "*Jasa Pengiriman*%0a";
+        $text .= "$shipping->courier_label";
+
+        $url = "https://wa.me/+62895808855575/?text=$text";
+
+        return redirect()->to($url);
+    }
+
+    public function submit()
+    {
+        $dropshipParam = [];
+
+        if (!$this->validateSubmit()) {
+            return;
+        }
+
+        if ($this->isDropship) {
+            $dropshipParam = [
+                'dropshipper_name' => $this->dropshipperName,
+                'dropshipper_phone' => $this->dropshipperPhone
+            ];
         }
 
         $service = new CreateOrderService(

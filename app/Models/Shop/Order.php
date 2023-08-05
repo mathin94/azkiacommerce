@@ -109,6 +109,11 @@ class Order extends Model
         });
     }
 
+    protected function discountVoucherLabel(): Attribute
+    {
+        return Attribute::make(get: fn () => format_rupiah($this->discount_voucher));
+    }
+
     protected function statusColor(): Attribute
     {
         return Attribute::make(get: function () {

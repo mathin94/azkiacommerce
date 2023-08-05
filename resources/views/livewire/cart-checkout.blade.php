@@ -188,6 +188,17 @@
                                             <i class="fa fa-spinner fa-spin"></i>
                                         </div>
                                     </button>
+                                    <button type="button" wire:click="orderWhatsapp"
+                                        class="btn btn-outline-success btn-order btn-block"
+                                        wire:loading.attr="disabled" wire:target="orderWhatsapp">
+                                        <div wire:target="orderWhatsapp" wire:loading.class="d-none">
+                                            <i class="fa fa-whatsapp"></i> Checkout & Whatsapp
+                                        </div>
+
+                                        <div wire:loading wire:target="orderWhatsapp">
+                                            <i class="fa fa-spinner fa-spin"></i>
+                                        </div>
+                                    </button>
                                 </div><!-- End .summary -->
                             </aside><!-- End .col-lg-3 -->
                         </div><!-- End .row -->
