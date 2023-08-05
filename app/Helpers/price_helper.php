@@ -1,8 +1,12 @@
 <?php
 
 if (!function_exists('base_price')) {
-    function base_price(float | int $price): float | int
+    function base_price($price): float | int
     {
+        if (!in_array(gettype($price), ['int', 'float'])) {
+            return 0;
+        }
+
         if (auth()->guard('shop')->check()) {
             $discount = auth()->guard('shop')->user()->discount_percentage;
 
