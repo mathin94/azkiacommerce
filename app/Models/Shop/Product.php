@@ -205,8 +205,8 @@ class Product extends Model implements HasMedia
     {
         return Attribute::make(get: function () {
             $prices = [];
-
-            foreach ($this->prices as $key => $value) {
+            $_prices = $this->prices ?? [];
+            foreach ($_prices as $key => $value) {
                 $prices[] = format_rupiah($value);
             }
 
