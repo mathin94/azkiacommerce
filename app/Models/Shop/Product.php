@@ -150,7 +150,7 @@ class Product extends Model implements HasMedia
             $max_price = base_price($this->variants?->max('price') ?? 0);
 
             if ($min_price && $max_price) {
-                return collect([$min_price, $max_price])->unique()->toArray() ?? [];
+                return collect([$min_price, $max_price])->unique()->toArray();
             }
         });
     }
@@ -187,7 +187,9 @@ class Product extends Model implements HasMedia
             $prices = [];
             $valid_discount = $this->discount_with_membership;
 
-            foreach ($this->prices as $key => $price) {
+            $_prices = $this->prices ?? [];
+
+            foreach ($_prices as $key => $price) {
                 if ($valid_discount) {
                     $price = $price - ($price * ($this->discount_percentage / 100));
                 }
