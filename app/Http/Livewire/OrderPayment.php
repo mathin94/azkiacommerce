@@ -10,10 +10,6 @@ class OrderPayment extends Component
 {
     public $order, $bankAccounts;
 
-    public function __construct()
-    {
-    }
-
     public function mount()
     {
         $uuid = request()->payment_uuid;

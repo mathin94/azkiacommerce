@@ -192,7 +192,7 @@ class Order extends Model
 
     protected function customerCancelable(): Attribute
     {
-        return Attribute::make(fn () => $this->status === OrderStatus::WaitingPayment);
+        return Attribute::make(fn () => $this->status->value === OrderStatus::WaitingPayment);
     }
 
     protected function adminCancelable(): Attribute

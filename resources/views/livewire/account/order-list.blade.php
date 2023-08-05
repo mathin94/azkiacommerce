@@ -182,14 +182,21 @@
 
                                 @if ($order->customer_cancelable)
                                     <button class="btn mb-1 btn-outline-danger btn-sm mt-3 p-2 pr-4 m-0"
-                                        wire:click="openCancelDialog({{ $order->id }})"><i class="icon-close"></i>
-                                        Batalkan Pesanan</button>
+                                        wire:click="openCancelDialog({{ $order->id }})">
+                                        <div wire:target="openCancelDialog({{ $order->id }})" wire:loading.class="d-none">
+                                            <i class="icon-close"></i> Batalkan Pesanan
+                                        </div>
+
+                                        <div wire:loading wire:target="openCancelDialog({{ $order->id }})">
+                                            <i class="fa fa-spinner fa-spin"></i>
+                                        </div>
+                                    </button>
                                 @endif
                                 <br>
                             </td>
 
                         </tr>
-                        @if ($order->status->value === App\Enums\OrderStatus::WaitingPayment)
+                        @if ($order->status_waiting_payment)
                             <tr>
                                 <td class="price-col align-top" colspan="2">
                                     Segera lakukan pembayaran dalam 1 x 24 jam, atau pesanan Anda akan Otomatis
@@ -269,9 +276,9 @@
             <div class="text-center">
                 <h5>Yakin untuk membatalkan pesanan ini ?</h5>
                 <button type="button" class="btn btn-danger" id="cancel-confirm-button" wire:click="cancelOrder">
-                    <span wire:target="cancelOrder" wire:loading.class="d-none">
+                    <div wire:target="cancelOrder" wire:loading.class="d-none">
                         Ya, Batalkan Pesanan
-                    </span>
+                    </div>
 
                     <div wire:loading wire:target="cancelOrder">
                         <i class="fa fa-spinner fa-spin"></i>
@@ -279,7 +286,7 @@
                 </button>
                 <button type="button" class="btn btn-outline-dark" id="cancel-cancel"
                     onclick="$.magnificPopup.close()">
-                    <span>Tutup</span>
+                    <div>Tutup</div>
                 </button>
             </div>
         </div>

@@ -17,31 +17,37 @@
                         <div class="col-lg-6">
                             <h2 class="checkout-title">No Order : {{ $order->number }}</h2><!-- End .checkout-title -->
 
-                            <label>Mohon lakukan pembayaran sejumlah: </label>
-                            <h5 class="mt-1 mb-1">
-                                <strong>{{ $order->grandtotal_label }}</strong>
-                            </h5>
-                            <p class="mb-2">
-                                Silahkan Transfer Ke Rekening Berikut:
-                            </p>
-                            @foreach ($bankAccounts as $bank)
-                                <div class="pl-3 mb-1" style="border-left: 8px solid #C0A230;">
-                                    <b>{{ $bank->bank->name }}: </b><b>{{ $bank->account_number }}</b><br>
-                                    <span style="font-size: 90%">a/n {{ $bank->account_name }}<br>
-                                        {{ $bank->branch }}</span>
-                                </div>
-                            @endforeach
+                            @if (empty($order->canceled_at))
+                                <label>Mohon lakukan pembayaran sejumlah: </label>
+                                <h5 class="mt-1 mb-1">
+                                    <strong>{{ $order->grandtotal_label }}</strong>
+                                </h5>
+                                <p class="mb-2">
+                                    Silahkan Transfer Ke Rekening Berikut:
+                                </p>
+                                @foreach ($bankAccounts as $bank)
+                                    <div class="pl-3 mb-1" style="border-left: 8px solid #C0A230;">
+                                        <b>{{ $bank->bank->name }}: </b><b>{{ $bank->account_number }}</b><br>
+                                        <span style="font-size: 90%">a/n {{ $bank->account_name }}<br>
+                                            {{ $bank->branch }}</span>
+                                    </div>
+                                @endforeach
 
-                            <label class="font-weight-bold">PENTING:</label>
-                            <div class="product-desc-content">
-                                <ul>
-                                    <li>Mohon lakukan pembayaran dalam 1x24 jam</li>
-                                    <li>Apabila sudah transfer dan status pembayaran belum berubah, mohon konfirmasi
-                                        pembayaran manual di bawah</li>
-                                    <li>Pesanan akan dibatalkan secara otomatis jika Anda tidak melakukan pembayaran.
-                                    </li>
-                                </ul>
-                            </div>
+                                <label class="font-weight-bold">PENTING:</label>
+                                <div class="product-desc-content">
+                                    <ul>
+                                        <li>Mohon lakukan pembayaran dalam 1x24 jam</li>
+                                        <li>Apabila sudah transfer dan status pembayaran belum berubah, mohon konfirmasi
+                                            pembayaran manual di bawah</li>
+                                        <li>Pesanan akan dibatalkan secara otomatis jika Anda tidak melakukan pembayaran.
+                                        </li>
+                                    </ul>
+                                </div>
+                            @else
+                                <p>
+                                    Pesanan Ini Sudah Dibatalkan
+                                </p>
+                            @endif
 
                             <livewire:upload-payment :order=$order />
                         </div><!-- End .col-lg-9 -->

@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use App\Services\Shop\CancelOrderService;
 use App\Services\Shop\UploadPaymentProofService;
 
 class UploadPayment extends Component
@@ -71,6 +72,53 @@ class UploadPayment extends Component
                         </div>
                     "
         ]);
+    }
+
+    public function openCancelDialog()
+    {
+        $this->dispatchBrowserEvent('open-cancel-dialog');
+    }
+
+    public function cancelOrder()
+    {
+        if (!$this->order->customer_cancelable) {
+            $this->emit('showAlert', [
+                "alert" => "
+                    <div class=\"white-popup\">
+                        <h5>Gagal !</h5>
+                        <p>Pesanan ini tidak dapat dibatalkan</p>
+                    </div>
+                "
+            ]);
+
+            return;
+        }
+
+        $service = new CancelOrderService($this->order);
+
+        if (!$service->perform()) {
+            $this->emit('showAlert', [
+                "alert" => "
+                    <div class=\"white-popup\">
+                        <h5>Gagal !</h5>
+                        <p>Terjadi Kesalahan, pesanan gagal dibatalkan</p>
+                    </div>
+                "
+            ]);
+
+            return;
+        }
+
+        $this->emit('showAlert', [
+            "alert" => "
+                <div class=\"white-popup\">
+                    <h5>Dibatalkan !</h5>
+                    <p>Pesanan Berhasil Dibatalkan</p>
+                </div>
+            "
+        ]);
+
+        $this->emit('close-cancel-dialog');
     }
 
     public function render()

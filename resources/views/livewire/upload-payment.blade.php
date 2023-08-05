@@ -6,9 +6,20 @@
     @if ($order->status_waiting_payment)
     <button class="btn btn-primary" wire:loading.attr="disabled" wire:click="openPaymentModal">
         <div wire:loading.class="d-none" wire:target="openPaymentModal">
-            Upload Bukti Pembayaran
+            <i class="icon-arrow-up"></i> Upload Bukti Pembayaran
         </div>
         <div wire:loading wire:target="openPaymentModal">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
+    </button>
+
+    <button class="btn btn-outline-danger"
+        wire:click="openCancelDialog">
+        <div wire:target="openCancelDialog" wire:loading.class="d-none">
+            <i class="icon-close"></i> Batalkan Pesanan
+        </div>
+
+        <div wire:loading wire:target="openCancelDialog">
             <i class="fa fa-spinner fa-spin"></i>
         </div>
     </button>
@@ -124,7 +135,24 @@
             </div>
         </div>
     </div>
+    <div id="cancel-confirm-dialog" class="white-popup mfp-hide fadeIn">
+        <div class="text-center">
+            <h5>Yakin untuk membatalkan pesanan ini ?</h5>
+            <button type="button" class="btn btn-danger" id="cancel-confirm-button" wire:click="cancelOrder">
+                <div wire:target="cancelOrder" wire:loading.class="d-none">
+                    Ya, Batalkan Pesanan
+                </div>
 
+                <div wire:loading wire:target="cancelOrder">
+                    <i class="fa fa-spinner fa-spin"></i>
+                </div>
+            </button>
+            <button type="button" class="btn btn-outline-dark" id="cancel-cancel"
+                onclick="$.magnificPopup.close()">
+                <div>Tutup</div>
+            </button>
+        </div>
+    </div>
     @endif
 </div>
 
@@ -139,5 +167,18 @@
         $('#order-payment-modal').modal('hide');
         $('.modal-backdrop').remove();
     });
+
+    Livewire.on('close-cancel-dialog', function() {
+            $.magnificPopup.close();
+        })
+
+    window.addEventListener('open-cancel-dialog', event => {
+        $.magnificPopup.open({
+            items: {
+                src: '#cancel-confirm-dialog',
+                type: 'inline'
+            }
+        });
+    })
 </script>
 @endpush
