@@ -146,8 +146,8 @@ class Product extends Model implements HasMedia
     protected function prices(): Attribute
     {
         return Attribute::make(get: function () {
-            $min_price = base_price($this->variants?->min('price'));
-            $max_price = base_price($this->variants?->max('price'));
+            $min_price = base_price($this->variants?->min('price') ?? 0);
+            $max_price = base_price($this->variants?->max('price') ?? 0);
 
             if ($min_price && $max_price) {
                 return collect([$min_price, $max_price])->unique()->toArray();
