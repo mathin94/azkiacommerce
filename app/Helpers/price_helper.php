@@ -3,7 +3,7 @@
 if (!function_exists('base_price')) {
     function base_price($price): float | int
     {
-        if (!in_array(gettype($price), ['int', 'float'])) {
+        if (!in_array(gettype($price), ['integer', 'double'])) {
             return 0;
         }
 
