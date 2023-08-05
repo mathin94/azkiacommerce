@@ -150,7 +150,7 @@ class Product extends Model implements HasMedia
             $max_price = base_price($this->variants?->max('price') ?? 0);
 
             if ($min_price && $max_price) {
-                return collect([$min_price, $max_price])->unique()->toArray();
+                return collect([$min_price, $max_price])->unique()->toArray() ?? [];
             }
         });
     }
