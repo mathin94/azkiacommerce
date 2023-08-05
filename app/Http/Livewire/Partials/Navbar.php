@@ -69,6 +69,20 @@ class Navbar extends Component
         $this->cartTotal = $this->user?->cart?->subtotal_label ?? 'Rp. 0';
     }
 
+    public function deleteItem($id)
+    {
+        $item = $this->cartItems->find($id);
+
+        if ($item) {
+            # Delete Record
+            $item->delete();
+            $this->user?->cart?->refresh();
+            $this->user?->cart?->recalculate();
+            $this->getCart();
+            $this->emit('refreshComponent');
+        }
+    }
+
     public function mount()
     {
         $menu = new Menu;

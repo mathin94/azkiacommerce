@@ -116,7 +116,9 @@
                                                         alt="{{ $item->name }}">
                                                 </a>
                                             </figure>
-                                            <a href="#" class="btn-remove" title="Hapus Produk"><i
+                                            <a href="javascript:void(0);"
+                                            wire:click="deleteItem({{ $item->id }})"
+                                            class="btn-remove" title="Hapus Produk"><i
                                                     class="icon-close"></i></a>
                                         </div><!-- End .product -->
                                     @endforeach

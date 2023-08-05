@@ -52,6 +52,7 @@
                                 @foreach ($pages as $page)
                                 <li><a href="{{ $page->public_url }}">{{ $page->title }}</a></li>
                                 @endforeach
+                                <li><a href="{{ route('contact-us') }}">Hubungi Kami</a></li>
                             </ul><!-- End .widget-list -->
                         </div><!-- End .widget -->
                     </div><!-- End .col-sm-4 col-lg-3 -->
@@ -63,11 +64,18 @@
                             <ul class="widget-list">
                                 @if (auth()->guard('shop')->guest())
                                     <li><a href="{{ route('login') }}">Login</a></li>
+                                @else
+                                    <li>
+                                        <a href="javascript:void(0);" wire:click="openLogoutModal" style="cursor: pointer">
+                                            Keluar
+                                        </a>
+                                    </li>
+                                    <li><a href="{{ route('customer.profile') }}">Profil Saya</a></li>
+                                    <li><a href="{{ route('customer.addresses') }}">Daftar Alamat</a></li>
                                 @endif
                                 <li><a href="{{ route('cart') }}">Keranjang Belanja</a></li>
                                 <li><a href="{{ route('customer.wishlist') }}">Wishlist</a></li>
                                 <li><a href="{{ route('customer.orders') }}">Daftar Pesanan</a></li>
-                                <li><a href="{{ route('contact-us') }}">Bantuan</a></li>
                             </ul><!-- End .widget-list -->
                         </div><!-- End .widget -->
                     </div><!-- End .col-sm-64 col-lg-3 -->

@@ -85,7 +85,7 @@
             </div><!-- End .dashboard -->
         </div><!-- End .page-content -->
     </main><!-- End .main -->
-    <x-app-footer />
+    <livewire:partials.footer />
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
     <x-app-modals />
     <!-- Plugins JS File -->

@@ -16,6 +16,11 @@ class Footer extends Component
         $this->pages = Page::active()->get();
     }
 
+    public function openLogoutModal()
+    {
+        $this->emit('open-logout-dialog');
+    }
+
     public function render()
     {
         return view('livewire.partials.footer');
