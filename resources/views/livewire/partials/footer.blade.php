@@ -93,7 +93,7 @@
                 </ul><!-- End .footer-menu --> --}}
 
                 <div class="social-icons social-icons-color">
-                    <span class="social-label">Social Media</span>
+                    <span class="social-label" style="color: #fff;">Social Media</span>
                     <a href="{{ site()->facebook_link }}" class="social-icon social-facebook"
                         title="Facebook" target="_blank">
                         <x-bi-facebook />
