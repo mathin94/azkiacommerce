@@ -20,6 +20,10 @@ class StaticPage extends Component
                 ->whereActive(true)
                 ->first();
 
+            if (!$page) {
+                return;
+            }
+
             $page->loadMedia('default')->reverse();
 
             return $page;
