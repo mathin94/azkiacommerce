@@ -3,35 +3,35 @@
         <h5 id="alert-title"></h5>
         <div id="alert-body"></div>
     </div>
-    <footer class="footer-dark footer-2">
+    <footer class="footer footer-2" style="background-color: #EA1179">
         <div class="footer-middle">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-12 col-lg-6">
-                        <div class="widget widget-about">
-                            <img src="/build/assets/images/logo-color.png" class="footer-logo"
+                        <div class="widget widget-about" style="color: #fff;">
+                            <img src="{{ site()->mainLogo() }}" class="footer-logo"
                                 alt="Footer Logo" width="82" height="25">
-                            <p>{{ site()->site_description }} </p>
+                            <p style="color: #fff;">{{ site()->site_description }} </p>
                             <div class="widget-about-info">
                                 <div class="row">
                                     <div class="col-sm-6 col-md-4">
-                                        <span class="widget-about-title">Ada Pertanyaan? Hubungi Kami Disini</span>
+                                        <span class="widget-about-title" style="color: #fff;">Hubungi Kami Disini</span>
                                         <a href="tel:{{ store()->phone }}">{{ store()->phone }}</a>
                                     </div><!-- End .col-sm-6 -->
-                                    {{-- <div class="col-sm-6 col-md-8">
-                                        <span class="widget-about-title">Jasa Pengiriman</span>
+                                    <div class="col-sm-6 col-md-8">
+                                        <span class="widget-about-title" style="color: #fff;">Dukungan Ekspedisi</span>
                                         <figure class="footer-payments">
-                                            <img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
+                                            <img src="{{ asset('build/assets/images/logo-ekspedisi-4-baris.png') }}" alt="Payment methods" width="272" height="20">
                                         </figure><!-- End .footer-payments -->
-                                    </div><!-- End .col-sm-6 --> --}}
+                                    </div><!-- End .col-sm-6 -->
                                 </div><!-- End .row -->
                             </div>
                         </div><!-- End .widget about-widget -->
                     </div><!-- End .col-sm-12 col-lg-3 -->
 
                     <div class="col-sm-4 col-lg-2">
-                        <div class="widget">
-                            <h4 class="widget-title">Kategori</h4><!-- End .widget-title -->
+                        <div class="widget" style="color: #fff;">
+                            <h4 class="widget-title" style="color: #fff;">Kategori</h4><!-- End .widget-title -->
 
                             <ul class="widget-list">
                                 @foreach ($categories as $category)
@@ -43,9 +43,9 @@
 
                     <div class="col-sm-4 col-lg-2">
                         <div class="widget">
-                            <h4 class="widget-title">Informasi</h4><!-- End .widget-title -->
+                            <h4 class="widget-title" style="color: #fff;">Informasi</h4><!-- End .widget-title -->
 
-                            <ul class="widget-list">
+                            <ul class="widget-list" style="color: #fff;">
                                 <li><a href="{{ route('faqs') }}">FAQ</a></li>
                                 <li><a href="{{ route('partner-location') }}">Peta Mitra</a></li>
                                 <li><a href="{{ route('comingsoon') }}">{{ soon()->link_title }}</a></li>
@@ -59,9 +59,9 @@
 
                     <div class="col-sm-4 col-lg-2">
                         <div class="widget">
-                            <h4 class="widget-title">Akun Saya</h4><!-- End .widget-title -->
+                            <h4 class="widget-title" style="color: #fff;">Akun Saya</h4><!-- End .widget-title -->
 
-                            <ul class="widget-list">
+                            <ul class="widget-list" style="color: #fff;">
                                 @if (auth()->guard('shop')->guest())
                                     <li><a href="{{ route('login') }}">Login</a></li>
                                 @else
@@ -85,7 +85,7 @@
 
         <div class="footer-bottom">
             <div class="container">
-                <p class="footer-copyright">Copyright © 2023 {{ site()->site_name }}. All Rights Reserved.</p>
+                <p class="footer-copyright" style="color: #fff;">Copyright © 2023 {{ site()->site_name }}. All Rights Reserved.</p>
                 <!-- End .footer-copyright -->
                 {{-- <ul class="footer-menu">
                     <li><a href="#">Terms Of Use</a></li>
