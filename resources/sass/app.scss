@@ -302,7 +302,7 @@ $star-off-color: #CCCCCC;
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
-    bottom: 6rem; }
+    bottom: 4rem; }
     .deal-countdown .countdown-show3 .countdown-section {
       width: calc(33.33% - 16px); }
     .deal-countdown .countdown-show4 .countdown-section {
@@ -315,7 +315,7 @@ $star-off-color: #CCCCCC;
       padding: 1.2rem 0 2.5rem;
       margin-left: .8rem;
       margin-right: .8rem;
-      background-color: rgba(204, 102, 102, 0.85);
+      background-color: rgba(221, 61, 61, 0.85);
       border-radius: .3rem;
       border: none; }
       .deal-countdown .countdown-section:not(:last-child):after {
@@ -356,3 +356,43 @@ $star-off-color: #CCCCCC;
       line-height: 1;
       letter-spacing: -.03em;
       margin-bottom: .4rem; }
+
+.footer {
+    background-color: #c2255c;
+}
+
+.widget-about {
+    color: #fff;
+}
+
+.widget-about-title {
+    color: #fff;
+}
+
+.widget .site-description {
+    color: #fff;
+}
+
+.widget .widget-title {
+    color: #fff;
+}
+
+.widget .widget-list {
+    color: #fff;
+}
+
+.footer-copyright {
+    color: #fff;
+}
+
+
+.social-label {
+    color: #fff;
+}
+
+.product-label.label-sale {
+    background-color: #f33030;
+    left: 0;
+    bottom: 0;
+    line-height: 2rem;
+}
