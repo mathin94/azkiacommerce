@@ -16,7 +16,7 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-4">
                                         <span class="widget-about-title">Hubungi Kami Disini</span>
-                                        <a href="tel:{{ store()->phone }}">{{ store()->phone }}</a>
+                                        <a href="https://wa.me/{{ store()->phone }}/?text=Halo%20admin%20*Azkia%20Hijab*" target="_blank" style="color: #25D366">{{ store()->phone }}</a>
                                     </div><!-- End .col-sm-6 -->
                                     <div class="col-sm-6 col-md-8">
                                         <span class="widget-about-title">Dukungan Ekspedisi</span>
