@@ -25,6 +25,10 @@ class SyncVariantService
     public function handle()
     {
         foreach ($this->product->resource->products as $variant) {
+            if ($variant->price == null) {
+                continue;
+            }
+
             $productVariant = $this->product->variants()->firstOrNew(['resource_id' => $variant->id]);
             $productVariant->barcode   = $variant->barcode;
             $productVariant->code_name = $variant->code_name;
