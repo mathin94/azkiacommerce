@@ -21,7 +21,7 @@
                                     <div class="col-sm-6 col-md-8">
                                         <span class="widget-about-title">Dukungan Ekspedisi</span>
                                         <figure class="footer-payments">
-                                            <img src="{{ asset('build/assets/images/logo-ekspedisi-4-baris.png') }}" alt="Payment methods" width="272" height="20">
+                                            <img src="{{ asset('build/assets/images/ekspedisi.png') }}" alt="Payment methods" width="272" height="20">
                                         </figure><!-- End .footer-payments -->
                                     </div><!-- End .col-sm-6 -->
                                 </div><!-- End .row -->
