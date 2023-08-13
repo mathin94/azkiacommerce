@@ -5,6 +5,7 @@ import * as FilePond from "filepond";
 import { createPopper } from "@popperjs/core";
 import focus from "@alpinejs/focus";
 import './bootstrap'
+import Turbolinks from "turbolinks";
 // Import the plugin code
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 
@@ -23,3 +24,5 @@ window.Alpine.start();
 
 // Register the plugin
 FilePond.registerPlugin(FilePondPluginImagePreview);
+
+Turbolinks.start()

@@ -90,6 +90,7 @@
     <x-app-modals />
     <!-- Plugins JS File -->
     @livewireScripts
+    @vite('resources/js/app.js')
     <fc:scripts />
     <script src="{{ asset('build/assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('build/assets/js/bootstrap.bundle.min.js') }}"></script>

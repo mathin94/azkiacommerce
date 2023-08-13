@@ -18,7 +18,7 @@
 
 <body>
     @livewireScripts
-
+    @vite('resources/js/app.js')
     {{ $slot }}
 
     <!-- Plugins JS File -->
