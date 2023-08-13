@@ -46,12 +46,15 @@
     <script src="{{ asset('build/assets/js/jquery.magnific-popup.min.js') }}"></script>
     <script src="{{ asset('build/assets/js/jquery.plugin.min.js') }}"></script>
     <script src="{{ asset('build/assets/js/jquery.countdown.min.js') }}"></script>
+    <script src="{{ asset('build/assets/js/jquery.elevateZoom.min.js') }}"></script>
+    <script src="{{ asset('build/assets/js/bootstrap-input-spinner.js') }}"></script>
 
     <!-- Main JS File -->
     <script src="{{ asset('build/assets/js/main.js') }}"></script>
     <script src="{{ asset('build/assets/js/demos/demo-5.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js"></script>
     @livewireScripts
+    <script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.x/dist/livewire-turbolinks.js" data-turbolinks-eval="false" data-turbo-eval="false"></script>
     @vite('resources/js/app.js')
     <fc:scripts />
     @stack('scripts')

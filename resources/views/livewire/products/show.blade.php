@@ -67,7 +67,7 @@
                             </div><!-- End .product-price -->
 
                             @if ($product->activeDiscount?->is_flash_sale)
-                                <div class="product-countdown" data-until="{{ $product->activeDiscount?->inactive_at->format('Y, m, d, H, i') }}"></div>
+                                <div class="product-countdown" wire:ignore data-until="{{ $product->activeDiscount?->inactive_at->format('Y, m, d, H, i') }}"></div>
                             @endif
 
                             <div class="product-content">
@@ -235,9 +235,6 @@
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('build/assets/js/jquery.elevateZoom.min.js') }}"></script>
-    <script src="{{ asset('build/assets/js/bootstrap-input-spinner.js') }}"></script>
-
     <script>
         $(".product-image-gallery").owlCarousel({
             nav: false,
