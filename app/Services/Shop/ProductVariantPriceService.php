@@ -15,7 +15,7 @@ class ProductVariantPriceService
         private readonly ?Customer $customer = null,
         private readonly ProductVariant $productVariant
     ) {
-        $this->discount = $productVariant->activeDiscount;
+        $this->discount = $productVariant->product->activeDiscount;
 
         if (!is_null($this->customer)) {
             $this->customerType = $this->customer->customer_type;
@@ -43,16 +43,12 @@ class ProductVariantPriceService
             return $base_price;
         }
 
-        if (!$this->discount->with_membership_price) {
-            return $base_price;
-        }
-
         return $base_price - ($base_price * ($this->discount->discount_percentage / 100));
     }
 
     public function getNormalPrice()
     {
-        if (is_null($this->customer)) {
+        if (is_null($this->customer) || $this->discount?->with_membership_price == false) {
             return $this->productVariant->price;
         }
 
@@ -67,10 +63,6 @@ class ProductVariantPriceService
         $discount = $this->productVariant->product->activeDiscount;
 
         if (!$discount) {
-            return 0;
-        }
-
-        if (!is_null($this->customer) && !$discount->with_membership_price) {
             return 0;
         }
 
