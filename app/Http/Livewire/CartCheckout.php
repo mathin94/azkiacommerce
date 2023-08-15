@@ -52,6 +52,12 @@ class CartCheckout extends BaseComponent
         $this->shipping_cost = 0;
 
         $courier        = $this->couriers->find($courierId);
+
+        if (empty($courier)) {
+            $this->reset(['shipping_cost', 'courierService', 'courierId', 'shipping_cost_label']);
+            return;
+        }
+
         $rajaongkir     = new RajaOngkir;
         $total_weight   = $this->cart->total_weight;
         $subdistrict_id = $this->shippingAddress->subdistrict_id;

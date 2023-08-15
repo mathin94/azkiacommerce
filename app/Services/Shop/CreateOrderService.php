@@ -98,7 +98,6 @@ class CreateOrderService
         ];
 
         if (!empty($this->dropship)) {
-            info($this->dropship);
             $data['dropshipper_name']  = $this->dropship['dropshipper_name'];
             $data['dropshipper_phone'] = $this->dropship['dropshipper_phone'];
         }
