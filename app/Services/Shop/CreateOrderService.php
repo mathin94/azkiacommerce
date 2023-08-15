@@ -67,6 +67,10 @@ class CreateOrderService
 
         $selected = json_decode($this->selectedService);
 
+        if (empty($selected)) {
+            return;
+        }
+
         $data = $services->where('name', $selected->service)->first();
 
         return json_decode(json_encode($data));
@@ -74,6 +78,10 @@ class CreateOrderService
 
     private function createBackofficeSales()
     {
+        if (blank($this->service())) {
+            return false;
+        }
+
         $data = [
             'recipient_name'    => $this->shippingAddress->recipient_name,
             'recipient_phone'   => $this->shippingAddress->recipient_phone,

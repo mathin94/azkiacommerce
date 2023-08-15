@@ -15,6 +15,10 @@ class ValidCustomerAddress
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (blank($request->user()->resource)) {
+            auth()->guard('shop')->logout();
+        }
+
         if (!$request->user()->resource->subdistrict_id) {
             return redirect()->route('customer.addresses')
                 ->with('info', 'Sebelum bisa melakukan pembelian silahkan lengkapi alamat anda.');

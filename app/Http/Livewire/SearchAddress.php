@@ -29,8 +29,6 @@ class SearchAddress extends BaseComponent
 
     public function render()
     {
-        info($this->selectedId);
-
         $addresses = $this->customer->addresses()->orderBy('is_main', 'desc');
 
         if ($this->search) {
