@@ -199,7 +199,7 @@ class CartCheckout extends BaseComponent
             }
         }
 
-        if (!$this->courierId && empty($this->courierService)) {
+        if (!$this->courierId || empty($this->courierService)) {
             $this->emit('showAlert', [
                 "alert" => "
                     <div class=\"white-popup\">
@@ -247,7 +247,7 @@ class CartCheckout extends BaseComponent
                 "alert" => "
                     <div class=\"white-popup\">
                         <h5>Terjadi Kesalahan !</h5>
-                        <p>Silahkan refresh browser anda dan coba lagi</p>
+                        <p>{$service->getMessage()}</p>
                     </div>
                 "
             ]);

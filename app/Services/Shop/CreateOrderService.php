@@ -34,7 +34,7 @@ class CreateOrderService
 
     public function perform()
     {
-        if (!$this->createBackofficeSales()) {
+        if (!$this->validShipping() || !$this->createBackofficeSales()) {
             return false;
         }
 
@@ -61,15 +61,31 @@ class CreateOrderService
         return true;
     }
 
+    protected function validShipping()
+    {
+        $valid = !empty($this->selectedService);
+
+        if (!$valid) {
+            $this->errors[] = 'Layanan Pengiriman Belum Dipilih';
+        }
+
+        return $valid;
+    }
+
+    public function getMessage()
+    {
+        if (empty($this->errors)) {
+            return 'Terjadi Kesalahan, Silahkan periksa kembali inputan anda.';
+        }
+
+        return join("<br>", $this->errors);
+    }
+
     protected function service()
     {
         $services = collect($this->courierServices);
 
         $selected = json_decode($this->selectedService);
-
-        if (empty($selected)) {
-            return;
-        }
 
         $data = $services->where('name', $selected->service)->first();
 
