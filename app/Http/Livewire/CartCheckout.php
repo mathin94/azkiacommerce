@@ -75,15 +75,17 @@ class CartCheckout extends BaseComponent
 
         $data = [];
 
-        foreach ($services['costs'] as $row) {
-            $etd = $row['cost'][0]['etd'];
-            $etd_label = !empty($etd) ? "$etd Hari" : '';
-            $data[] = [
-                'name'  => $row['service'],
-                'cost'  => $row['cost'][0]['value'],
-                'etd'   => $etd_label,
-                'value' => json_encode($row),
-            ];
+        if (!empty($services)) {
+            foreach ($services['costs'] as $row) {
+                $etd = $row['cost'][0]['etd'];
+                $etd_label = !empty($etd) ? "$etd Hari" : '';
+                $data[] = [
+                    'name'  => $row['service'],
+                    'cost'  => $row['cost'][0]['value'],
+                    'etd'   => $etd_label,
+                    'value' => json_encode($row),
+                ];
+            }
         }
 
         $this->courierServices = $data;

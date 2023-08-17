@@ -34,7 +34,7 @@ class CreateOrderService
 
     public function perform()
     {
-        if (!$this->validShipping() || !$this->createBackofficeSales()) {
+        if (!$this->validCourier() || !$this->createBackofficeSales()) {
             return false;
         }
 
@@ -61,7 +61,7 @@ class CreateOrderService
         return true;
     }
 
-    protected function validShipping()
+    protected function validCourier()
     {
         $valid = !empty($this->selectedService);
 
