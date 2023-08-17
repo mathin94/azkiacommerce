@@ -78,7 +78,11 @@ class CreateOrderService
             return 'Terjadi Kesalahan, Silahkan periksa kembali inputan anda.';
         }
 
-        return join("<br>", $this->errors);
+        if (is_array($this->errors)) {
+            return join("<br>", $this->errors);
+        }
+
+        return $this->errors;
     }
 
     protected function service()
