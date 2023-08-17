@@ -243,7 +243,7 @@ class Show extends Component
 
         $text = "Assalamu'alaikum. Halo saya ingin membeli produk $name apakah masih tersedia?";
 
-        $url = "https://wa.me/+62895808855575/?text=$text";
+        $url = "https://wa.me/+6285798404501/?text=$text";
 
         $this->emit('openWhatsappLink', ['url' => $url]);
     }
