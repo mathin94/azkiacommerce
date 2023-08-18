@@ -2,17 +2,18 @@
 
 namespace App\Http\Livewire\Account;
 
-use App\Enums\OrderStatus;
-use App\Http\Livewire\BaseComponent;
 use Livewire\Component;
-use App\Jobs\RecalculateProductRatingJob;
-use App\Models\BankAccount;
+use App\Enums\OrderStatus;
 use App\Models\Shop\Order;
-use App\Services\RajaOngkir\TrackWaybillService;
-use App\Services\Shop\CancelOrderService;
-use App\Services\Shop\UploadPaymentProofService;
-use Livewire\WithFileUploads;
+use App\Models\BankAccount;
+use Illuminate\Support\Str;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
+use App\Http\Livewire\BaseComponent;
+use App\Jobs\RecalculateProductRatingJob;
+use App\Services\Shop\CancelOrderService;
+use App\Services\RajaOngkir\TrackWaybillService;
+use App\Services\Shop\UploadPaymentProofService;
 
 class OrderList extends Component
 {
@@ -245,19 +246,10 @@ class OrderList extends Component
 
     public function render()
     {
-        $orders = $this->customer->orders()->with('items.productVariant.media');
-
-        if ($this->tab == 'ongoing') {
-            $orders->ongoing();
-        }
-
-        if ($this->tab == 'completed') {
-            $orders->completed();
-        }
-
-        if ($this->tab == 'canceled') {
-            $orders->canceled();
-        }
+        $orders = $this->customer
+            ->orders()
+            ->with('items.productVariant.media')
+            ->filterByStatus($this->tab);
 
         return view('livewire.account.order-list', [
             'orders' => $orders->latest()->paginate(10)

@@ -4,10 +4,21 @@
             <li class="{{ empty($tab) ? 'active' : '' }}"><a href="javascript:void(0);" wire:click="setTab">Semua
                     Pesanan</a>
             </li>
-            <li class="{{ $tab == 'ongoing' ? 'active' : '' }}"><a href="javascript:void(0);"
-                    wire:click="setTab('ongoing')">Sedang Berlangsung</a></li>
+            <li class="{{ $tab == 'waiting_payment' ? 'active' : '' }}"><a href="javascript:void(0);"
+                wire:click="setTab('waiting_payment')">Menunggu Pembayaran</a></li>
+
+            <li class="{{ $tab == 'waiting_confirmation' ? 'active' : '' }}"><a href="javascript:void(0);"
+                wire:click="setTab('waiting_confirmation')">Menunggu Konfirmasi</a></li>
+
+            <li class="{{ $tab == 'paid' ? 'active' : '' }}"><a href="javascript:void(0);"
+                    wire:click="setTab('paid')">Pesanan Diproses</a></li>
+
+            <li class="{{ $tab == 'package_sent' ? 'active' : '' }}"><a href="javascript:void(0);"
+                    wire:click="setTab('package_sent')">Pesanan Dikirim</a></li>
+
             <li class="{{ $tab == 'completed' ? 'active' : '' }}"><a href="javascript:void(0);"
                     wire:click="setTab('completed')">Selesai</a></li>
+
             <li class="{{ $tab == 'canceled' ? 'active' : '' }}"><a href="javascript:void(0);"
                     wire:click="setTab('canceled')">Dibatalkan</a></li>
         </ul><!-- End .blog-menu -->

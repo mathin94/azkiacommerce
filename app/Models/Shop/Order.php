@@ -4,6 +4,7 @@ namespace App\Models\Shop;
 
 use App\Models\User;
 use App\Enums\OrderStatus;
+use Illuminate\Support\Str;
 use App\Models\Backoffice\Sales;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -276,6 +277,21 @@ class Order extends Model
         return Attribute::make(get: function () {
             return !blank($this->shipping?->receipt_number) && $this->statusPackageSent();
         });
+    }
+
+    public function scopeFilterByStatus($query, $status)
+    {
+        if (!empty($status)) {
+            $status = Str::of($status)->studly()->toString();
+
+            $status_enum = OrderStatus::fromKey($status);
+
+            if (in_array($status, OrderStatus::getKeys())) {
+                return $query->where('status', $status_enum);
+            }
+        }
+
+        return $query;
     }
 
 
