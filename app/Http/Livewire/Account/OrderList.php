@@ -12,10 +12,13 @@ use App\Services\RajaOngkir\TrackWaybillService;
 use App\Services\Shop\CancelOrderService;
 use App\Services\Shop\UploadPaymentProofService;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class OrderList extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
 
     public $customer, $tab, $detail, $orderPayment, $bankAccounts, $selectedBankAccount, $manifests;
 
@@ -257,7 +260,7 @@ class OrderList extends Component
         }
 
         return view('livewire.account.order-list', [
-            'orders' => $orders->latest()->paginate(10)
+            'orders' => $orders->latest()->paginate(2)
         ])->layout('layouts.dashboard', [
             'title' => 'Daftar Pesanan'
         ]);

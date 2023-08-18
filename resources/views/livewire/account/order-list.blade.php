@@ -13,7 +13,7 @@
         </ul><!-- End .blog-menu -->
     </nav>
     <div class="row">
-        <div class="col-12" wire:loading wire:target="setTab">
+        <div class="col-12" wire:loading>
             <table class="table table-cart table-mobile ssc">
                 <tbody>
                     <tr>
@@ -115,7 +115,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="col-12" wire:loading.class="d-none" wire:target="setTab">
+        <div class="col-12" wire:loading.class="d-none">
             @forelse ($orders as $order)
                 @php
                     $item = $order->items->first();
@@ -268,6 +268,11 @@
                     </p>
                 </div>
             @endforelse
+        </div>
+        <div class="col-md-12">
+            <div class="load-more-container text-center" wire:loading.class="d-none">
+                {!! $orders->links() !!}
+            </div>
         </div>
     </div>
 
