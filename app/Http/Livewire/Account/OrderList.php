@@ -260,7 +260,7 @@ class OrderList extends Component
         }
 
         return view('livewire.account.order-list', [
-            'orders' => $orders->latest()->paginate(2)
+            'orders' => $orders->latest()->paginate(10)
         ])->layout('layouts.dashboard', [
             'title' => 'Daftar Pesanan'
         ]);
