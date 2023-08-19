@@ -232,10 +232,22 @@ class OrderList extends Component
         $review = $this->reviews[$id] ?? [];
 
         if (!blank($review)) {
+            if (!array_key_exists('rating', $review)) {
+                $this->emit('showAlert', [
+                    "alert" => "
+                        <div class=\"white-popup\">
+                            <h5>Gagal !</h5>
+                            <p>Rating tidak boleh kosong</p>
+                        </div>
+                    "
+                ]);
+                return;
+            }
+
             $item->review()->updateOrCreate([
                 'shop_product_variant_id' => $item->shop_product_variant_id,
                 'shop_customer_id' => $this->customer->id,
-                'review' => array_key_exists('review', $review) ? $review['review'] : null,
+                'review' => array_key_exists('review', $review) ? $review['review'] : '',
                 'rating' => array_key_exists('rating', $review) ? $review['rating'] : null
             ]);
 
