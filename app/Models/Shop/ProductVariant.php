@@ -76,6 +76,11 @@ class ProductVariant extends Model
         return $this->belongsTo(Product::class, 'shop_product_id');
     }
 
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'shop_product_variant_id');
+    }
+
     public function color(): BelongsTo
     {
         return $this->belongsTo(Color::class);
