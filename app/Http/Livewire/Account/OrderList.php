@@ -14,6 +14,7 @@ use App\Jobs\RecalculateProductRatingJob;
 use App\Services\Shop\CancelOrderService;
 use App\Services\RajaOngkir\TrackWaybillService;
 use App\Services\Shop\UploadPaymentProofService;
+use Illuminate\Support\Facades\Log;
 
 class OrderList extends Component
 {
@@ -241,6 +242,8 @@ class OrderList extends Component
             RecalculateProductRatingJob::dispatch($item->productVariant->shop_product_id);
 
             $this->detail->refresh();
+        } else {
+            Log::debug($review);
         }
     }
 
