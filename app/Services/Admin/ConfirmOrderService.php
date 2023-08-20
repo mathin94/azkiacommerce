@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Models\User;
 use App\Enums\OrderStatus;
 use App\Models\Shop\Order;
+use App\Jobs\RecalculateOrderCountJob;
 use App\Services\Backoffice\OrderService;
 
 class ConfirmOrderService
@@ -39,6 +40,8 @@ class ConfirmOrderService
             'approved_by' => $this->user->name
         ]);
 
+        RecalculateOrderCountJob::dispatch($this->order->id);
+
         return true;
     }
 
@@ -52,7 +55,7 @@ class ConfirmOrderService
             return false;
         }
 
-        if ($this->order->status != OrderStatus::WaitingConfirmation()) {
+        if (!$this->order->statusWaitingConfirmation()) {
             $this->errors = [
                 'Order is not waiting confirmation'
             ];
