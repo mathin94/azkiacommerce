@@ -133,7 +133,7 @@ class Show extends Component
             'variants.color',
             'variants',
             'variants.resource',
-            'seo', 'reviews'
+            'seo'
         ])
             ->cacheTags(["products:$slug"])
             ->where('slug', $slug)
@@ -156,14 +156,6 @@ class Show extends Component
         if ($this->customer) {
             $this->liked = $this->customer->wishlists()->dontCache()->whereShopProductId($this->product->id)->count() > 0;
         }
-
-        $this->getReviews();
-    }
-
-    public function getReviews()
-    {
-        # TODO: add pagination when more than 100
-        $this->reviews = $this->product->reviews->sortBy('created_at')->reverse();
     }
 
     public function addToCart()
