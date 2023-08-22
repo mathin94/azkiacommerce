@@ -24,6 +24,7 @@ class ChangePasswordForm extends BaseComponent
         }
 
         $data = [
+            'is_default_password' => false,
             'password' => bcrypt($this->newPassword)
         ];
 
