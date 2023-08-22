@@ -245,10 +245,11 @@ class OrderList extends Component
             }
 
             $item->review()->updateOrCreate([
+                'product_name'            => $item->name,
                 'shop_product_variant_id' => $item->shop_product_variant_id,
-                'shop_customer_id' => $this->customer->id,
-                'review' => array_key_exists('review', $review) ? $review['review'] : '',
-                'rating' => array_key_exists('rating', $review) ? $review['rating'] : null
+                'shop_customer_id'        => $this->customer->id,
+                'review'                  => array_key_exists('review', $review) ? $review['review'] : '',
+                'rating'                  => array_key_exists('rating', $review) ? $review['rating'] : null
             ]);
 
             RecalculateProductRatingJob::dispatch($item->productVariant->shop_product_id);
