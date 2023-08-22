@@ -44,7 +44,14 @@
 
                                 <div class="form-group">
                                     <label for="singin-password-2">Kata Sandi *</label>
-                                    <input type="password" class="form-control" wire:model.lazy="password">
+                                    <div class="input-group">
+                                        <input type="password" id="login-password" class="form-control" wire:model.lazy="password">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text form-control login-password-toggle pl-4 pr-4" onclick="togglePasswordVisibility()">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
+                                        </div>
+                                    </div>
                                     @error('password')
                                         <span class="error text-danger">{{ $message }}</span>
                                     @enderror
@@ -123,7 +130,14 @@
 
                                 <div class="form-group">
                                     <label>Kata Sandi *</label>
-                                    <input type="password" class="form-control" wire:model="registerPassword">
+                                    <div class="input-group">
+                                        <input type="password" id="register-password" class="form-control" wire:model="registerPassword">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text form-control register-password-toggle pl-4 pr-4" onclick="togglePasswordVisibility('register')">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
+                                        </div>
+                                    </div>
                                     @error('registerPassword')
                                         <span class="error text-danger">{{ $message }}</span>
                                     @enderror
@@ -131,8 +145,15 @@
 
                                 <div class="form-group">
                                     <label>Konfirmasi Kata Sandi *</label>
-                                    <input type="password" class="form-control"
+                                    <div class="input-group">
+                                        <input type="password" id="register-confirmation-password" class="form-control"
                                         wire:model="registerPasswordConfirmation">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text form-control register-confirmation-password-toggle pl-4 pr-4" onclick="togglePasswordVisibility('register-confirmation')">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
+                                        </div>
+                                    </div>
                                     @error('registerPasswordConfirmation')
                                         <span class="error text-danger">{{ $message }}</span>
                                     @enderror
@@ -164,3 +185,20 @@
         </div><!-- End .container -->
     </div><!-- End .login-page section-bg -->
 </main><!-- End .main -->
+
+@push('scripts')
+    <script>
+        function togglePasswordVisibility(state = 'login') {
+            var passwordInput = document.getElementById(`${state}-password`);
+            var passwordToggle = document.querySelector(`.${state}-password-toggle`);
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                passwordToggle.innerHTML = '<i class="fa fa-eye-slash"></i>';
+            } else {
+                passwordInput.type = "password";
+                passwordToggle.innerHTML = '<i class="fa fa-eye"></i>';
+            }
+        }
+    </script>
+@endpush
