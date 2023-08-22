@@ -94,7 +94,7 @@
                             <form wire:submit.prevent="submitRegister">
                                 <div class="form-group">
                                     <label>Nama Lengkap *</label>
-                                    <input type="text" class="form-control" wire:model="fullName">
+                                    <input type="text" class="form-control" wire:model.lazy="fullName">
                                     @error('fullName')
                                         <span class="error text-danger">{{ $message }}</span>
                                     @enderror
@@ -102,7 +102,7 @@
 
                                 <div class="form-group">
                                     <label>No Hp / Whatsapp *</label>
-                                    <input type="text" class="form-control" wire:model="phoneNumber">
+                                    <input type="text" class="form-control" wire:model.lazy="phoneNumber">
                                     @error('phoneNumber')
                                         <span class="error text-danger">{{ $message }}</span>
                                     @enderror
@@ -110,7 +110,7 @@
 
                                 <div class="form-group">
                                     <label>Alamat Email *</label>
-                                    <input type="email" class="form-control" wire:model="emailAddress">
+                                    <input type="email" class="form-control" wire:model.lazy="emailAddress">
                                     @error('emailAddress')
                                         <span class="error text-danger">{{ $message }}</span>
                                     @enderror
@@ -118,7 +118,7 @@
 
                                 <div class="form-group">
                                     <label>Gender *</label>
-                                    <select class="form-control" wire:model="gender">
+                                    <select class="form-control" wire:model.lazy="gender">
                                         <option value="">Pilih Gender</option>
                                         <option value="L">Laki - Laki</option>
                                         <option value="P">Perempuan</option>
@@ -131,7 +131,7 @@
                                 <div class="form-group">
                                     <label>Kata Sandi *</label>
                                     <div class="input-group">
-                                        <input type="password" id="register-password" class="form-control" wire:model="registerPassword">
+                                        <input type="password" id="register-password" class="form-control" wire:model.lazy="registerPassword">
                                         <div class="input-group-append">
                                             <span class="input-group-text form-control register-password-toggle pl-4 pr-4" onclick="togglePasswordVisibility('register')">
                                                 <i class="fa fa-eye"></i>
@@ -147,7 +147,7 @@
                                     <label>Konfirmasi Kata Sandi *</label>
                                     <div class="input-group">
                                         <input type="password" id="register-confirmation-password" class="form-control"
-                                        wire:model="registerPasswordConfirmation">
+                                        wire:model.lazy="registerPasswordConfirmation">
                                         <div class="input-group-append">
                                             <span class="input-group-text form-control register-confirmation-password-toggle pl-4 pr-4" onclick="togglePasswordVisibility('register-confirmation')">
                                                 <i class="fa fa-eye"></i>
