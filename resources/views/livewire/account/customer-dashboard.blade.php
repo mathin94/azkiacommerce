@@ -1,4 +1,4 @@
-<div>
+<div style="margin-bottom: 500px;">
     <strong>{{ $customer->name }}</strong>
     <p>
         <label for="">Level Kemitraan : </label> <strong>{{ $customer->customer_type['name'] }}</strong>
