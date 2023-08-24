@@ -106,7 +106,7 @@ class Order extends Model
     protected function finalPriceLabel(): Attribute
     {
         return Attribute::make(get: function () {
-            return 'Rp. ' . number_format($this->grandtotal + $this->shipping_cost, 0, ',', '.');
+            return 'Rp. ' . number_format($this->grandtotal, 0, ',', '.');
         });
     }
 
