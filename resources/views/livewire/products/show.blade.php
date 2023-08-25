@@ -115,6 +115,9 @@
                                 <div class="product-details-quantity" wire:ignore>
                                     <input type="number" id="qty" class="form-control" min="1"
                                         wire:model="quantity">
+                                    @error('quantity')
+                                        <script>alert('ok')</script>
+                                    @enderror
                                 </div><!-- End .product-details-quantity -->
                                 <span class="ml-5" wire:loading.class="d-none" for="qty"
                                     wire:target="setSize,setColor">{{ $stockLabel }}</span>
@@ -122,9 +125,16 @@
                             </div><!-- End .details-filter-row -->
 
                             <div class="product-details-action">
-                                <button wire:click="addToCart" class="btn-product btn-cart"
+                                <button wire:click="addToCart" wire:loading.attr="disabled" class="btn-product btn-cart"
                                     @if ($stock < 1) disabled @endif>
-                                    <span>Tambahkan ke keranjang</span>
+
+                                    <div wire:loading.class="d-none" wire:target="addToCart">
+                                        <span>Tambahkan ke keranjang</span>
+                                    </div>
+
+                                    <div wire:loading wire:target="addToCart">
+                                        <i class="fa fa-spinner fa-spin"></i>
+                                    </div>
                                 </button>
 
                                 <div class="details-action-wrapper">

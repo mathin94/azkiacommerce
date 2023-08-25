@@ -160,6 +160,18 @@ class Show extends Component
 
     public function addToCart()
     {
+        if ((int) $this->quantity < 1) {
+            $this->emit('showAlert', [
+                "alert" => "
+                    <div class=\"white-popup\">
+                        <p>Kuantitas Minimal 1</p>
+                    </div>
+                "
+            ]);
+
+            return;
+        }
+
         if (!$this->customer) {
             $login_url = route('login');
 
