@@ -51,8 +51,7 @@
                                 <div class="ratings">
                                     <div class="ratings-val" style="width: {{ $product->rating_percentage }}%;"></div><!-- End .ratings-val -->
                                 </div><!-- End .ratings -->
-                                <a class="ratings-text" href="#product-review-link" id="review-link">( {{ $product->review_count }} Ulasan
-                                    )</a>
+                                <a class="ratings-text" href="#product-review-link" id="review-link">{{ $product->rating }} ( {{ $product->review_count }} Ulasan )</a>
                             </div><!-- End .rating-container -->
                             @if ($normalPrice != $price)
                                 <div class="product-price">
