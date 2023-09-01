@@ -4,6 +4,7 @@ namespace App\Services\Admin;
 
 use App\Models\User;
 use App\Enums\OrderStatus;
+use App\Jobs\CancelOrderJob;
 use App\Models\Shop\Order;
 use App\Services\Backoffice\OrderService;
 
@@ -31,18 +32,17 @@ class CancelOrderService
             return false;
         }
 
-        $service = new OrderService($this->user->authorization_token, $this->order->resource_id);
-
-        if (!$service->cancelByAdmin()) {
-            $this->errors = $service->errors;
-            return false;
-        }
-
         $this->order->update([
             'status'      => OrderStatus::Canceled(),
             'canceled_at' => now(),
             'notes'       => "Dibatalkan oleh {$this->user->name}"
         ]);
+
+        CancelOrderJob::dispatch(
+            order_resource_id: $this->order->resource_id,
+            user_token: $this->user->authorization_token,
+            cancel_by_admin: true
+        );
 
         return true;
     }
