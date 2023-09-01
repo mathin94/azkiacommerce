@@ -4,6 +4,7 @@ namespace App\Services\Admin;
 
 use App\Models\User;
 use App\Enums\OrderStatus;
+use App\Jobs\ConfirmOrderJob;
 use App\Models\Shop\Order;
 use App\Jobs\RecalculateOrderCountJob;
 use App\Services\Backoffice\OrderService;
@@ -24,21 +25,17 @@ class ConfirmOrderService
             return false;
         }
 
-        $service = new OrderService(
-            $this->user->authorization_token,
-            $this->order->resource_id
-        );
-
-        if (!$service->confirmPayment($this->order->transfer_to)) {
-            $this->errors = $service->errors;
-            return false;
-        }
-
         $this->order->update([
             'status'      => OrderStatus::Paid(),
             'paid_at'     => now(),
             'approved_by' => $this->user->name
         ]);
+
+        ConfirmOrderJob::dispatch(
+            order_resource_id: $this->order->resource_id,
+            user_token: $this->user->authorization_token,
+            transfer_to: $this->order->transfer_to
+        );
 
         RecalculateOrderCountJob::dispatch($this->order->id);
 
