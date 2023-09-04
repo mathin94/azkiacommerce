@@ -71,7 +71,7 @@ class Navbar extends Component
 
     public function deleteItem($id)
     {
-        $item = $this->cartItems->find($id);
+        $item = $this->cartItems?->find($id);
 
         if ($item) {
             # Delete Record
