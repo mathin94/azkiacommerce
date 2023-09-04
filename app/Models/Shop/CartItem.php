@@ -37,7 +37,7 @@ class CartItem extends Model
         return Attribute::make(get: function () {
             $variant = $this->productVariant;
 
-            $variant_image = $variant->media?->getUrl();
+            $variant_image = $variant?->media?->getUrl();
 
             if ($variant_image) {
                 return $variant_image;
