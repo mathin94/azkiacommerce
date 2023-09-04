@@ -34,7 +34,8 @@ class OrderItem extends Model
 
     public function productVariant()
     {
-        return $this->belongsTo(ProductVariant::class, 'shop_product_variant_id');
+        return $this->belongsTo(ProductVariant::class, 'shop_product_variant_id')
+            ->withTrashed();
     }
 
     public function review()
