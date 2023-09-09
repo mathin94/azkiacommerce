@@ -5,6 +5,7 @@ namespace App\Services\Shop;
 use App\Enums\CartStatus;
 use App\Enums\OrderStatus;
 use App\Helpers\AutoNumber;
+use App\Jobs\CreateBackofficeSalesJob;
 use App\Models\Backoffice\Address;
 use App\Models\Shop\Cart;
 use App\Models\Shop\Customer;
@@ -15,9 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class CreateOrderService
 {
-    public $backoffice_sales,
-        $order,
-        $errors = [];
+    public $order, $errors = [];
 
     public function __construct(
         private Customer $customer,
@@ -34,7 +33,7 @@ class CreateOrderService
 
     public function perform()
     {
-        if (!$this->validCourier() || !$this->createBackofficeSales()) {
+        if (!$this->validCourier()) {
             return false;
         }
 
@@ -50,13 +49,13 @@ class CreateOrderService
             if (!empty($this->selectedVoucher)) {
                 $this->createVoucherUsage();
             }
-
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollback();
-            $this->rollbackBackofficeSales();
             throw $th;
         }
+
+        CreateBackofficeSalesJob::dispatch($this->order->id);
 
         return true;
     }
@@ -131,8 +130,6 @@ class CreateOrderService
             return false;
         }
 
-        $this->backoffice_sales = $request['data'];
-
         return true;
     }
 
@@ -155,15 +152,12 @@ class CreateOrderService
     private function createOrder(): void
     {
         $this->order = $this->customer->orders()->create([
-            'resource_id'      => $this->backoffice_sales['id'],
             'number'           => AutoNumber::createUniqueOrderNumber(),
-            'invoice_number'   => $this->backoffice_sales['invoice_number'],
             'total_weight'     => $this->totalWeight(),
-            'total'            => $this->backoffice_sales['total_amount'],
-            'discount_voucher' => $this->backoffice_sales['discount'],
+            'total'            => $this->cart->subtotal,
+            'discount_voucher' => $this->discountVoucher ?? 0,
             'shipping_cost'    => $this->service()->cost,
-            'grandtotal'       => $this->backoffice_sales['total_amount'] + $this->service()->cost - $this->backoffice_sales['discount'],
-            'total_profit'     => $this->backoffice_sales['total_profit'],
+            'grandtotal'       => $this->cart->subtotal + $this->service()->cost - ($this->discountVoucher ?? 0),
             'status'           => OrderStatus::WaitingPayment,
         ]);
     }
@@ -215,20 +209,6 @@ class CreateOrderService
         $this->order->payment()->create([
             'uuid' => Uuid::uuid4()
         ]);
-    }
-
-    private function rollbackBackofficeSales(): void
-    {
-        if (!empty($this->backoffice_sales)) {
-            $sales_id = $this->backoffice_sales['id'];
-
-            $service = new OrderService(
-                $sales_id,
-                $this->customer->authorization_token
-            );
-
-            $service->rollback();
-        }
     }
 
     private function updateCart(): void
