@@ -52,6 +52,12 @@ class CartCheckout extends BaseComponent
         $this->shipping_cost = 0;
 
         $courier        = $this->couriers->find($courierId);
+
+        if (empty($courier)) {
+            $this->reset(['shipping_cost', 'courierService', 'courierId', 'shipping_cost_label']);
+            return;
+        }
+
         $rajaongkir     = new RajaOngkir;
         $total_weight   = $this->cart->total_weight;
         $subdistrict_id = $this->shippingAddress->subdistrict_id;
@@ -69,15 +75,17 @@ class CartCheckout extends BaseComponent
 
         $data = [];
 
-        foreach ($services['costs'] as $row) {
-            $etd = $row['cost'][0]['etd'];
-            $etd_label = !empty($etd) ? "$etd Hari" : '';
-            $data[] = [
-                'name'  => $row['service'],
-                'cost'  => $row['cost'][0]['value'],
-                'etd'   => $etd_label,
-                'value' => json_encode($row),
-            ];
+        if (!empty($services)) {
+            foreach ($services['costs'] as $row) {
+                $etd = $row['cost'][0]['etd'];
+                $etd_label = !empty($etd) ? "$etd Hari" : '';
+                $data[] = [
+                    'name'  => $row['service'],
+                    'cost'  => $row['cost'][0]['value'],
+                    'etd'   => $etd_label,
+                    'value' => json_encode($row),
+                ];
+            }
         }
 
         $this->courierServices = $data;
@@ -193,7 +201,7 @@ class CartCheckout extends BaseComponent
             }
         }
 
-        if (!$this->courierId && empty($this->courierService)) {
+        if (!$this->courierId || empty($this->courierService)) {
             $this->emit('showAlert', [
                 "alert" => "
                     <div class=\"white-popup\">
@@ -241,7 +249,7 @@ class CartCheckout extends BaseComponent
                 "alert" => "
                     <div class=\"white-popup\">
                         <h5>Terjadi Kesalahan !</h5>
-                        <p>Silahkan refresh browser anda dan coba lagi</p>
+                        <p>{$service->getMessage()}</p>
                     </div>
                 "
             ]);

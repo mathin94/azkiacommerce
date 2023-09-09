@@ -4,6 +4,7 @@ namespace App\Services\Admin;
 
 use App\Models\User;
 use App\Enums\OrderStatus;
+use App\Jobs\UpdateReceiptJob;
 use App\Models\Shop\Order;
 use App\Services\Backoffice\OrderService;
 
@@ -25,16 +26,6 @@ class SendPackageService
             return false;
         }
 
-        $service = new OrderService(
-            $this->user->authorization_token,
-            $this->order->resource_id
-        );
-
-        if (!$service->updateReceiptNumber($this->receipt_number)) {
-            $this->errors = $service->errors;
-            return false;
-        }
-
         $this->order->update([
             'status' => OrderStatus::PackageSent(),
         ]);
@@ -42,6 +33,12 @@ class SendPackageService
         $this->order->shipping->update([
             'receipt_number' => $this->receipt_number
         ]);
+
+        UpdateReceiptJob::dispatch(
+            order_resource_id: $this->order->resource_id,
+            user_token: $this->user->authorization_token,
+            receipt_number: $this->receipt_number
+        );
 
         return true;
     }

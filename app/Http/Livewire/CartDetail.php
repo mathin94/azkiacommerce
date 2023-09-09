@@ -36,12 +36,12 @@ class CartDetail extends Component
         }
     }
 
-    public function updatingItemQuantities(Int $quantity, Int $itemId)
+    public function updatingItemQuantities($quantity, $itemId)
     {
-        $item = $this->cartItems->find($itemId);
+        $item = $this->cartItems->find((int) $itemId);
 
         if ($item) {
-            $item->quantity = $quantity;
+            $item->quantity = (int) $quantity;
             $item->save();
         }
 

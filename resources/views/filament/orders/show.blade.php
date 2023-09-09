@@ -100,6 +100,19 @@
                         </tr>
                         <tr>
                             <th scope="row" colspan="3"
+                                class="hidden pt-6 pl-6 pr-3 text-sm font-light text-right text-slate-500 sm:table-cell md:pl-0">
+                                Diskon Voucher
+                            </th>
+                            <th scope="row"
+                                class="pt-6 pl-4 pr-3 text-sm font-light text-left text-slate-500 sm:hidden">
+                                Diskon Voucher
+                            </th>
+                            <td class="pt-6 pl-3 pr-4 text-sm text-right text-slate-500 sm:pr-6 md:pr-0">
+                                -{{ $order->discount_voucher_label }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row" colspan="3"
                                 class="hidden pt-4 pl-6 pr-3 text-sm font-normal text-right text-slate-700 sm:table-cell md:pl-0">
                                 Total
                             </th>

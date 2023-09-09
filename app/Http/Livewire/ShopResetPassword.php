@@ -22,6 +22,8 @@ class ShopResetPassword extends Component
 
     public function submit()
     {
+        $this->validate($this->rules);
+
         $service = new ResetPasswordService($this->email, $this->token, $this->password);
 
         if ($service->perform()) {

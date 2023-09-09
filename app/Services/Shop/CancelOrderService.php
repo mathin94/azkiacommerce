@@ -2,8 +2,8 @@
 
 namespace App\Services\Shop;
 
+use App\Jobs\CancelOrderJob;
 use App\Models\Shop\Order;
-use App\Services\Backoffice\OrderService;
 
 class CancelOrderService
 {
@@ -27,16 +27,12 @@ class CancelOrderService
             return false;
         }
 
-        $service = new OrderService(
-            sales_id: $this->order->resource_id,
-            token: $this->customer->authorization_token
-        );
-
-        if (!$service->cancel()) {
-            return false;
-        }
-
         $this->order->cancel();
+
+        CancelOrderJob::dispatch(
+            order_resource_id: $this->order->resource_id,
+            user_token: $this->customer->authorization_token
+        );
 
         return true;
     }

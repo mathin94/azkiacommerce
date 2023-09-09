@@ -133,7 +133,7 @@ class Show extends Component
             'variants.color',
             'variants',
             'variants.resource',
-            'seo', 'reviews'
+            'seo'
         ])
             ->cacheTags(["products:$slug"])
             ->where('slug', $slug)
@@ -156,18 +156,22 @@ class Show extends Component
         if ($this->customer) {
             $this->liked = $this->customer->wishlists()->dontCache()->whereShopProductId($this->product->id)->count() > 0;
         }
-
-        $this->getReviews();
-    }
-
-    public function getReviews()
-    {
-        # TODO: add pagination when more than 100
-        $this->reviews = $this->product->reviews->sortBy('created_at')->reverse();
     }
 
     public function addToCart()
     {
+        if ((int) $this->quantity < 1) {
+            $this->emit('showAlert', [
+                "alert" => "
+                    <div class=\"white-popup\">
+                        <p>Kuantitas Minimal 1</p>
+                    </div>
+                "
+            ]);
+
+            return;
+        }
+
         if (!$this->customer) {
             $login_url = route('login');
 
@@ -243,7 +247,7 @@ class Show extends Component
 
         $text = "Assalamu'alaikum. Halo saya ingin membeli produk $name apakah masih tersedia?";
 
-        $url = "https://wa.me/+62895808855575/?text=$text";
+        $url = "https://wa.me/+6285798404501/?text=$text";
 
         $this->emit('openWhatsappLink', ['url' => $url]);
     }

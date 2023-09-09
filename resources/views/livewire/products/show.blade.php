@@ -51,8 +51,7 @@
                                 <div class="ratings">
                                     <div class="ratings-val" style="width: {{ $product->rating_percentage }}%;"></div><!-- End .ratings-val -->
                                 </div><!-- End .ratings -->
-                                <a class="ratings-text" href="#product-review-link" id="review-link">( {{ $product->review_count }} Ulasan
-                                    )</a>
+                                <a class="ratings-text" href="#product-review-link" id="review-link">{{ $product->rating }} ( {{ $product->review_count }} Ulasan )</a>
                             </div><!-- End .rating-container -->
                             @if ($normalPrice != $price)
                                 <div class="product-price">
@@ -115,6 +114,9 @@
                                 <div class="product-details-quantity" wire:ignore>
                                     <input type="number" id="qty" class="form-control" min="1"
                                         wire:model="quantity">
+                                    @error('quantity')
+                                        <script>alert('ok')</script>
+                                    @enderror
                                 </div><!-- End .product-details-quantity -->
                                 <span class="ml-5" wire:loading.class="d-none" for="qty"
                                     wire:target="setSize,setColor">{{ $stockLabel }}</span>
@@ -122,9 +124,16 @@
                             </div><!-- End .details-filter-row -->
 
                             <div class="product-details-action">
-                                <button wire:click="addToCart" class="btn-product btn-cart"
+                                <button wire:click="addToCart" wire:loading.attr="disabled" class="btn-product btn-cart"
                                     @if ($stock < 1) disabled @endif>
-                                    <span>Tambahkan ke keranjang</span>
+
+                                    <div wire:loading.class="d-none" wire:target="addToCart">
+                                        <span>Tambahkan ke keranjang</span>
+                                    </div>
+
+                                    <div wire:loading wire:target="addToCart">
+                                        <i class="fa fa-spinner fa-spin"></i>
+                                    </div>
                                 </button>
 
                                 <div class="details-action-wrapper">
@@ -186,37 +195,7 @@
                     </div><!-- .End .tab-pane -->
                     <div class="tab-pane fade" id="product-review-tab" role="tabpanel"
                         aria-labelledby="product-review-link">
-                        <div class="reviews">
-                            <h3>Ulasan ({{ $product->review_count }})</h3>
-                            @forelse ($reviews as $review)
-                                <div class="review">
-                                    <div class="row no-gutters">
-                                        <div class="col-md-2">
-                                            <h4><a href="#">{{ $review->customer->name }}</a></h4>
-                                            <div class="ratings-container">
-                                                <div class="ratings">
-                                                    <div class="ratings-val" style="width: {{ $review->rating_percentage }}%;"></div>
-                                                    <!-- End .ratings-val -->
-                                                </div><!-- End .ratings -->
-                                            </div><!-- End .rating-container -->
-                                            <span class="review-date">{{ $review->created_at->diffForHumans() }}</span>
-                                        </div><!-- End .col -->
-                                        <div class="col-md-10">
-                                            <div class="review-content">
-                                                <h4>{{ $review->product_name }}</h4>
-                                                <p>{{ $review->review }}</p>
-                                            </div><!-- End .review-content -->
-                                        </div><!-- End .col-auto -->
-                                    </div><!-- End .row -->
-                                </div><!-- End .review -->
-                            @empty
-                                <div class="review">
-                                    <div class="text-center">
-                                        <p>Belum ada ulasan</p>
-                                    </div>
-                                </div>
-                            @endforelse
-                        </div><!-- End .reviews -->
+                        <livewire:products.reviews :product=$product>
                     </div><!-- .End .tab-pane -->
                 </div><!-- End .tab-content -->
             </div><!-- End .product-details-tab -->
