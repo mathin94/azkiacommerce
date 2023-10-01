@@ -33,7 +33,7 @@ class CreateOrderService
 
     public function perform()
     {
-        if (!$this->validCourier()) {
+        if (!$this->validCourier() && !$this->validStock()) {
             return false;
         }
 
@@ -49,6 +49,7 @@ class CreateOrderService
             if (!empty($this->selectedVoucher)) {
                 $this->createVoucherUsage();
             }
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollback();
@@ -58,6 +59,29 @@ class CreateOrderService
         CreateBackofficeSalesJob::dispatch($this->order->id);
 
         return true;
+    }
+
+    protected function validStock()
+    {
+        $cart = $this->cart->load('items.productVariant.resource.detail');
+
+        $valid = true;
+
+        foreach ($cart->items as $item) {
+            $product = $item->productVariant?->resource;
+
+            if (empty($product)) {
+                $this->errors[] = "Produk {$item->name} tidak ditemukan";
+                $valid = false;
+            }
+
+            if ($product->stock < $item->quantity) {
+                $this->errors[] = "Stok {$item->name} tidak mencukupi, Stok tersedia : {$product->stock}";
+                $valid = false;
+            }
+        }
+
+        return $valid;
     }
 
     protected function validCourier()

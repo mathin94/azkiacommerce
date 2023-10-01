@@ -21,3 +21,4 @@ yarn-error.log
 composer.lock
 yarn.lock
 worker.log
+/public/vendor/horizon
