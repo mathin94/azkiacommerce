@@ -63,6 +63,7 @@ class CreateBackofficeSalesJob implements ShouldQueue
             'discount'                 => $order->discount_voucher,
             'is_preorder'              => false, # TODO: Implement Preorder,
             'is_dropship'              => $order->shipping->is_dropship,
+            'sales_date'               => $order->created_at->format('Y-m-d'),
             'details'                  => self::buildSalesDetails($order),
         ];
 
