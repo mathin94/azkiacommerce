@@ -7,6 +7,7 @@ use App\Models\Backoffice\Courier;
 use App\Models\Shop\Order;
 use App\Models\Shop\Voucher;
 use App\Services\RajaOngkir;
+use App\Services\RajaOngkir\GetCostSevice;
 use App\Services\Shop\CreateOrderService;
 
 class CartCheckout extends BaseComponent
@@ -69,26 +70,36 @@ class CartCheckout extends BaseComponent
         $cache_key        = "shipping::$subdistrict_id::$weight_tolerance::$courier->code";
         $cache_ttl        = 24 * 60 * 60;
 
-        $services = cache()->remember($cache_key, $cache_ttl, function () use ($rajaongkir, $origin, $destination, $metrics, $courier) {
-            return $rajaongkir->getCost($origin, $destination, $metrics, $courier->code);
-        });
+        //$services = cache()->remember($cache_key, $cache_ttl, function () use ($rajaongkir, $origin, $destination, $metrics, $courier) {
+        //    return $rajaongkir->getCost($origin, $destination, $metrics, $courier->code);
+        //});
 
-        $data = [];
+        //$data = [];
 
-        if (!empty($services)) {
-            foreach ($services['costs'] as $row) {
-                $etd = $row['cost'][0]['etd'];
-                $etd_label = !empty($etd) ? "$etd Hari" : '';
-                $data[] = [
-                    'name'  => $row['service'],
-                    'cost'  => $row['cost'][0]['value'],
-                    'etd'   => $etd_label,
-                    'value' => json_encode($row),
-                ];
-            }
-        }
+        //if (!empty($services)) {
+        //    foreach ($services['costs'] as $row) {
+        //        $etd = $row['cost'][0]['etd'];
+        //        $etd_label = !empty($etd) ? "$etd Hari" : '';
+        //        $data[] = [
+        //            'name'  => $row['service'],
+        //            'cost'  => $row['cost'][0]['value'],
+        //            'etd'   => $etd_label,
+        //            'value' => json_encode($row),
+        //        ];
+        //    }
+        //}
 
-        $this->courierServices = $data;
+        $subdistrict = $this->shippingAddress->subdistrict;
+
+        $dst = [
+            'province_id' => $subdistrict->province_id,
+            'city_id' => $subdistrict->city_id,
+            'subdistrict_id' => $subdistrict->id,
+        ];
+
+        $service = new GetCostSevice($courier->code, $this->origin_city_id, $dst, $total_weight);
+
+        $this->courierServices = $service->getCosts();
 
         $this->mount();
     }
