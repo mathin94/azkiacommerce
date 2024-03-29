@@ -62,32 +62,10 @@ class CartCheckout extends BaseComponent
         $rajaongkir     = new RajaOngkir;
         $total_weight   = $this->cart->total_weight;
         $subdistrict_id = $this->shippingAddress->subdistrict_id;
-        $origin         = ['city' => $this->origin_city_id];
-        $destination    = ['subdistrict' => $subdistrict_id];
-        $metrics        = ['weight' => $total_weight, 'length' => 1, 'width' => 1, 'height' => 1, 'diameter' => 1];
 
         $weight_tolerance = $rajaongkir->getWeightTolerance($total_weight, $courier->code);
         $cache_key        = "shipping::$subdistrict_id::$weight_tolerance::$courier->code";
         $cache_ttl        = 24 * 60 * 60;
-
-        //$services = cache()->remember($cache_key, $cache_ttl, function () use ($rajaongkir, $origin, $destination, $metrics, $courier) {
-        //    return $rajaongkir->getCost($origin, $destination, $metrics, $courier->code);
-        //});
-
-        //$data = [];
-
-        //if (!empty($services)) {
-        //    foreach ($services['costs'] as $row) {
-        //        $etd = $row['cost'][0]['etd'];
-        //        $etd_label = !empty($etd) ? "$etd Hari" : '';
-        //        $data[] = [
-        //            'name'  => $row['service'],
-        //            'cost'  => $row['cost'][0]['value'],
-        //            'etd'   => $etd_label,
-        //            'value' => json_encode($row),
-        //        ];
-        //    }
-        //}
 
         $subdistrict = $this->shippingAddress->subdistrict;
 
