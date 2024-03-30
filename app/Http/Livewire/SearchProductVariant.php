@@ -35,6 +35,18 @@ class SearchProductVariant extends Component
 
     public function addToCart()
     {
+        if ((int) $this->quantity < 1) {
+            $this->emit('showAlert', [
+                "alert" => "
+                    <div class=\"white-popup\">
+                        <p>Kuantitas Minimal 1</p>
+                    </div>
+                "
+            ]);
+
+            return;
+        }
+
         $service = new AddToCartService(
             cart: $this->cart,
             variant: $this->selectedVariant,

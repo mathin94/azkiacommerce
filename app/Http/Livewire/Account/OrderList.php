@@ -2,20 +2,25 @@
 
 namespace App\Http\Livewire\Account;
 
-use App\Enums\OrderStatus;
-use App\Http\Livewire\BaseComponent;
 use Livewire\Component;
-use App\Jobs\RecalculateProductRatingJob;
-use App\Models\BankAccount;
+use App\Enums\OrderStatus;
 use App\Models\Shop\Order;
-use App\Services\RajaOngkir\TrackWaybillService;
-use App\Services\Shop\CancelOrderService;
-use App\Services\Shop\UploadPaymentProofService;
+use App\Models\BankAccount;
+use Illuminate\Support\Str;
+use Livewire\WithPagination;
 use Livewire\WithFileUploads;
+use App\Http\Livewire\BaseComponent;
+use App\Jobs\RecalculateProductRatingJob;
+use App\Services\Shop\CancelOrderService;
+use App\Services\RajaOngkir\TrackWaybillService;
+use App\Services\Shop\UploadPaymentProofService;
+use Illuminate\Support\Facades\Log;
 
 class OrderList extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
 
     public $customer, $tab, $detail, $orderPayment, $bankAccounts, $selectedBankAccount, $manifests;
 
@@ -227,11 +232,24 @@ class OrderList extends Component
         $review = $this->reviews[$id] ?? [];
 
         if (!blank($review)) {
+            if (!array_key_exists('rating', $review)) {
+                $this->emit('showAlert', [
+                    "alert" => "
+                        <div class=\"white-popup\">
+                            <h5>Gagal !</h5>
+                            <p>Rating tidak boleh kosong</p>
+                        </div>
+                    "
+                ]);
+                return;
+            }
+
             $item->review()->updateOrCreate([
+                'product_name'            => $item->name,
                 'shop_product_variant_id' => $item->shop_product_variant_id,
-                'shop_customer_id' => $this->customer->id,
-                'review' => $review['review'],
-                'rating' => $review['rating'],
+                'shop_customer_id'        => $this->customer->id,
+                'review'                  => array_key_exists('review', $review) ? $review['review'] : '',
+                'rating'                  => array_key_exists('rating', $review) ? $review['rating'] : null
             ]);
 
             RecalculateProductRatingJob::dispatch($item->productVariant->shop_product_id);
@@ -242,19 +260,10 @@ class OrderList extends Component
 
     public function render()
     {
-        $orders = $this->customer->orders()->with('items.productVariant.media');
-
-        if ($this->tab == 'ongoing') {
-            $orders->ongoing();
-        }
-
-        if ($this->tab == 'completed') {
-            $orders->completed();
-        }
-
-        if ($this->tab == 'canceled') {
-            $orders->canceled();
-        }
+        $orders = $this->customer
+            ->orders()
+            ->with('items.productVariant.media')
+            ->filterByStatus($this->tab);
 
         return view('livewire.account.order-list', [
             'orders' => $orders->latest()->paginate(10)

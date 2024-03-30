@@ -2,6 +2,7 @@
 
 namespace App\Models\Shop;
 
+use App\Jobs\CartItemProductValidatorJob;
 use App\Models\Color;
 use App\Models\Size;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -73,7 +74,18 @@ class ProductVariant extends Model
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class, 'shop_product_id');
+        return $this->belongsTo(Product::class, 'shop_product_id')
+            ->withTrashed();
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'shop_product_variant_id');
+    }
+
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class, 'shop_product_variant_id');
     }
 
     public function color(): BelongsTo
@@ -120,5 +132,14 @@ class ProductVariant extends Model
     protected function stock(): Attribute
     {
         return Attribute::make(get: fn () => $this->resource->stock);
+    }
+
+    static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function ($model) {
+            CartItemProductValidatorJob::dispatch($model->id);
+        });
     }
 }

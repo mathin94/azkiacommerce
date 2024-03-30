@@ -4,16 +4,27 @@
             <li class="{{ empty($tab) ? 'active' : '' }}"><a href="javascript:void(0);" wire:click="setTab">Semua
                     Pesanan</a>
             </li>
-            <li class="{{ $tab == 'ongoing' ? 'active' : '' }}"><a href="javascript:void(0);"
-                    wire:click="setTab('ongoing')">Sedang Berlangsung</a></li>
+            <li class="{{ $tab == 'waiting_payment' ? 'active' : '' }}"><a href="javascript:void(0);"
+                wire:click="setTab('waiting_payment')">Menunggu Pembayaran</a></li>
+
+            <li class="{{ $tab == 'waiting_confirmation' ? 'active' : '' }}"><a href="javascript:void(0);"
+                wire:click="setTab('waiting_confirmation')">Menunggu Konfirmasi</a></li>
+
+            <li class="{{ $tab == 'paid' ? 'active' : '' }}"><a href="javascript:void(0);"
+                    wire:click="setTab('paid')">Pesanan Diproses</a></li>
+
+            <li class="{{ $tab == 'package_sent' ? 'active' : '' }}"><a href="javascript:void(0);"
+                    wire:click="setTab('package_sent')">Pesanan Dikirim</a></li>
+
             <li class="{{ $tab == 'completed' ? 'active' : '' }}"><a href="javascript:void(0);"
                     wire:click="setTab('completed')">Selesai</a></li>
+
             <li class="{{ $tab == 'canceled' ? 'active' : '' }}"><a href="javascript:void(0);"
                     wire:click="setTab('canceled')">Dibatalkan</a></li>
         </ul><!-- End .blog-menu -->
     </nav>
     <div class="row">
-        <div class="col-12" wire:loading wire:target="setTab">
+        <div class="col-12" wire:loading>
             <table class="table table-cart table-mobile ssc">
                 <tbody>
                     <tr>
@@ -115,7 +126,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="col-12" wire:loading.class="d-none" wire:target="setTab">
+        <div class="col-12" wire:loading.class="d-none">
             @forelse ($orders as $order)
                 @php
                     $item = $order->items->first();
@@ -268,6 +279,11 @@
                     </p>
                 </div>
             @endforelse
+        </div>
+        <div class="col-md-12">
+            <div class="load-more-container text-center" wire:loading.class="d-none">
+                {!! $orders->links() !!}
+            </div>
         </div>
     </div>
 

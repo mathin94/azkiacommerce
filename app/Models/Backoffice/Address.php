@@ -81,7 +81,7 @@ class Address extends Model
         parent::boot();
 
         static::saved(function ($model) {
-            if ($model->isDirty('subdistrict_id')) {
+            if ($model->isDirty('subdistrict_id') && $model->is_main === true) {
                 $model->customer()
                     ->update(['subdistrict_id' => $model->subdistrict_id]);
             }

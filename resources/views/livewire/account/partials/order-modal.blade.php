@@ -125,7 +125,7 @@
                                                     Metode Pembayaran
                                                 </div>
                                                 <div class="col-md-8 text-right">
-                                                    Transfer Bank
+                                                    Transfer Bank (Manual)
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -142,6 +142,14 @@
                                                 </div>
                                                 <div class="col-md-8 text-right">
                                                     {{ $detail->shipping_cost_label }}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    Diskon Voucher
+                                                </div>
+                                                <div class="col-md-8 text-right text-danger">
+                                                    -{{ $detail->discount_voucher_label }}
                                                 </div>
                                             </div>
                                             <hr class="mt-1 mb-1">

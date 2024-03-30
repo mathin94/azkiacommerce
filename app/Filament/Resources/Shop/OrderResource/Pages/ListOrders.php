@@ -19,7 +19,7 @@ class ListOrders extends ListRecords
 
     protected $listeners = ['setStatus' => 'handleStatus'];
 
-    public function handleStatus(string $status)
+    public function handleStatus($status)
     {
         $this->tableFilters['status']['value'] = $status;
     }

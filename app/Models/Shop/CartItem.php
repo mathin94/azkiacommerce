@@ -29,7 +29,8 @@ class CartItem extends Model
 
     public function productVariant()
     {
-        return $this->belongsTo(ProductVariant::class, 'shop_product_variant_id');
+        return $this->belongsTo(ProductVariant::class, 'shop_product_variant_id')
+            ->withTrashed();
     }
 
     protected function productImageUrl(): Attribute
@@ -37,13 +38,17 @@ class CartItem extends Model
         return Attribute::make(get: function () {
             $variant = $this->productVariant;
 
-            $variant_image = $variant->media?->getUrl();
+            if (!$variant) {
+                return null;
+            }
+
+            $variant_image = $variant?->media?->getUrl();
 
             if ($variant_image) {
                 return $variant_image;
             }
 
-            return $this->productVariant->product->main_image_url;
+            return $this->productVariant->product?->main_image_url;
         });
     }
 

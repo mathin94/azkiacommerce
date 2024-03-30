@@ -167,6 +167,11 @@ class Customer extends Authenticatable
         return Attribute::make(get: fn () => Str::contains(strtolower($this->customer_type_name), 'distributor'));
     }
 
+    protected function isReseller(): Attribute
+    {
+        return Attribute::make(get: fn () => Str::contains(strtolower($this->customer_type_name), 'reseller'));
+    }
+
     public function createCart(): Cart
     {
         $cart = $this->carts()->firstOrNew([

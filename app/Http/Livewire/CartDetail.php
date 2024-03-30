@@ -36,12 +36,12 @@ class CartDetail extends Component
         }
     }
 
-    public function updatingItemQuantities(Int $quantity, Int $itemId)
+    public function updatingItemQuantities($quantity, $itemId)
     {
-        $item = $this->cartItems->find($itemId);
+        $item = $this->cartItems->find((int) $itemId);
 
         if ($item) {
-            $item->quantity = $quantity;
+            $item->quantity = (int) $quantity;
             $item->save();
         }
 
@@ -55,10 +55,12 @@ class CartDetail extends Component
         $cart = $this->user?->cart;
 
         if ($cart) {
-            $cart->load(['items.productVariant.media']);
+            $cart->load(['items.productVariant' => ['media', 'resource.detail']]);
             $cartItems = $cart->items ?? [];
 
             $this->cart = $cart;
+
+            $this->checkAllStock();
 
             foreach ($cartItems as $item) {
                 $this->itemQuantities[$item->id] = $item->quantity;
@@ -88,6 +90,17 @@ class CartDetail extends Component
         }
 
         return redirect()->route('cart.checkout');
+    }
+
+    public function checkAllStock()
+    {
+        foreach ($this->cart->items as $item) {
+            $product = $item->productVariant->resource;
+
+            if ($product->stock < 1) {
+                $item->delete();
+            }
+        }
     }
 
     public function render()

@@ -149,6 +149,11 @@ class Product extends Model implements HasMedia
             $min_price = base_price($this->variants?->min('price') ?? 0);
             $max_price = base_price($this->variants?->max('price') ?? 0);
 
+            if ($this->activeDiscount?->with_membership_price === false) {
+                $min_price = $this->variants?->min('price');
+                $max_price = $this->variants?->max('price');
+            }
+
             if ($min_price && $max_price) {
                 return collect([$min_price, $max_price])->unique()->toArray();
             }
@@ -157,24 +162,14 @@ class Product extends Model implements HasMedia
 
     protected function discountPercentage(): Attribute
     {
-        return Attribute::make(get: function () {
-            if (!empty($this->activeDiscount)) {
-                if (auth()->guard('shop')->check()) {
-                    if (auth()->guard('shop')->user()->is_member && !$this->discount_with_membership) {
-                        return 0;
-                    }
-                }
-
-                return $this->activeDiscount->discount_percentage;
-            }
-        });
+        return Attribute::make(get: fn () => $this->activeDiscount?->discount_percentage);
     }
 
     protected function discountWithMembership(): Attribute
     {
         return Attribute::make(get: function () {
             if (!$this->activeDiscount) {
-                return false;
+                return;
             }
 
             return $this->activeDiscount->with_membership_price;
@@ -185,15 +180,10 @@ class Product extends Model implements HasMedia
     {
         return Attribute::make(get: function () {
             $prices = [];
-            $valid_discount = $this->discount_with_membership;
-
             $_prices = $this->prices ?? [];
 
             foreach ($_prices as $key => $price) {
-                if ($valid_discount) {
-                    $price = $price - ($price * ($this->discount_percentage / 100));
-                }
-
+                $price = $price - ($price * ($this->discount_percentage / 100));
                 $prices[] = format_rupiah($price);
             }
 

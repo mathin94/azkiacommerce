@@ -49,11 +49,15 @@
                                 </p>
                             @endif
 
-                            <livewire:upload-payment :order=$order />
+                            @if (!empty($order->invoice_number))
+                                <livewire:upload-payment :order=$order />
+                            @else
+                                <p>Menunggu Sinkronisasi</p>
+                            @endif
                         </div><!-- End .col-lg-9 -->
                         <aside class="col-lg-6">
                             <div class="summary">
-                                <h3 class="summary-title">Invoice #{{ $order->invoice_number }}</h3>
+                                <h3 class="summary-title" wire:poll>Invoice #{{ $order->invoice_number ?? 'Menunggu Sinkronisasi' }}</h3>
                                 <!-- End .summary-title -->
                                 <h3 class="summary-title">Daftar Pesanan</h3><!-- End .summary-title -->
 

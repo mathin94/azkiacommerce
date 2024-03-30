@@ -44,7 +44,14 @@
 
                                 <div class="form-group">
                                     <label for="singin-password-2">Kata Sandi *</label>
-                                    <input type="password" class="form-control" wire:model.lazy="password">
+                                    <div class="input-group">
+                                        <input type="password" id="login-password" class="form-control" wire:model.lazy="password">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text form-control login-password-toggle pl-4 pr-4" onclick="togglePasswordVisibility()">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
+                                        </div>
+                                    </div>
                                     @error('password')
                                         <span class="error text-danger">{{ $message }}</span>
                                     @enderror
@@ -87,7 +94,7 @@
                             <form wire:submit.prevent="submitRegister">
                                 <div class="form-group">
                                     <label>Nama Lengkap *</label>
-                                    <input type="text" class="form-control" wire:model="fullName">
+                                    <input type="text" class="form-control" wire:model.lazy="fullName">
                                     @error('fullName')
                                         <span class="error text-danger">{{ $message }}</span>
                                     @enderror
@@ -95,7 +102,7 @@
 
                                 <div class="form-group">
                                     <label>No Hp / Whatsapp *</label>
-                                    <input type="text" class="form-control" wire:model="phoneNumber">
+                                    <input type="text" class="form-control" wire:model.lazy="phoneNumber">
                                     @error('phoneNumber')
                                         <span class="error text-danger">{{ $message }}</span>
                                     @enderror
@@ -103,7 +110,7 @@
 
                                 <div class="form-group">
                                     <label>Alamat Email *</label>
-                                    <input type="email" class="form-control" wire:model="emailAddress">
+                                    <input type="email" class="form-control" wire:model.lazy="emailAddress">
                                     @error('emailAddress')
                                         <span class="error text-danger">{{ $message }}</span>
                                     @enderror
@@ -111,7 +118,7 @@
 
                                 <div class="form-group">
                                     <label>Gender *</label>
-                                    <select class="form-control" wire:model="gender">
+                                    <select class="form-control" wire:model.lazy="gender">
                                         <option value="">Pilih Gender</option>
                                         <option value="L">Laki - Laki</option>
                                         <option value="P">Perempuan</option>
@@ -123,7 +130,14 @@
 
                                 <div class="form-group">
                                     <label>Kata Sandi *</label>
-                                    <input type="password" class="form-control" wire:model="registerPassword">
+                                    <div class="input-group">
+                                        <input type="password" id="register-password" class="form-control" wire:model.lazy="registerPassword">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text form-control register-password-toggle pl-4 pr-4" onclick="togglePasswordVisibility('register')">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
+                                        </div>
+                                    </div>
                                     @error('registerPassword')
                                         <span class="error text-danger">{{ $message }}</span>
                                     @enderror
@@ -131,8 +145,15 @@
 
                                 <div class="form-group">
                                     <label>Konfirmasi Kata Sandi *</label>
-                                    <input type="password" class="form-control"
-                                        wire:model="registerPasswordConfirmation">
+                                    <div class="input-group">
+                                        <input type="password" id="register-confirmation-password" class="form-control"
+                                        wire:model.lazy="registerPasswordConfirmation">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text form-control register-confirmation-password-toggle pl-4 pr-4" onclick="togglePasswordVisibility('register-confirmation')">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
+                                        </div>
+                                    </div>
                                     @error('registerPasswordConfirmation')
                                         <span class="error text-danger">{{ $message }}</span>
                                     @enderror
@@ -164,3 +185,20 @@
         </div><!-- End .container -->
     </div><!-- End .login-page section-bg -->
 </main><!-- End .main -->
+
+@push('scripts')
+    <script>
+        function togglePasswordVisibility(state = 'login') {
+            var passwordInput = document.getElementById(`${state}-password`);
+            var passwordToggle = document.querySelector(`.${state}-password-toggle`);
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                passwordToggle.innerHTML = '<i class="fa fa-eye-slash"></i>';
+            } else {
+                passwordInput.type = "password";
+                passwordToggle.innerHTML = '<i class="fa fa-eye"></i>';
+            }
+        }
+    </script>
+@endpush

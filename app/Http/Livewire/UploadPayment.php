@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
+use App\Models\BankAccount;
 use Livewire\WithFileUploads;
 use App\Services\Shop\CancelOrderService;
 use App\Services\Shop\UploadPaymentProofService;
