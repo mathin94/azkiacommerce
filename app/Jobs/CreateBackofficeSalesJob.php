@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Services\Backoffice\OrderService;
+use App\Services\Shop\CancelOrderService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -40,10 +41,11 @@ class CreateBackofficeSalesJob implements ShouldQueue
         $customer = $order->customer;
 
         $service = new OrderService(token: $customer->authorization_token);
-        $request = $service->createOrder(self::buildSalesParams($order));
+        $execute = $service->createOrder(self::buildSalesParams($order));
 
-        if (!$request) {
-            throw new \Exception($service->errors);
+        if (!$execute) {
+            $service = new CancelOrderService(order: $order, dispatch_job: false);
+            $service->perform();
         }
     }
 

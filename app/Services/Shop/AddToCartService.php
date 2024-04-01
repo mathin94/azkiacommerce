@@ -48,6 +48,10 @@ class AddToCartService
             return false;
         }
 
+        if (!$this->validLimitation()) {
+            return false;
+        }
+
         $service = new ProductVariantPriceService(
             customer: $this->cart->customer,
             productVariant: $this->variant
@@ -81,5 +85,17 @@ class AddToCartService
         $this->errors[] = "Stok {$this->variant->name} tidak mencukupi, stok tersedia saat ini: {$this->variant->resource->stock}";
 
         return false;
+    }
+
+    private function validLimitation(): bool
+    {
+        $service = new CheckLimitationService($this->cart, $this->variant->product, $this->quantity);
+
+        if (!$service->execute()) {
+            $this->errors[] = 'Kuantitas melebihi batas limitasi';
+            return false;
+        }
+
+        return true;
     }
 }

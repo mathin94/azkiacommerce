@@ -365,6 +365,16 @@ class Product extends Model implements HasMedia
         });
     }
 
+    /**
+     * Get all of the limitations for the Product
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function limitations(): HasMany
+    {
+        return $this->hasMany(ProductLimitation::class, 'shop_product_id');
+    }
+
     public static function boot()
     {
         parent::boot();

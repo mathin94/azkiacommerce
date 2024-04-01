@@ -19,6 +19,7 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use App\Filament\Resources\Shop\ProductResource\RelationManagers\VariantsRelationManager;
+use App\Filament\Resources\Shop\ProductResource\RelationManagers\LimitationsRelationManager;
 
 class ProductResource extends Resource implements HasShieldPermissions
 {
@@ -224,6 +225,7 @@ class ProductResource extends Resource implements HasShieldPermissions
     {
         return [
             VariantsRelationManager::class,
+            LimitationsRelationManager::class,
         ];
     }
 
