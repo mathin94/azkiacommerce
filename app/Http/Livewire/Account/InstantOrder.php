@@ -114,10 +114,15 @@ class InstantOrder extends Component
             if ($resource->stock < $item->quantity) {
                 $errors[] = "Stok {$item->name} tidak mencukupi, stok tersedia saat ini: {$resource->stock}";
             } else {
-                $service = new CheckLimitationService($this->cart, $variant->product, $item->quantity, $variant->id);
+                $service = new CheckLimitationService(
+                    customer: $this->customer,
+                    cart: $this->cart,
+                    cartItem: $item,
+                    variant: $variant,
+                );
 
                 if (!$service->execute()) {
-                    $errors[] = "Produk {$item->name} melebihi batas pembelian untuk produk {$variant->product->name}, anda hanya dapat membeli {$service->limit} buah untuk keseluruhan total quantity produk ini";
+                    $errors[] = "Produk {$item->name} melebihi batas pembelian untuk produk {$variant->product->name}, anda hanya dapat membeli {$service->limit} buah untuk keseluruhan total quantity variant ini";
                 }
             }
         }

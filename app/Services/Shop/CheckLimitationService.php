@@ -3,51 +3,60 @@
 namespace App\Services\Shop;
 
 use App\Models\Shop\Cart;
-use App\Models\Shop\Customer;
 use App\Models\Shop\Product;
+use App\Models\Shop\CartItem;
+use App\Models\Shop\Customer;
+use App\Models\Shop\ProductVariant;
+use Illuminate\Database\Eloquent\Collection;
 
 class CheckLimitationService
 {
-    protected Customer $customer;
+    protected Product $product;
+    protected Collection $limitations;
     public int $limit;
 
     public function __construct(
+        protected Customer $customer,
         protected Cart $cart,
-        protected Product $product,
-        protected int $quantity,
-        protected ?int $variantId = null,
+        protected ?ProductVariant $variant = null,
+        protected ?CartItem $cartItem = null,
+        protected ?int $quantity = null,
     ) {
-        $this->customer = $this->cart->customer;
+        $this->limitations = $this->customer->limitations;
+        $this->product = $this->variant?->product;
     }
 
     public function execute(): bool
     {
-        $limitation = $this->product
-            ->limitations
-            ->where('customer_type_id', $this->customer->customer_type_id)
-            ->where('is_active', true)
+        if (is_null($this->variant) && is_null($this->cartItem) && is_null($this->quantity))
+            return false;
+
+        if (empty($this->limitations))
+            return true;
+
+        $product_id = $this->variant?->shop_product_id ?? $this->cartItem?->productVariant?->shop_product_id;
+
+        $limitation = $this->limitations
+            ->where('shop_product_id', $product_id)
             ->first();
 
         if (empty($limitation))
             return true;
 
+        $cartItem = $this->cartItem;
 
-        $cart_qty = Cart::join('shop_cart_items as sci', 'shop_carts.id', 'sci.shop_cart_id')
-            ->join('shop_product_variants as spv', 'sci.shop_product_variant_id', 'spv.id')
-            ->where('spv.shop_product_id', $this->product->id)
-            ->where('shop_carts.id', $this->cart->id);
-
-        if (!is_null($this->variantId)) {
-            $cart_qty = $cart_qty->where('spv.id', '!=', $this->variantId);
+        if (is_null($cartItem)) {
+            $cartItem = $this->cart->items
+                ->where('shop_product_variant_id', $this->variant?->id)
+                ->first();
         }
 
-        $cart_qty = $cart_qty->sum('sci.quantity');
-
-        $total_qty = $cart_qty + $this->quantity;
+        $qty = $cartItem?->quantity ?? 0;
+        $qty += $this->quantity ?? 0;
 
         $this->limit = $limitation->quantity_limit;
 
-        if ($total_qty > $this->limit)
+        if ($qty > $this->limit)
             return false;
 
         return true;

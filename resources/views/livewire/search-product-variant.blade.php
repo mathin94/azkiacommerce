@@ -89,11 +89,12 @@
             });
 
             Livewire.on('focusToQty', function () {
+                console.log("FOCUS")
                 document.getElementById('quantity').focus()
             })
         })
 
-        window.addEventListener('clear-search', event => {
+        Livewire.on('clearSearch', function () {
             document.querySelector('#virtual-select-list').setOptions([])
             document.querySelector('#virtual-select-list').setValue(null)
         })

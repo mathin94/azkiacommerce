@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class LimitationsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'limitations';
+    protected static string $relationship = 'notExpiredLimitations';
 
     protected static ?string $recordTitleAttribute = 'quantity_limit';
 
@@ -25,25 +25,24 @@ class LimitationsRelationManager extends RelationManager
             ->schema([
                 Forms\Components\Select::make('customer_type_id')
                     ->label('Jenis Kemitraan')
-                    ->searchable()
-                    ->reactive()
+                    ->relationship('customerType', 'name')
                     ->preload()
-                    ->getOptionLabelUsing(function ($state) {
-                        $customerType = CustomerType::find($state);
-
-                        return $customerType->name;
-                    })
-                    ->getSearchResultsUsing(function ($query) {
-                        $customerType = new CustomerType();
-
-                        return $customerType->where('name', 'like', "%{$query}%")->limit(10)->pluck('name', 'id');
-                    })
                     ->required(),
 
                 Forms\Components\TextInput::make('quantity_limit')
                     ->label('Batas Qty Pesanan Dalam Sekali Order')
                     ->numeric()
                     ->minValue(1)
+                    ->required(),
+
+                Forms\Components\DateTimePicker::make('active_at')
+                    ->label('Tgl Mulai')
+                    ->required(),
+
+                Forms\Components\DateTimePicker::make('inactive_at')
+                    ->label('Tgl berakhir')
+                    ->after('active_at')
+                    ->after(now())
                     ->required(),
             ]);
     }
@@ -60,16 +59,25 @@ class LimitationsRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('quantity_limit')
                     ->label('Batas Qty Pesanan Dalam Sekali Order'),
+                Tables\Columns\TextColumn::make('active_at')
+                    ->date("d F Y H:i")
+                    ->label('Aktif Sejak'),
+                    Tables\Columns\TextColumn::make('inactive_at')
+                    ->date("d F Y H:i")
+                    ->label('Sampai'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->modelLabel('Pembatasan Order Baru'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->recordTitle('Data'),
+                Tables\Actions\DeleteAction::make()
+                    ->recordTitle('Data'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

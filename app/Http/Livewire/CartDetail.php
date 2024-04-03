@@ -97,13 +97,6 @@ class CartDetail extends Component
         $this->mount();
     }
 
-    private function validLimitation(Product $product, int $variantId, int $quantity): bool
-    {
-        $service = new CheckLimitationService($this->cart, $product, $quantity, $variantId);
-
-        return $service->execute();
-    }
-
     public function mount()
     {
         $cart = $this->user?->cart;
@@ -168,6 +161,8 @@ class CartDetail extends Component
     private function validateStock(): bool | array
     {
         $errors = [];
+        $customer = $this->cart->customer;
+        $customer->load('limitations');
 
         foreach ($this->cartItems as $item) {
             $variant = $item->productVariant;
@@ -176,10 +171,15 @@ class CartDetail extends Component
             if ($resource->stock < $item->quantity) {
                 $errors[] = "Stok {$item->name} tidak mencukupi, stok tersedia saat ini: {$resource->stock}";
             } else {
-                $service = new CheckLimitationService($this->cart, $variant->product, $item->quantity, $variant->id);
+                $service = new CheckLimitationService(
+                    customer: $customer,
+                    cart: $this->cart,
+                    cartItem: $item,
+                    variant: $variant,
+                );
 
                 if (!$service->execute()) {
-                    $errors[] = "Produk {$item->name} melebihi batas pembelian untuk produk {$variant->product->name}, anda hanya dapat membeli {$service->limit} buah untuk keseluruhan total quantity produk ini";
+                    $errors[] = "Produk {$item->name} melebihi batas pembelian untuk produk {$variant->product->name}, anda hanya dapat membeli {$service->limit} buah untuk keseluruhan total quantity variant ini";
                 }
             }
         }

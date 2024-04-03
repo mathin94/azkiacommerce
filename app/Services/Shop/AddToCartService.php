@@ -68,6 +68,7 @@ class AddToCartService
         $item->weight         = $this->variant->weight;
         $item->quantity       = $quantity;
         $item->discount       = $prices['discount_percentage'];
+
         $item->save();
 
         $this->cart->recalculate();
@@ -89,7 +90,14 @@ class AddToCartService
 
     private function validLimitation(): bool
     {
-        $service = new CheckLimitationService($this->cart, $this->variant->product, $this->quantity);
+        $customer = $this->cart->customer;
+
+        $service = new CheckLimitationService(
+            customer: $customer,
+            cart: $this->cart,
+            variant: $this->variant,
+            quantity: $this->quantity,
+        );
 
         if (!$service->execute()) {
             $this->errors[] = 'Kuantitas melebihi batas limitasi';

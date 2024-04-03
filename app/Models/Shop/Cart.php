@@ -6,6 +6,7 @@ use App\Enums\CartStatus;
 use App\Models\Backoffice\Address;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Cart extends Model
@@ -40,7 +41,7 @@ class Cart extends Model
             ->orderBy('created_at', 'desc');
     }
 
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'shop_customer_id');
     }

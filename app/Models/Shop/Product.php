@@ -3,17 +3,18 @@
 namespace App\Models\Shop;
 
 use App\Enums\DiscountType;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
+use RalphJSmit\Laravel\SEO\Support\HasSEO;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Rennokki\QueryCache\Traits\QueryCacheable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use RalphJSmit\Laravel\SEO\Support\HasSEO;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Rennokki\QueryCache\Traits\QueryCacheable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model implements HasMedia
 {
@@ -373,6 +374,28 @@ class Product extends Model implements HasMedia
     public function limitations(): HasMany
     {
         return $this->hasMany(ProductLimitation::class, 'shop_product_id');
+    }
+
+    /**
+     * Get the activeLimitation associated with the Product
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function activeLimitations(): HasMany
+    {
+        return $this->hasMany(ProductLimitation::class, 'shop_product_id')
+            ->active();
+    }
+
+    /**
+     * Get the notExpiredLimitations associated with the Product
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notExpiredLimitations(): HasMany
+    {
+        return $this->hasMany(ProductLimitation::class, 'shop_product_id')
+            ->notExpired();
     }
 
     public static function boot()

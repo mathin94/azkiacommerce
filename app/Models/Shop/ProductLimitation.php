@@ -20,7 +20,13 @@ class ProductLimitation extends Model
         'shop_product_id',
         'customer_type_id',
         'quantity_limit',
-        'is_active',
+        'active_at',
+        'inactive_at',
+    ];
+
+    protected $casts = [
+        'active_at' => 'datetime',
+        'inactive_at' => 'datetime',
     ];
 
     /**
@@ -42,5 +48,33 @@ class ProductLimitation extends Model
     {
         return $this->setConnection(Connection::Backoffice)
             ->belongsTo(CustomerType::class, 'customer_type_id');
+    }
+
+    /**
+     * Scope Active
+     */
+
+    public function scopeActive($query)
+    {
+        return $query->where('active_at', '<=', now())
+            ->where('inactive_at', '>', now());
+    }
+
+    /**
+     * scope notExpired
+     */
+
+    public function scopeNotExpired($query)
+    {
+        return $query->where('inactive_at', '>', now());
+    }
+
+    /**
+     * scope expired
+     */
+
+    public function scopeExpired($query)
+    {
+        return $query->where('inactive_at', '<=', now());
     }
 }

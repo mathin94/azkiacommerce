@@ -30,6 +30,7 @@ class CreateOrderService
         private ?Voucher $selectedVoucher = null,
         private ?Int $discountVoucher = 0
     ) {
+        $this->customer->load('limitations');
     }
 
     public function perform()
@@ -67,12 +68,13 @@ class CreateOrderService
         $cart = $this->cart->load(['items.productVariant.resource.detail', 'items.productVariant.product']);
 
         $valid = true;
+        $items = $cart->items()->with(['productVariant.product', 'resource']);
 
-        foreach ($cart->items as $item) {
+        foreach ($items as $item) {
             $variant = $item->productVariant;
             $resource = $variant->resource;
 
-            if (empty($product)) {
+            if (empty($variant)) {
                 $this->errors[] = "Produk {$item->name} tidak ditemukan";
                 $valid = false;
             }
@@ -81,10 +83,15 @@ class CreateOrderService
                 $this->errors[] = "Stok {$item->name} tidak mencukupi, Stok tersedia : {$resource->stock}";
                 $valid = false;
             } else {
-                $service = new CheckLimitationService($cart, $variant->product, $item->quantity, $variant->id);
+                $service = new CheckLimitationService(
+                    customer: $this->customer,
+                    cart: $cart,
+                    cartItem: $item,
+                    variant: $variant,
+                );
 
                 if (!$service->execute()) {
-                    $this->errors[] = "Produk {$item->name} melebihi batas pembelian untuk produk {$variant->product->name}, anda hanya dapat membeli {$service->limit} buah untuk keseluruhan total quantity produk ini";
+                    $this->errors[] = "Produk {$item->name} melebihi batas pembelian untuk produk {$variant->product->name}, anda hanya dapat membeli {$service->limit} buah untuk keseluruhan total quantity variant ini";
                 }
             }
         }
