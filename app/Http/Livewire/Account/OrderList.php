@@ -13,6 +13,7 @@ use App\Http\Livewire\BaseComponent;
 use App\Jobs\RecalculateProductRatingJob;
 use App\Services\Shop\CancelOrderService;
 use App\Services\RajaOngkir\TrackWaybillService;
+use App\Services\Shop\CompleteOrderService;
 use App\Services\Shop\UploadPaymentProofService;
 use Illuminate\Support\Facades\Log;
 
@@ -176,37 +177,19 @@ class OrderList extends Component
 
     public function complete()
     {
-        $order = $this->getOrder($this->toCompleteId);
+        $service = new CompleteOrderService($this->toCompleteId);
 
-        if ($order->is_completed) {
+        if (!$service->execute()) {
+            $msg = $service->getErrorMessage();
             $this->emit('showAlert', [
                 "alert" => "
                         <div class=\"white-popup\">
                             <h5>Gagal !</h5>
-                            <p>Order sudah diselesaikan sebelumnya</p>
+                            <p>$msg</p>
                         </div>
                     "
             ]);
-
-            return;
         }
-
-        if (!$order->trackable) {
-            $this->emit('showAlert', [
-                "alert" => "
-                        <div class=\"white-popup\">
-                            <h5>Gagal !</h5>
-                            <p>Order tidak dapat diselesaikan</p>
-                        </div>
-                    "
-            ]);
-
-            return;
-        }
-
-        $order->update([
-            'status' => OrderStatus::Completed
-        ]);
 
         $this->emit('showAlert', [
             "alert" => "
