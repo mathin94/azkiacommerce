@@ -2,17 +2,18 @@
 
 namespace App\Services\Shop;
 
+use Ramsey\Uuid\Uuid;
 use App\Enums\CartStatus;
+use App\Models\Shop\Cart;
 use App\Enums\OrderStatus;
 use App\Helpers\AutoNumber;
-use App\Jobs\CreateBackofficeSalesJob;
-use App\Models\Backoffice\Address;
-use App\Models\Shop\Cart;
-use App\Models\Shop\Customer;
 use App\Models\Shop\Voucher;
-use App\Services\Backoffice\OrderService;
-use Ramsey\Uuid\Uuid;
+use App\Models\Shop\Customer;
+use App\Models\Backoffice\Address;
 use Illuminate\Support\Facades\DB;
+use App\Jobs\CreateBackofficeSalesJob;
+use App\Services\Backoffice\OrderService;
+use App\Services\Shop\CheckLimitationService;
 
 class CreateOrderService
 {
@@ -29,6 +30,7 @@ class CreateOrderService
         private ?Voucher $selectedVoucher = null,
         private ?Int $discountVoucher = 0
     ) {
+        $this->customer->load('limitations');
     }
 
     public function perform()
@@ -63,21 +65,34 @@ class CreateOrderService
 
     protected function validStock()
     {
-        $cart = $this->cart->load('items.productVariant.resource.detail');
+        $cart = $this->cart->load(['items.productVariant.resource.detail', 'items.productVariant.product']);
 
         $valid = true;
+        $items = $cart->items()->with(['productVariant.product', 'resource']);
 
-        foreach ($cart->items as $item) {
-            $product = $item->productVariant?->resource;
+        foreach ($items as $item) {
+            $variant = $item->productVariant;
+            $resource = $variant->resource;
 
-            if (empty($product)) {
+            if (empty($variant)) {
                 $this->errors[] = "Produk {$item->name} tidak ditemukan";
                 $valid = false;
             }
 
-            if ($product->stock < $item->quantity) {
-                $this->errors[] = "Stok {$item->name} tidak mencukupi, Stok tersedia : {$product->stock}";
+            if ($resource->stock < $item->quantity) {
+                $this->errors[] = "Stok {$item->name} tidak mencukupi, Stok tersedia : {$resource->stock}";
                 $valid = false;
+            } else {
+                $service = new CheckLimitationService(
+                    customer: $this->customer,
+                    cart: $cart,
+                    cartItem: $item,
+                    variant: $variant,
+                );
+
+                if (!$service->execute()) {
+                    $this->errors[] = "Produk {$item->name} melebihi batas pembelian untuk produk {$variant->product->name}, anda hanya dapat membeli {$service->limit} buah untuk keseluruhan total quantity variant ini";
+                }
             }
         }
 

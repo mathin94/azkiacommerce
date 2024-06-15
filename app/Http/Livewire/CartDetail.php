@@ -2,6 +2,9 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Shop\Product;
+use App\Models\Shop\ProductVariant;
+use App\Services\Shop\CheckLimitationService;
 use Livewire\Component;
 
 class CartDetail extends Component
@@ -36,9 +39,53 @@ class CartDetail extends Component
         }
     }
 
-    public function updatingItemQuantities($quantity, $itemId)
+    public function updatingItemQuantities($quantity, int $itemId)
     {
-        $item = $this->cartItems->find((int) $itemId);
+        $item = $this->cartItems->find($itemId);
+        $variant = $item->productVariant;
+        $product = $variant->product;
+
+        $prev_quantity = $item->quantity;
+
+        // if ($quantity != $prev_quantity && !$this->validLimitation($product, $variant->id, $quantity)) {
+        //     $this->emit('showAlert', [
+        //         "alert" => "
+        //             <div class=\"white-popup\">
+        //                 <h5>Tidak mengubah qty !</h5>
+        //                 <p>Anda melebihi batas pembelian untuk produk ini</p>
+        //             </div>
+        //         "
+        //     ]);
+
+        //     $this->itemQuantities[$item->id] = $prev_quantity;
+
+        //     $this->emit('refreshComponent');
+
+        //     $this->mount();
+
+        //     return;
+        // }
+
+        // $available_stock = $variant->resource->stock;
+
+        // if ($quantity < $available_stock) {
+        //     $this->emit('showAlert', [
+        //         "alert" => "
+        //             <div class=\"white-popup\">
+        //                 <h5>Stock $variant->name tidak mencukupi !</h5>
+        //                 <p>Stock Tersedia hanya ada {$available_stock}</p>
+        //             </div>
+        //         "
+        //     ]);
+
+        //     $this->itemQuantities[$item->id] = $available_stock;
+
+        //     $this->emit('refreshComponent');
+
+        //     $this->mount();
+
+        //     return;
+        // }
 
         if ($item) {
             $item->quantity = (int) $quantity;
@@ -89,7 +136,55 @@ class CartDetail extends Component
             return;
         }
 
+        $check_stock = $this->validateStock();
+
+        if (is_array($check_stock)) {
+            $alert = "<div class=\"white-popup\"> <h5>Tidak dapat checkout !</h5> <br>";
+            $alert .= "<ol>";
+
+            foreach ($check_stock as $error) {
+                $alert .= "<li>- {$error}</li>";
+            }
+
+            $alert .= "</ol></div>";
+
+            $this->emit('showAlert', [
+                "alert" => $alert
+            ]);
+
+            return;
+        }
+
         return redirect()->route('cart.checkout');
+    }
+
+    private function validateStock(): bool | array
+    {
+        $errors = [];
+        $customer = $this->cart->customer;
+        $customer->load('limitations');
+
+        foreach ($this->cartItems as $item) {
+            $variant = $item->productVariant;
+            $resource = $variant->resource;
+
+            if ($resource->stock < $item->quantity) {
+                $errors[] = "Stok {$item->name} tidak mencukupi, stok tersedia saat ini: {$resource->stock}";
+            } else {
+                $service = new CheckLimitationService(
+                    customer: $customer,
+                    cart: $this->cart,
+                    cartItem: $item,
+                    variant: $variant,
+                );
+
+                if (!$service->execute()) {
+                    $errors[] = "Produk {$item->name} melebihi batas pembelian untuk produk {$variant->product->name}, anda hanya dapat membeli {$service->limit} buah untuk keseluruhan total quantity variant ini";
+                }
+            }
+        }
+
+        return count($errors) > 0 ? $errors : true;
     }
 
     public function checkAllStock()

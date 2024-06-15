@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Backoffice\Address as ShippingAddress;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -181,6 +182,17 @@ class Customer extends Authenticatable
         $cart->save();
 
         return $cart->refresh();
+    }
+
+    /**
+     * Get all of the limitations for the Customer
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function limitations(): HasMany
+    {
+        return $this->hasMany(ProductLimitation::class, 'customer_type_id', 'customer_type_id')
+            ->active();
     }
 
     /**

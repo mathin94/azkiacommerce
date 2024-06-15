@@ -12,14 +12,15 @@ class CancelOrderService
     public $errors;
 
     public function __construct(
-        private Order $order
+        private Order $order,
+        private $dispatch_job = true,
     ) {
         $this->customer = $order->customer;
     }
 
     public function perform()
     {
-        if (empty($this->customer->authorization_token)) {
+        if (empty($this->customer->authorization_token) && $this->dispatch_job) {
             $this->errors = [
                 'User doesnt have authorization token'
             ];
@@ -29,10 +30,12 @@ class CancelOrderService
 
         $this->order->cancel();
 
-        CancelOrderJob::dispatch(
-            order_resource_id: $this->order->resource_id,
-            user_token: $this->customer->authorization_token
-        );
+        if ($this->dispatch_job) {
+            CancelOrderJob::dispatch(
+                order_resource_id: $this->order->resource_id,
+                user_token: $this->customer->authorization_token
+            );
+        }
 
         return true;
     }
