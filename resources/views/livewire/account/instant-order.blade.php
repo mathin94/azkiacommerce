@@ -78,9 +78,17 @@
                 </table>
 
                 <div class="text-right">
-                    <a href="{{ route('cart.checkout') }}"
-                                class="btn btn-success btn-order">LANJUT
-                                KE PEMBAYARAN</a>
+                    <button type="button" wire:click="checkout"
+                        class="btn btn-outline-primary-2 btn-order btn-block"
+                        wire:loading.attr="disabled" wire:target="checkout">
+                        <div wire:target="checkout" wire:loading.class="d-none">
+                            <span >Lanjut Pembayaran</span>
+                        </div>
+
+                        <div wire:loading wire:target="checkout">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
                 </div>
 
             </div>

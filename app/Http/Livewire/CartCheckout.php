@@ -7,6 +7,7 @@ use App\Models\Backoffice\Courier;
 use App\Models\Shop\Order;
 use App\Models\Shop\Voucher;
 use App\Services\RajaOngkir;
+use App\Services\Shop\CheckLimitationService;
 use App\Services\RajaOngkir\GetCostSevice;
 use App\Services\Shop\CreateOrderService;
 
@@ -203,7 +204,55 @@ class CartCheckout extends BaseComponent
             return;
         }
 
+        $check_stock = $this->validateStock();
+
+        if (is_array($check_stock)) {
+            $alert = "<div class=\"white-popup\"> <h5>Gagal membuat order !</h5> <br>";
+            $alert .= "<ol>";
+
+            foreach ($check_stock as $error) {
+                $alert .= "<li>- {$error}</li>";
+            }
+
+            $alert .= "</ol></div>";
+
+            $this->emit('showAlert', [
+                "alert" => $alert
+            ]);
+
+            return;
+        }
+
         return true;
+    }
+
+    private function validateStock(): bool | array
+    {
+        $errors = [];
+
+        $items = $this->cart->items;
+        $items->load(['productVariant.resource.detail', 'productVariant.product']);
+
+        foreach ($items as $item) {
+            $variant = $item->productVariant;
+            $resource = $variant->resource;
+
+            if ($resource->stock < $item->quantity) {
+                $errors[] = "Stok {$item->name} tidak mencukupi, stok tersedia saat ini: {$resource->stock}";
+            } else {
+                $service = new CheckLimitationService(
+                    customer: $this->customer,
+                    cart: $this->cart,
+                    cartItem: $item,
+                    variant: $variant,
+                );
+                if (!$service->execute()) {
+                    $errors[] = "Produk {$item->name} melebihi batas pembelian untuk produk {$variant->product->name}, anda hanya dapat membeli {$service->limit} buah untuk keseluruhan total quantity variant ini";
+                }
+            }
+        }
+
+        return count($errors) > 0 ? $errors : true;
     }
 
     public function orderWhatsapp()

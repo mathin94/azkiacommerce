@@ -71,7 +71,7 @@ class SearchProductVariant extends Component
         }
 
         $this->clearProductVariant();
-
+        $this->emit('clearSearch');
         $this->emit('reloadCart');
     }
 
@@ -84,7 +84,7 @@ class SearchProductVariant extends Component
     public function clearProductVariant()
     {
         $this->reset([
-            'price', 'stock', 'quantity'
+            'productVariantId', 'price', 'stock', 'quantity'
         ]);
     }
 
