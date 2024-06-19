@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'auto_complete_hours' => 48,
+    'auto_complete_hours' => env('ORDER_AUTO_COMPLETE_HOURS', 168),
 ];

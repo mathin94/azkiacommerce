@@ -17,6 +17,12 @@ class CompleteOrderService {
         $order = Order::find($this->order_id);
 
         if (!$order) {
+            $this->errors[] = 'Pesanan tidak ditemukan';
+            return false;
+        }
+
+        if (!is_null($order->canceled_at)) {
+            $this->errors[] = 'Pesanan ini telah dibatalkan';
             return false;
         }
 

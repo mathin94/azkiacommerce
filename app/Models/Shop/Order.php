@@ -294,7 +294,6 @@ class Order extends Model
         return $query;
     }
 
-
     public function __call($methodName, $arguments)
     {
         if (strpos($methodName, 'status') === 0) {
