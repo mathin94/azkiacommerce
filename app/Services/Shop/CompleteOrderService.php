@@ -18,21 +18,21 @@ class CompleteOrderService {
 
         if (!$order) {
             $this->errors[] = 'Pesanan tidak ditemukan';
-            return false;
         }
 
         if (!is_null($order->canceled_at)) {
             $this->errors[] = 'Pesanan ini telah dibatalkan';
-            return false;
         }
 
         if ($order->is_completed) {
             $this->errors[] = 'Pesanan sudah diselesaikan sebelumnya';
-            return false;
         }
 
         if (!$order->trackable) {
             $this->errors[] = 'Pesanan tidak dapat diselesaikan, karena resi belum di input';
+        }
+
+        if (!empty($this->errors)) {
             return false;
         }
 
