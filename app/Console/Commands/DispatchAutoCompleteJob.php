@@ -28,12 +28,12 @@ class DispatchAutoCompleteJob extends Command
     public function handle()
     {
         $ordersIds = Order::FilterByStatus('packageSent')->whereNull('canceled_at')->pluck('id');
-        $autoCompleteMinutes = config('order.auto_complete_hours') * 60;
+        $autoCompleteHours = config('order.auto_complete_hours');
 
         foreach ($ordersIds as $order_id) {
             AutoCompleteOrderJob::dispatch($order_id)
                 ->delay(now()
-                ->addMinutes($autoCompleteMinutes));
+                ->addHours($autoCompleteHours));
         }
     }
 }
