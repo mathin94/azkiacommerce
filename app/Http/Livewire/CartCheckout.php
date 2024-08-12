@@ -140,7 +140,7 @@ class CartCheckout extends BaseComponent
         if ($voucher->is_percentage) {
             $discount = $subject * ($voucher->value / 100);
         } else {
-            $discount = $voucher->value;
+            $discount = $voucher->voucher_type->value === VoucherType::ShippingCostDiscount ? $subject : $voucher->value;
         }
 
         if (!is_null($voucher->maximum_discount) && $discount > $voucher->maximum_discount) {
